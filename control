@@ -1,0 +1,11 @@
+Package: app.enmity
+Name: Enmity
+Version: 1.0.4
+Architecture: iphoneos-arm
+Description: Patch Discord to add plugins and more!
+Maintainer: Zoey
+Author: Zoey
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000)
+SileoDepiction: https://repo.enmity.app/depictions/enmity.json
+Icon: https://repo.enmity.app/icons/Enmity.png
