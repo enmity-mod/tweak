@@ -1,8 +1,17 @@
 #import "Enmity.h"
 
+// Get the download url for Enmity.js
+NSString* getDownloadURL() {
+  if (!IS_DEBUG) {
+    return @"https://files.enmity.app/Enmity.js";
+  }
+
+  return [NSString stringWithFormat:@"http://%s:8080/Enmity.js", DEBUG_IP];
+}
+
 // Check for update
 BOOL checkForUpdate() {
-  NSMutableURLRequest *enmityFile = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:ENMITY_URL]];
+  NSMutableURLRequest *enmityFile = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:getDownloadURL()]];
   NSHTTPURLResponse *response;
   NSError *err;
 

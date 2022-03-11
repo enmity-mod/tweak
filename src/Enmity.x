@@ -13,13 +13,7 @@
 
 	if (checkForUpdate()) {
 		NSLog(@"Downloading Enmity.js to %@", ENMITY_PATH);
-		BOOL success = downloadFile(ENMITY_URL, ENMITY_PATH);
-		
-		if (success) {
-			NSLog(@"Downloaded");
-		} else {
-			alert(@"There was an error downloading Enmity.js, please try again.");
-		}
+		downloadFile(getDownloadURL(), ENMITY_PATH);
 	}
 
 	return original;
@@ -34,11 +28,6 @@
 %hook RCTCxxBridge 
 
 - (void)executeApplicationScript:(NSData *)script url:(NSURL *)url async:(BOOL)async {
-	if ([[url absoluteString] isEqualToString:@"tweak"]) {
-		%orig;
-		return;
-	}
-
 	// Apply modules patch
 	NSString *modulesPatchCode = @"const oldObjectCreate = this.Object.create;"\
 																"const _window = this;"\
@@ -65,10 +54,14 @@
 	}
 
 	// Global values
-	NSString *debugCode = [NSString stringWithFormat:@"window.enmity_debug = %s", IS_DEBUG ? "true" : "false"];
+	NSString *debugCode = [NSString stringWithFormat:@"window.enmity_debug = %s;", IS_DEBUG ? "true" : "false"];
 	%orig([debugCode dataUsingEncoding:NSUTF8StringEncoding], [NSURL URLWithString:@"debug"], false);
+	if (IS_DEBUG) {
+		%orig([[NSString stringWithFormat:@"window.enmity_debug_ip = %s;", DEBUG_IP] dataUsingEncoding:NSUTF8StringEncoding], [NSURL URLWithString:@"debug_ip"], false);
+	}
 	%orig([@"window.plugins = {}; window.plugins.enabled = []; window.plugins.disabled = [];" dataUsingEncoding:NSUTF8StringEncoding], [NSURL URLWithString:@"plugins"], false);
 
+	// Inject themes
 	NSArray *themesList = getThemes();
 	NSString *theme = getTheme();
 	if (theme == nil) {

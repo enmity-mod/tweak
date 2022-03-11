@@ -2,6 +2,7 @@
 #import "../headers/RCTRootView.h"
 #import "../headers/RCTCxxBridge.h"
 
+NSString* getDownloadURL();
 BOOL checkForUpdate();
 BOOL downloadFile(NSString *source, NSString *dest);
 
