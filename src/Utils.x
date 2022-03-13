@@ -6,17 +6,18 @@ NSString* getDownloadURL() {
     return @"https://files.enmity.app/Enmity.js";
   }
 
-  return [NSString stringWithFormat:@"http://%s:8080/Enmity.js", DEBUG_IP];
+  return [NSString stringWithFormat:@"http://%@:8080/Enmity.js", DEBUG_IP];
 }
 
 // Check for update
 BOOL checkForUpdate() {
-  NSMutableURLRequest *enmityFile = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:getDownloadURL()]];
+  NSMutableURLRequest *enmityRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:getDownloadURL()]];
+  enmityRequest.timeoutInterval = 5.0;
   NSHTTPURLResponse *response;
   NSError *err;
 
-  [enmityFile setValue:@"HEAD" forKey:@"HTTPMethod"];
-  [NSURLConnection sendSynchronousRequest:enmityFile returningResponse:&response error:&err];
+  [enmityRequest setValue:@"HEAD" forKey:@"HTTPMethod"];
+  [NSURLConnection sendSynchronousRequest:enmityRequest returningResponse:&response error:&err];
 
   if (err) {
     return false;
@@ -44,7 +45,7 @@ BOOL downloadFile(NSString *source, NSString *dest) {
   NSLog(@"downloadFile: %@", url.absoluteString);
 	NSData *data = [NSData dataWithContentsOfURL:url];
 
-	if (data) {
+  if (data) {
 		[data writeToFile:dest atomically:YES];
     return true;
 	}
