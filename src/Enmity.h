@@ -7,6 +7,7 @@
 #import "Theme.h"
 
 #define ENMITY_PATH [NSString stringWithFormat:@"%@/%@", NSHomeDirectory(), @"Documents/Enmity.js"]
+#define ENMITY_SOURCE [NSURL URLWithString:@"enmity"]
 
 // Define the URL used to download Enmity, also disable logs in release mode
 #ifdef DEBUG
