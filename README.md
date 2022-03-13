@@ -5,7 +5,7 @@
 ---
 
 <div align='center'>
-   <h2>Enmity Tweak</h3>
+   <h3>Enmity Tweak</h3>
 
    A [theos](https://github.com/theos/theos)-based tweak for Discord.
    Used to manage addons and inject code in Discord.
