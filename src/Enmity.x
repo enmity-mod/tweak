@@ -9,14 +9,7 @@
 %hook AppDelegate
 
 - (id)sourceURLForBridge:(id)arg1 {
-	id original = %orig;
-
-	if (checkForUpdate()) {
-		NSLog(@"Downloading Enmity.js to %@", ENMITY_PATH);
-		downloadFile(getDownloadURL(), ENMITY_PATH);
-	}
-
-	return original;
+	return %orig;
 }
 
 - (void)startWithLaunchOptions:(id)options {
@@ -48,6 +41,23 @@
 	NSLog(@"Injecting bundle");
 	%orig(script, url, false);
 
+	if (checkForUpdate()) {
+		if (compareRemoteHashes()) {
+			NSLog(@"Downloading Enmity.js to %@", ENMITY_PATH);
+			downloadFile(getDownloadURL(), ENMITY_PATH);
+
+			// Check if Enmity hash is valid
+			if (!compareLocalHashes()) {
+				%orig([@"alert(`Enmity.js hash isn't matching, not injecting Enmity.`);" dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
+				return;
+			}
+		} else {
+			%orig([@"alert(`Enmity hashes check fail, skipping update and not injecting Enmity.`);" dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
+			return;
+		}
+	}
+
+	// Check if Enmity was downloaded properly
 	if (!checkFileExists(ENMITY_PATH)) {
 		NSLog(@"Enmity.js not found");
 		%orig([@"alert(`Enmity.js couldn't be found, please try restarting Discord.`);" dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
