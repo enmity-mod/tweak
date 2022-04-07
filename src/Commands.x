@@ -167,7 +167,7 @@ void handleCommand(NSDictionary *command) {
       return;
     }
 
-    sendResponse(createResponse(uuid, @"An error happened while uninstall the theme."));
+    sendResponse(createResponse(uuid, @"An error happened while uninstalling the theme."));
   }
 
   if ([name isEqualToString:@"apply-theme"]) {

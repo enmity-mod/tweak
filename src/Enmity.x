@@ -134,6 +134,4 @@
 %ctor {
 	createFolder(PLUGINS_PATH);
 	createFolder(THEMES_PATH);
-
-	downloadFile(@"https://files.enmity.app/Amoled.json", [NSString stringWithFormat:@"%@/%@", NSHomeDirectory(), @"Documents/Themes/Amoled.json"]);
 }
