@@ -1,5 +1,7 @@
 #define THEMES_PATH [NSString stringWithFormat:@"%@/%@", NSHomeDirectory(), @"Documents/Themes"]
 
+BOOL installTheme(NSURL *url);
+BOOL uninstallTheme(NSString *name);
 NSArray* getThemes();
 NSString* getTheme();
 int getMode();

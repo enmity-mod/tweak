@@ -52,6 +52,35 @@ UIColor* colorFromRGBAString(NSString *rgbaString) {
   return [UIColor colorWithRed:[[rgbaValues objectAtIndex:0] floatValue]/255.0f green:[[rgbaValues objectAtIndex:1] floatValue]/255.0f blue:[[rgbaValues objectAtIndex:2] floatValue]/255.0f alpha:[[rgbaValues objectAtIndex:3] floatValue]];
 }
 
+// Install a theme
+BOOL installTheme(NSURL *url) {
+  NSString *dest = [NSString stringWithFormat:@"%@/%@", THEMES_PATH, [url lastPathComponent]];
+  
+  BOOL success = downloadFile(url.absoluteString, dest);
+  return success;
+}
+
+// Uninstall a theme
+BOOL uninstallTheme(NSString *name) {
+  NSString *themePath = [NSString stringWithFormat:@"%@/%@.json", THEMES_PATH, name];
+  NSFileManager *fileManager = [NSFileManager defaultManager];
+
+  if (![fileManager fileExistsAtPath:themePath]) {
+    return false;
+  }
+
+  NSError *err;
+  [fileManager
+    removeItemAtPath:themePath
+    error:&err];
+
+  if (err) {
+    return false;
+  }
+  
+  return true;
+}
+
 // Get the installed themes
 NSArray* getThemes() {
   NSArray *files = readFolder(THEMES_PATH);
