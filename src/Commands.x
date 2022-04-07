@@ -149,6 +149,27 @@ void handleCommand(NSDictionary *command) {
     });
   }
 
+  if ([name isEqualToString:@"install-theme"]) {
+    NSURL *url = [NSURL URLWithString:params[0]];
+    BOOL success = installTheme(url);
+    if (success) {
+      sendResponse(createResponse(uuid, @"Theme has been installed."));
+      return;
+    }
+
+    sendResponse(createResponse(uuid, @"An error happened while installing the theme."));
+  }
+
+  if ([name isEqualToString:@"uninstall-theme"]) {
+    BOOL success = uninstallTheme(params[0]);
+    if (success) {
+      sendResponse(createResponse(uuid, @"Theme has been uninstalled."));
+      return;
+    }
+
+    sendResponse(createResponse(uuid, @"An error happened while uninstall the theme."));
+  }
+
   if ([name isEqualToString:@"apply-theme"]) {
     setTheme(params[0], params[1]);
     sendResponse(createResponse(uuid, @"Theme has been applied."));
