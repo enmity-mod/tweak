@@ -18,7 +18,7 @@
 
 %end
 
-%hook RCTCxxBridge 
+%hook RCTCxxBridge
 
 - (void)executeApplicationScript:(NSData *)script url:(NSURL *)url async:(BOOL)async {
 	// Apply modules patch
@@ -36,6 +36,43 @@
 	NSData* modulesPatch = [modulesPatchCode dataUsingEncoding:NSUTF8StringEncoding];
 	NSLog(@"Injecting modules patch");
 	%orig(modulesPatch, ENMITY_SOURCE, false);
+
+	// Apply theme patch
+	NSString *theme = getTheme();
+	if (theme != nil) {
+		NSString *themeJson = getThemeJSON(theme);
+
+		NSString *themePatchCode =
+			[NSString stringWithFormat: @"const oObjectFreeze = this.Object.freeze;" \
+                                                                     "Object.freeze = function(obj, ...args) {" \
+                                                                     "  if (!obj?.hasOwnProperty) { " \
+                                                                     "     return oObjectFreeze.apply(this, [obj, ...args])" \
+                                                                     "  } " \
+                                                                     "  try { " \
+                                                                     "	   const theme = %@;" \
+                                                                     "     if (obj.hasOwnProperty?.('BACKGROUND_PRIMARY')) {" \
+                                                                     " 		   return oObjectFreeze.apply(this, [{" \
+                                                                     "              ...obj," \
+                                                                     "			      ...theme.theme_color_map" \
+                                                                     "		   }, ...args]);" \
+                                                                     "	   }" \
+                                                                     "     if (obj.hasOwnProperty?.('PRIMARY_DARK')) {" \
+                                                                     " 		   return oObjectFreeze.apply(this, [{" \
+                                                                     "			   ...obj," \
+                                                                     "			   ...theme.colours" \
+                                                                     "		   }, ...args]);" \
+                                                                     "	   }" \
+                                                                     " 	} catch(e) {" \
+                                                                     " 	  console.log(e);" \
+                                                                     " 	}" \
+                                                                     " 	return oObjectFreeze.apply(this, [obj, ...args]);" \
+                                                                     "}" \
+                                                                  , themeJson];
+
+		NSData* themePatch = [themePatchCode dataUsingEncoding:NSUTF8StringEncoding];
+		NSLog(@"Injecting theme patch");
+		%orig(themePatch, ENMITY_SOURCE, false);
+	}
 
 	// Load bundle
 	NSLog(@"Injecting bundle");
@@ -75,7 +112,6 @@
 
 	// Inject themes
 	NSArray *themesList = getThemes();
-	NSString *theme = getTheme();
 	if (theme == nil) {
 		theme = @"";
 	}
@@ -99,7 +135,7 @@
 
 	NSString *enmityCode = [[NSString alloc] initWithData:enmity encoding:NSUTF8StringEncoding];
 	enmityCode = wrapPlugin(enmityCode, 9000, @"Enmity.js");
-	
+
 	NSLog(@"Injecting Enmity");
 	%orig([enmityCode dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
 
@@ -109,7 +145,7 @@
 	int pluginID = 9001;
 	for (NSString *plugin in pluginsList) {
 		NSString *pluginPath = getPluginPath(plugin);
-		
+
 		%orig([[NSString stringWithFormat:@"window.plugins.%s.push('%@')", isEnabled(pluginPath) ? "enabled" : "disabled", getPluginName([NSURL URLWithString:plugin])] dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
 
 		NSError* error = nil;
@@ -132,4 +168,6 @@
 %ctor {
 	createFolder(PLUGINS_PATH);
 	createFolder(THEMES_PATH);
+
+	downloadFile(@"https://files.enmity.app/Amoled.json", [NSString stringWithFormat:@"%@/%@", NSHomeDirectory(), @"Documents/Themes/Amoled.json"]);
 }
