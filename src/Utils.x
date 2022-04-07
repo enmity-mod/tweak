@@ -12,6 +12,10 @@ NSString* getDownloadURL() {
 
 // Check for update
 BOOL checkForUpdate() {
+  if (IS_DEBUG) {
+    return true;
+  }
+  
   NSMutableURLRequest *enmityRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:getDownloadURL()]];
   enmityRequest.timeoutInterval = 5.0;
   NSHTTPURLResponse *response;
