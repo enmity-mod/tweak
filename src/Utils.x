@@ -1,14 +1,13 @@
 #import "Enmity.h"
 #import <CommonCrypto/CommonDigest.h>
 
-
 // Get the download url for Enmity.js
 NSString* getDownloadURL() {
   if (!IS_DEBUG) {
     return @"https://files.enmity.app/Enmity.js";
   }
 
-  return @"https://files.enmity.app/Enmity.js";//return [NSString stringWithFormat:@"http://%@:8080/Enmity.js", DEBUG_IP];
+  return [NSString stringWithFormat:@"http://%@:8080/Enmity.js", DEBUG_IP];
 }
 
 // Check for update
@@ -158,6 +157,35 @@ NSArray* readFolder(NSString *path) {
   }
   
   return files;
+}
+
+// Get the Enmity bundle path
+NSString* getBundlePath() {
+  NSFileManager *fileManager = [NSFileManager defaultManager];
+  if ([fileManager fileExistsAtPath:BUNDLE_PATH]) {
+    return BUNDLE_PATH;
+  }
+
+  NSURL *appFolder = [[NSBundle mainBundle] bundleURL];
+  NSString *bundlePath = [NSString stringWithFormat:@"%@/EnmityFiles.bundle", [appFolder path]];
+  if ([fileManager fileExistsAtPath:bundlePath]) {
+    return bundlePath;
+  }
+
+  return nil;
+}
+
+// Get a file from the bundle
+NSString* getFileFromBundle(NSString *bundlePath, NSString *fileName) {
+  NSBundle *bundle = [NSBundle bundleWithPath:bundlePath];
+  if (bundle == nil) {
+    return nil;
+  }
+
+  NSString *filePath = [bundle pathForResource:fileName ofType:@"js"];
+  NSData *fileData = [NSData dataWithContentsOfFile:filePath options:0 error:nil];
+
+  return [[NSString alloc] initWithData:fileData encoding:NSUTF8StringEncoding];
 }
 
 // Create an alert prompt

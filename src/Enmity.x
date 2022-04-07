@@ -21,18 +21,10 @@
 %hook RCTCxxBridge
 
 - (void)executeApplicationScript:(NSData *)script url:(NSURL *)url async:(BOOL)async {
-	// Apply modules patch
-	NSString *modulesPatchCode = @"const oldObjectCreate = this.Object.create;"\
-																"const _window = this;"\
-																"_window.Object.create = (...args) => {"\
-																"    const obj = oldObjectCreate.apply(_window.Object, args);"\
-																"    if (args[0] === null) {"\
-																"        _window.modules = obj;"\
-																"        _window.Object.create = oldObjectCreate;"\
-																"    }"\
-																"    return obj;"\
-																"};";
+	NSString *bundlePath = getBundlePath();
 
+	// Apply modules patch
+	NSString *modulesPatchCode = getFileFromBundle(bundlePath, @"modules");
 	NSData* modulesPatch = [modulesPatchCode dataUsingEncoding:NSUTF8StringEncoding];
 	NSLog(@"Injecting modules patch");
 	%orig(modulesPatch, ENMITY_SOURCE, false);
@@ -41,33 +33,7 @@
 	NSString *theme = getTheme();
 	if (theme != nil) {
 		NSString *themeJson = getThemeJSON(theme);
-
-		NSString *themePatchCode =
-			[NSString stringWithFormat: @"const oObjectFreeze = this.Object.freeze;" \
-                                                                     "Object.freeze = function(obj, ...args) {" \
-                                                                     "  if (!obj?.hasOwnProperty) { " \
-                                                                     "     return oObjectFreeze.apply(this, [obj, ...args])" \
-                                                                     "  } " \
-                                                                     "  try { " \
-                                                                     "	   const theme = %@;" \
-                                                                     "     if (obj.hasOwnProperty?.('BACKGROUND_PRIMARY')) {" \
-                                                                     " 		   return oObjectFreeze.apply(this, [{" \
-                                                                     "              ...obj," \
-                                                                     "			      ...theme.theme_color_map" \
-                                                                     "		   }, ...args]);" \
-                                                                     "	   }" \
-                                                                     "     if (obj.hasOwnProperty?.('PRIMARY_DARK')) {" \
-                                                                     " 		   return oObjectFreeze.apply(this, [{" \
-                                                                     "			   ...obj," \
-                                                                     "			   ...theme.colours" \
-                                                                     "		   }, ...args]);" \
-                                                                     "	   }" \
-                                                                     " 	} catch(e) {" \
-                                                                     " 	  console.log(e);" \
-                                                                     " 	}" \
-                                                                     " 	return oObjectFreeze.apply(this, [obj, ...args]);" \
-                                                                     "}" \
-                                                                  , themeJson];
+		NSString *themePatchCode = [NSString stringWithFormat:getFileFromBundle(bundlePath, @"themes"), themeJson];
 
 		NSData* themePatch = [themePatchCode dataUsingEncoding:NSUTF8StringEncoding];
 		NSLog(@"Injecting theme patch");
