@@ -17,6 +17,7 @@ BOOL checkForUpdate() {
   }
   
   NSMutableURLRequest *enmityRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:getDownloadURL()]];
+  enmityRequest.cachePolicy = NSURLRequestReloadIgnoringCacheData;
   enmityRequest.timeoutInterval = 5.0;
   NSHTTPURLResponse *response;
   NSError *err;
