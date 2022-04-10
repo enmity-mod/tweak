@@ -107,6 +107,7 @@ BOOL compareLocalHashes() {
 // Download a file 
 BOOL downloadFile(NSString *source, NSString *dest) {
   NSMutableURLRequest *downloadRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:source]];
+  downloadRequest.cachePolicy = NSURLRequestReloadIgnoringCacheData;
   NSError *err;
 
   NSData *data = [NSURLConnection sendSynchronousRequest:downloadRequest returningResponse:nil error:&err];
