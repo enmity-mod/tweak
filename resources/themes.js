@@ -17,6 +17,12 @@ Object.freeze = function(obj, ...args) {
         ...theme.colours
       }, ...args]);
     }
+    if (obj.hasOwnProperty?.('CHAT_GREY')) {
+      return oObjectFreeze.apply(this, [{
+        ...obj,
+        'CHAT_GREY': theme.colours.PRIMARY_DARK_600,
+      }, ...args]);
+    }
   } catch(e) {
     console.log(e);
   }
