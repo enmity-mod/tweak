@@ -166,6 +166,7 @@ void setTheme(NSString *name, NSString *mode) {
 
   [userDefaults setObject:name forKey:@"theme"];
   [userDefaults setInteger:[mode intValue] forKey:@"theme_mode"];
+  colors = nil;
 }
 
 // Get a color
