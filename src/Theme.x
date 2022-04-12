@@ -21,7 +21,7 @@ NSString* hexStringFromColor(UIColor * color) {
   ];
 }
 
-// Convert a hex color string to an UIColor element 
+// Convert a hex color string to an UIColor element
 UIColor* colorFromHexString(NSString *hexString) {
   unsigned rgbValue = 0;
   NSScanner *scanner = [NSScanner scannerWithString:hexString];
@@ -31,7 +31,7 @@ UIColor* colorFromHexString(NSString *hexString) {
   return [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1.0];
 }
 
-// Convert a RGBA color string to an UIColor element 
+// Convert a RGBA color string to an UIColor element
 UIColor* colorFromRGBAString(NSString *rgbaString) {
   NSRegularExpression *rgbaRegex = [NSRegularExpression regularExpressionWithPattern:@"\\((.*)\\)" options:NSRegularExpressionCaseInsensitive error:nil];
   NSArray *matches = [rgbaRegex matchesInString:rgbaString options:0 range:NSMakeRange(0, [rgbaString length])];
@@ -55,7 +55,7 @@ UIColor* colorFromRGBAString(NSString *rgbaString) {
 // Install a theme
 BOOL installTheme(NSURL *url) {
   NSString *dest = [NSString stringWithFormat:@"%@/%@", THEMES_PATH, [url lastPathComponent]];
-  
+
   BOOL success = downloadFile(url.absoluteString, dest);
   return success;
 }
@@ -77,7 +77,7 @@ BOOL uninstallTheme(NSString *name) {
   if (err) {
     return false;
   }
-  
+
   return true;
 }
 
@@ -917,6 +917,80 @@ UIColor* getColor(NSString *name) {
   }
 
   return original;
+}
+
+%end
+
+@interface UIKeyboard : UIView
+@end
+
+@interface UIKeyboardDockView : UIView
+@end
+
+@interface TUIPredictionViewCell : UIView
+@end
+
+@interface TUIEmojiSearchInputView : UIView
+@end
+
+%hook UIKeyboard
+
+- (id)initWithFrame:(CGRect)frame {
+	id orig = %orig;
+
+  id color = getColor(@"KEYBOARD");
+  if (color != nil) {
+    [self setBackgroundColor:color];
+  }
+
+	return orig;
+}
+
+%end
+
+%hook UIKeyboardDockView
+
+- (void)didMoveToWindow {
+	%orig;
+
+  id color = getColor(@"KEYBOARD");
+  if (color != nil) {
+    [self setBackgroundColor:color];
+  }
+}
+
+%end
+
+%hook TUIPredictionViewCell
+
+- (void)didMoveToWindow {
+	%orig;
+
+	id color = getColor(@"KEYBOARD");
+  if (color != nil) {
+    [self setBackgroundColor:color];
+  }
+}
+
+%end
+
+%hook TUIEmojiSearchInputView
+
+- (void)didMoveToWindow {
+	%orig;
+
+  id color = getColor(@"KEYBOARD");
+  if (color != nil) {
+    [self setBackgroundColor:color];
+  }
+}
+
+%end
+
+%hook UIKBRenderConfig
+
+- (void)setLightKeyboard:(BOOL)arg1 {
+	%orig(NO);
 }
 
 %end
