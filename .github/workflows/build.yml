@@ -55,7 +55,8 @@ jobs:
       - name: Create Enmity.ipa
         run : |
           mkdir out
-          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f ${{ steps.find_deb.outputs.deb }} -n Enmity.ipa
+          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f ${{ steps.find_deb.outputs.deb }}
+          mv $(find out -name "*.ipa" -print -quit) out/Enmity.ipa
 
       - name: Create release
         uses: softprops/action-gh-release@v1
