@@ -933,64 +933,74 @@ UIColor* getColor(NSString *name) {
 @interface TUIEmojiSearchInputView : UIView
 @end
 
+%group KEYBOARD
+
 %hook UIKeyboard
+  - (id)initWithFrame:(CGRect)frame {
+    id orig = %orig;
 
-- (id)initWithFrame:(CGRect)frame {
-	id orig = %orig;
+    id color = getColor(@"KEYBOARD");
+    if (color != nil) {
+      [self setBackgroundColor:color];
+    }
 
-  id color = getColor(@"KEYBOARD");
-  if (color != nil) {
-    [self setBackgroundColor:color];
+    return orig;
   }
 
-	return orig;
-}
+  %end
 
-%end
+  %hook UIKeyboardDockView
 
-%hook UIKeyboardDockView
+  - (void)didMoveToWindow {
+    %orig;
 
-- (void)didMoveToWindow {
-	%orig;
-
-  id color = getColor(@"KEYBOARD");
-  if (color != nil) {
-    [self setBackgroundColor:color];
+    id color = getColor(@"KEYBOARD");
+    if (color != nil) {
+      [self setBackgroundColor:color];
+    }
   }
-}
 
-%end
+  %end
 
-%hook TUIPredictionViewCell
+  %hook UIKBRenderConfig
 
-- (void)didMoveToWindow {
-	%orig;
-
-	id color = getColor(@"KEYBOARD");
-  if (color != nil) {
-    [self setBackgroundColor:color];
+  - (void)setLightKeyboard:(BOOL)arg1 {
+    %orig(NO);
   }
-}
 
-%end
+  %end
 
-%hook TUIEmojiSearchInputView
+  %hook TUIPredictionViewCell
 
-- (void)didMoveToWindow {
-	%orig;
+  - (void)didMoveToWindow {
+    %orig;
 
-  id color = getColor(@"KEYBOARD");
-  if (color != nil) {
-    [self setBackgroundColor:color];
+    id color = getColor(@"KEYBOARD");
+    if (color != nil) {
+      [self setBackgroundColor:color];
+    }
   }
-}
 
+  %end
+
+  %hook TUIEmojiSearchInputView
+
+  - (void)didMoveToWindow {
+    %orig;
+
+    id color = getColor(@"KEYBOARD");
+    if (color != nil) {
+      [self setBackgroundColor:color];
+    }
+  }
+
+  %end
 %end
 
-%hook UIKBRenderConfig
+%ctor {
+  %init
 
-- (void)setLightKeyboard:(BOOL)arg1 {
-	%orig(NO);
+	NSBundle* bundle = [NSBundle bundleWithPath:@"/System/Library/PrivateFrameworks/TextInputUI.framework"];
+  if (!bundle.loaded) [bundle load];
+  %init(KEYBOARD);
 }
-
-%end
