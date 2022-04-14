@@ -9,6 +9,8 @@ on:
     - '**.plist'
     - 'Makefile'
     - '.github/workflows/build.yml'
+    tags: 
+    - '*'
   workflow_dispatch:
   pull_request:
   release:
@@ -66,7 +68,7 @@ jobs:
   upload-release:
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name == 'release'
+    if: github.event_name == 'release' || (github.event_name = 'push' && startsWith(github.ref, 'refs/tags'))
     steps:
       - uses: actions/checkout@v3
         with:
@@ -86,4 +88,8 @@ jobs:
             if [ -d "$asset" ]; then continue; fi
             assets+=("$asset")
           done
-          gh release upload $GITHUB_REF_NAME "${assets[@]}"    
+          if [ "${{ github.event_name }}" = "release" ]; then
+            gh release upload $GITHUB_REF_NAME "${assets[@]}"  
+          else
+            gh release create $GITHUB_REF_NAME -t $GITHUB_REF_NAME "${assets[@]}"
+          fi  
