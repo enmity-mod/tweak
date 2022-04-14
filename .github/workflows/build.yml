@@ -25,6 +25,9 @@ jobs:
 
       - name: Prepare Theos
         uses: beerpiss/theos-action@v1
+        with: 
+          cache-dir-theos: ${{ github.workspace }}/theos
+          cache-dir-sdks: ${{ github.workspace }}/theos/sdks
 
       - name: Prepare Azule
         uses: actions/checkout@v3
