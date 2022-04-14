@@ -82,7 +82,7 @@ jobs:
       
       - name: Attaching binaries to release
         env: 
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           assets=()
           for asset in ./artifacts/**/*; do
