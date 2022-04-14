@@ -1,33 +1,30 @@
 name: Create release
 on:
   push:
-    tags:
-       - '*'
+    paths:
+    - '**.h'
+    - '**.js'
+    - '**.x'
+    - 'control'
+    - '**.plist'
+    - 'Makefile'
+    - '.github/workflows/build.yml'
   workflow_dispatch:
+  release:
+    types:
+    - created
 
 jobs:
   build:
-    name: Build and publish Enmity for iOS
+    name: Build Enmity for iOS
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
-          submodules: true
-
-      - name: Check cache
-        id: verifiy-cache
-        run: |
-          echo "::set-output name=heads::`git ls-remote https://github.com/theos/theos | head -n 1 | cut -f 1`-`git ls-remote https://github.com/theos/sdks | head -n 1 | cut -f 1`"
-
-      - name: Use cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ${{ github.workspace }}/theos
-          key: ${{ runner.os }}-${{ steps.verify-cache.outputs.heads }}
+          submodules: recursive
 
       - name: Prepare Theos
-        uses: Randomblock1/theos-action@v1
+        uses: beerpiss/theos-action@v1
       
       - name: Prepare Azule
         run : |
@@ -44,13 +41,13 @@ jobs:
 
       - name: Build package
         run: |
-          rm -f packages/*
-          make package FINALPACKAGE=1
+          gmake clean package FINALPACKAGE=1
 
       - name: Find deb
         id: find_deb
         run : |
           echo "::set-output name=deb::$(find packages -name "*.deb" -print -quit)"
+          echo "::set-output name=deb_basename::$(basename $(find packages -name "*.deb" -print -quit))"
       
       - name: Create Enmity.ipa
         run : |
@@ -58,10 +55,40 @@ jobs:
           ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f ${{ steps.find_deb.outputs.deb }}
           mv $(find out -name "*.ipa" -print -quit) out/Enmity.ipa
 
-      - name: Create release
-        uses: softprops/action-gh-release@v1
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v3
         with:
-          tag_name: release-${{ github.ref_name }}
-          files:  |
-            ${{ steps.find_deb.outputs.deb }}
-            out/Enmity.ipa
+          name: ${{ steps.find_deb.outputs.deb_basename }}
+          path: ${{ steps.find_deb.outputs.deb }} 
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Enmity.ipa
+          path: out/Enmity.ipa
+  upload-release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: ./artifacts
+      
+      - name: Attaching binaries to release
+        env: 
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        run: |
+          assets=()
+          for asset in ./artifacts/**/*; do
+            if [ -d "$asset" ]; then continue; fi
+            assets+=("$asset")
+          done
+          gh release upload ${{ github.ref_name }} "${assets[@]}"
+
+      
