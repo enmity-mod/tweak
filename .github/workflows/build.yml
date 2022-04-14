@@ -1,4 +1,4 @@
-name: Create release
+name: Build (and release)
 on:
   push:
     paths:
@@ -10,13 +10,13 @@ on:
     - 'Makefile'
     - '.github/workflows/build.yml'
   workflow_dispatch:
+  pull_request:
   release:
     types:
     - created
 
 jobs:
   build:
-    name: Build Enmity for iOS
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -62,6 +62,7 @@ jobs:
         with:
           name: Enmity.ipa
           path: out/Enmity.ipa
+
   upload-release:
     needs: build
     runs-on: ubuntu-latest
