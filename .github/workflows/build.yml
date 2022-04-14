@@ -88,8 +88,10 @@ jobs:
             if [ -d "$asset" ]; then continue; fi
             assets+=("$asset")
           done
-          if [ "${{ github.event_name }}" = "release" ]; then
-            gh release upload $GITHUB_REF_NAME "${assets[@]}"  
-          else
+          if [ "${{ github.event_name }}" = "release" ] && [ ! "$(gh release view $GITHUB_REF_NAME --json assets | jq '.assets | length')" = "2" ]; then
+            # Only reupload if stuff is missing (somehow)
+            gh release upload --clobber $GITHUB_REF_NAME "${assets[@]}"  
+          elif ! gh release view $GITHUB_REF_NAME 2>&1 >/dev/null; then
+            # Only create new release if there isn't one already
             gh release create $GITHUB_REF_NAME -t $GITHUB_REF_NAME "${assets[@]}"
           fi  
