@@ -89,6 +89,6 @@ jobs:
             if [ -d "$asset" ]; then continue; fi
             assets+=("$asset")
           done
-          gh release upload ${{ github.ref_name }} "${assets[@]}"
+          gh release upload $GITHUB_REF_NAME "${assets[@]}"
 
       
