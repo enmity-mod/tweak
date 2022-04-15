@@ -1,3 +1,5 @@
 packages/
 .theos/
 .DS_Store
+.vscode/
+.gitignore
