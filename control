@@ -2,8 +2,8 @@ Package: app.enmity
 Name: Enmity
 Version: 1.0.8
 Architecture: iphoneos-arm
-Description: Patch Discord to add plugins and more!
-Maintainer: Zoey, eternal
+Description: Modify your Discord client for the functionality to add plugins and more!
+Maintainer: Zoey & eternal
 Author: Enmity Team
 Section: Tweaks
 Depends: mobilesubstrate (>= 0.9.5000)

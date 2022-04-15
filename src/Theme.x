@@ -2,6 +2,7 @@
 #import <UIKit/UIKit.h>
 #import "Enmity.h"
 
+
 NSDictionary *colors = nil;
 
 // Convert an UIColor element to a hex string
@@ -190,6 +191,8 @@ UIColor* getColor(NSString *name) {
 
   return color;
 }
+
+// we should find a better way to do this
 
 %hook DCDThemeColor
 

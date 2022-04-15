@@ -63,7 +63,7 @@
 	// Check if Enmity was downloaded properly
 	if (!checkFileExists(ENMITY_PATH)) {
 		NSLog(@"Enmity.js not found");
-		%orig([@"alert(`Enmity.js couldn't be found, please try restarting Discord.`);" dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
+		%orig([@"alert(`Enmity.js could not be found, consider trying to restart Discord.`);" dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false); // couldn't is the same as could not, yes, but in this context "could not" sounds more professional and better
 		return;
 	}
 

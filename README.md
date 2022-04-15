@@ -7,9 +7,17 @@
 <div align='center'>
    <h3>Enmity Tweak</h3>
 
-   A [theos](https://github.com/theos/theos)-based tweak for Discord.
-   Used to manage addons and inject code in Discord.
-   The main file `Enmity.js` is downloaded over the network at startup from [here](https://files.enmity.app/Enmity.js).
+   Enmity is a [theos](https://github.com/theos/theos)-based enhancement for Discord.
+   Enmity is used to manage plugins and add more functionality to Discord. It can also be used to modify the appearance.
+   The main file, "`Enmity.js`" is being downloaded, and installed on startup. You can access it via your browser [here](https://files.enmity.app/Enmity.js).
+</div>
+
+---
+
+<div align='center'>
+   <h3>Installation<h3>
+
+   You can install Enmity with your favorite package manager! Simply add the repo, [repo.enmity.app](https://repo.enmity.app) to the source-list and find enmity in it.
 </div>
 
 ---

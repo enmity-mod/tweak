@@ -110,20 +110,20 @@ void handleCommand(NSDictionary *command) {
       BOOL success = installPlugin(url);
       if (success) {
         if ([uuid isEqualToString:@"-1"]) {
-          alert([NSString stringWithFormat:@"%@ has been installed.", pluginName]);
+          alert([NSString stringWithFormat:@"%@ has been installed! :D", pluginName]);
           return;
         }
 
-        sendResponse(createResponse(uuid, [NSString stringWithFormat:@"**%@** has been installed.", pluginName]));
+        sendResponse(createResponse(uuid, [NSString stringWithFormat:@"**%@** has been installed! :D", pluginName]));
         return;
       }
 
       if ([uuid isEqualToString:@"-1"]) {
-        alert([NSString stringWithFormat:@"An error happened while installing %@.", pluginName]);
+        alert([NSString stringWithFormat:@"An error occured while installing %@.", pluginName]);
         return;
       }
 
-      sendResponse(createResponse(uuid, [NSString stringWithFormat:@"An error happened while installing *%@*.", pluginName]));
+      sendResponse(createResponse(uuid, [NSString stringWithFormat:@"An error occured while installing *%@*.", pluginName]));
     });
 
     return;
@@ -134,18 +134,18 @@ void handleCommand(NSDictionary *command) {
 
     BOOL exists = checkPlugin(pluginName);
     if (!exists) {
-      sendResponse(createResponse(uuid, [NSString stringWithFormat:@"**%@** isn't currently installed.", pluginName]));
+      sendResponse(createResponse(uuid, [NSString stringWithFormat:@"**%@** currently isn't installed.", pluginName]));
       return;
     }
 
     confirm(@"Uninstall plugin", [NSString stringWithFormat:@"Are you sure you want to uninstall %@?", pluginName], ^() {
       BOOL success = deletePlugin(pluginName);
       if (success) {
-        sendResponse(createResponse(uuid, [NSString stringWithFormat:@"**%@** has been removed.", pluginName]));
+        sendResponse(createResponse(uuid, [NSString stringWithFormat:@"**%@** has been uninstalled.", pluginName]));
         return;
       }
 
-      sendResponse(createResponse(uuid, [NSString stringWithFormat:@"An error happened while removed *%@*.", pluginName]));
+      sendResponse(createResponse(uuid, [NSString stringWithFormat:@"An error occured while removing *%@*.", pluginName]));
     });
   }
 
@@ -153,11 +153,11 @@ void handleCommand(NSDictionary *command) {
     NSURL *url = [NSURL URLWithString:params[0]];
     BOOL success = installTheme(url);
     if (success) {
-      sendResponse(createResponse(uuid, @"Theme has been installed."));
+      sendResponse(createResponse(uuid, @"Theme has been installed! :D"));
       return;
     }
 
-    sendResponse(createResponse(uuid, @"An error happened while installing the theme."));
+    sendResponse(createResponse(uuid, @"An error occured while installing the theme."));
   }
 
   if ([name isEqualToString:@"uninstall-theme"]) {
@@ -167,17 +167,17 @@ void handleCommand(NSDictionary *command) {
       return;
     }
 
-    sendResponse(createResponse(uuid, @"An error happened while uninstalling the theme."));
+    sendResponse(createResponse(uuid, @"An error occured while uninstalling the theme."));
   }
 
   if ([name isEqualToString:@"apply-theme"]) {
     setTheme(params[0], params[1]);
-    sendResponse(createResponse(uuid, @"Theme has been applied."));
+    sendResponse(createResponse(uuid, @"Theme has been applied! :D"));
   }
 
   if ([name isEqualToString:@"remove-theme"]) {
     setTheme(nil, nil);
-    sendResponse(createResponse(uuid, @"Theme has been removed."));
+    sendResponse(createResponse(uuid, @"Theme has been removed! :D"));
   }
 
   if ([name isEqualToString:@"enable-plugin"]) {
