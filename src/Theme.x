@@ -927,7 +927,7 @@ UIColor* getColor(NSString *name) {
 @interface UIKeyboardDockView : UIView
 @end
 
-@interface TUIPredictionViewCell : UIView
+@interface TUIPredictionView : UIView
 @end
 
 @interface TUIEmojiSearchInputView : UIView
@@ -970,7 +970,7 @@ UIColor* getColor(NSString *name) {
 
   %end
 
-  %hook TUIPredictionViewCell
+  %hook TUIPredictionView
 
   - (void)didMoveToWindow {
     %orig;
@@ -978,6 +978,10 @@ UIColor* getColor(NSString *name) {
     id color = getColor(@"KEYBOARD");
     if (color != nil) {
       [self setBackgroundColor:color];
+
+      for (UIView *subview in self.subviews) {
+          [subview setBackgroundColor:color];
+      }
     }
   }
 
