@@ -997,6 +997,21 @@ UIColor* getColor(NSString *name) {
   %end
 %end
 
+@interface DCDUploadProgressView : UIView
+@end
+
+%hook DCDUploadProgressView
+  - (void)didMoveToWindow {
+    %orig;
+
+    id color = getColor(@"BACKGROUND_SECONDARY_ALT");
+    if (color != nil) {
+      UIView *subview = self.subviews[0];
+      [subview setBackgroundColor:color];
+    }
+  }
+%end
+
 %ctor {
   %init
 
