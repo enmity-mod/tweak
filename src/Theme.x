@@ -3,6 +3,7 @@
 #import "Enmity.h"
 
 NSDictionary *colors = nil;
+NSDictionary *background = nil;
 
 // Convert an UIColor element to a hex string
 NSString* hexStringFromColor(UIColor * color) {
@@ -167,6 +168,65 @@ void setTheme(NSString *name, NSString *mode) {
   [userDefaults setObject:name forKey:@"theme"];
   [userDefaults setInteger:[mode intValue] forKey:@"theme_mode"];
   colors = nil;
+}
+
+NSDictionary *getBackgroundMap() {
+  NSString *name = getTheme();
+  if(name == nil) {
+    return nil;
+  }
+  
+  NSString *themeJson = getThemeJSON(name);
+  if(themeJson == nil) {
+    return nil;
+  }
+  
+  NSError *error;
+  NSMutableDictionary *theme = [NSJSONSerialization JSONObjectWithData:[themeJson dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+  if (error) {
+    return nil;
+  }
+
+  return [theme[@"background"] copy];
+}
+
+// Get the bg blur
+int getBlur() {
+  if(background == nil) {
+    background = getBackgroundMap();
+  }
+
+	if(![background objectForKey:@"blur"]) {
+		return 0;
+	}
+
+	return [[background objectForKey:@"blur"] intValue];
+}
+
+// Get the bg image
+NSString *getURL() {
+  if(background == nil) {
+    background = getBackgroundMap();
+  }
+
+	if(![background objectForKey:@"url"]) {
+		return @"";
+	}
+
+	return [background objectForKey:@"url"];
+}
+
+// Get the bg alpha
+float getAlpha() {
+  if(background == nil) {
+    background = getBackgroundMap();
+  }
+
+	if(![background objectForKey:@"alpha"]) {
+		return 1.0;
+	}
+
+	return [[background objectForKey:@"alpha"] floatValue];
 }
 
 // Get a color
@@ -1016,8 +1076,159 @@ UIColor* getColor(NSString *name) {
   }
 %end
 
+%hook DCDTableView
+-(void)setBackgroundColor:(UIColor*)arg1 {
+	NSString *url = getURL();
+
+	if(url) {
+		%orig([UIColor clearColor]);
+		return;
+	}
+	%orig(arg1);
+}
+%end
+
+%hook DCDMessageTableViewCell
+-(void)setBackgroundColor:(UIColor*)arg1 {
+	NSString *url = getURL();
+
+	if(url) {
+		%orig([UIColor clearColor]);
+		return;
+	}
+	%orig(arg1);
+}
+%end
+
+%hook DCDDMBeginningMessageTableViewCell
+-(void)setBackgroundColor:(UIColor*)arg1 {
+	NSString *url = getURL();
+
+	if(url) {
+		%orig([UIColor clearColor]);
+		return;
+	}
+	%orig(arg1);
+}
+%end
+
+%hook DCDSystemMessageTableViewCell
+-(void)setBackgroundColor:(UIColor*)arg1 {
+	NSString *url = getURL();
+
+	if(url) {
+		%orig([UIColor clearColor]);
+		return;
+	}
+	%orig(arg1);
+}
+%end
+
+%hook DCDSeparatorTableViewCell
+-(void)setBackgroundColor:(UIColor*)arg1 {
+	NSString *url = getURL();
+
+	if(url) {
+		%orig([UIColor clearColor]);
+		return;
+	}
+	%orig(arg1);
+}
+%end
+
+%hook DCDUploadProgressTableViewCell
+-(void)setBackgroundColor:(UIColor*)arg1 {
+	NSString *url = getURL();
+
+	if(url) {
+		%orig([UIColor clearColor]);
+		return;
+	}
+	%orig(arg1);
+}
+%end
+
+%hook DCDCustomMessageTableViewCell
+-(void)setBackgroundColor:(UIColor*)arg1 {
+	NSString *url = getURL();
+
+	if(url) {
+		%orig([UIColor clearColor]);
+		return;
+	}
+	%orig(arg1);
+}
+%end
+
+%hook DCDSeparatorButton
+-(void)setBackgroundColor:(UIColor*)arg1 {
+	NSString *url = getURL();
+
+	if(url) {
+		%orig([UIColor clearColor]);
+		return;
+	}
+	%orig(arg1);
+}
+%end
+
+%hook DCDBlockedMessageTableViewCell
+-(void)setBackgroundColor:(UIColor*)arg1 {
+	NSString *url = getURL();
+
+	if(url) {
+		%orig([UIColor clearColor]);
+		return;
+	}
+	%orig(arg1);
+}
+%end
+
+%hook DCDLoadingTableViewCell
+-(void)setBackgroundColor:(UIColor*)arg1 {
+	NSString *url = getURL();
+
+	if(url) {
+		%orig([UIColor clearColor]);
+		return;
+	}
+	%orig(arg1);
+}
+%end
+
+@interface DCDChat : UIView
+@end
+
+%hook DCDChat
+-(void)setBounds:(CGRect)arg1 {
+	%orig;
+	if(background == nil) {
+    background = getBackgroundMap();
+  }
+	NSString *url = getURL();
+	if(url) {
+		int blur = getBlur();
+		NSString *img = [background objectForKey:@"url"];
+		UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:img]]];
+
+		CIImage *ciImage = [CIImage imageWithCGImage:image.CGImage];
+		CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
+		[filter setValue:ciImage forKey:kCIInputImageKey];
+		[filter setValue:[NSNumber numberWithFloat: blur] forKey:@"inputRadius"];
+		CIImage *result = [filter valueForKey:kCIOutputImageKey];
+		CIImage *croppedImage = [result imageByCroppingToRect:ciImage.extent];
+		
+		UIImageView *imageView = [[UIImageView alloc] initWithImage:[[UIImage alloc] initWithCIImage:croppedImage]];
+		imageView.frame = arg1;
+		imageView.alpha = getAlpha(); 
+		[self insertSubview:imageView atIndex:0];
+	}
+}
+%end
+
 %ctor {
-  %init
+  %init(DCDTableView = objc_getClass("discord_ios_discord_ios_swift_lib.DCDTableView"));
+  // %init
 
 	NSBundle* bundle = [NSBundle bundleWithPath:@"/System/Library/PrivateFrameworks/TextInputUI.framework"];
   if (!bundle.loaded) [bundle load];
