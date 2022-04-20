@@ -1190,33 +1190,33 @@ UIColor* getColor(NSString *name) {
 
 %hook DCDChat
 -(void)setBounds:(CGRect)arg1 {
-	%orig;
+  %orig;
   UIView *subview = [self.subviews firstObject];
-	if([subview isKindOfClass:[UIImageView class]]) {
-		return;
-	}
-	if(background == nil) {
+  if([subview isKindOfClass:[UIImageView class]]) {
+    return;
+  }
+  if(background == nil) {
     background = getBackgroundMap();
   }
-	NSString *url = getURL();
-	if(url) {
+  NSString *url = getURL();
+  if(url) {
     [subview setBackgroundColor:[UIColor clearColor]];
-		int blur = getBlur();
-		NSString *img = [background objectForKey:@"url"];
-		UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:img]]];
+    int blur = getBlur();
+    NSString *img = [background objectForKey:@"url"];
+    UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:img]]];
 
-		CIImage *ciImage = [CIImage imageWithCGImage:image.CGImage];
-		CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
-		[filter setValue:ciImage forKey:kCIInputImageKey];
-		[filter setValue:[NSNumber numberWithFloat: blur] forKey:@"inputRadius"];
-		CIImage *result = [filter valueForKey:kCIOutputImageKey];
-		CIImage *croppedImage = [result imageByCroppingToRect:ciImage.extent];
-		
-		UIImageView *imageView = [[UIImageView alloc] initWithImage:[[UIImage alloc] initWithCIImage:croppedImage]];
-		imageView.frame = arg1;
-		imageView.alpha = getAlpha(); 
-		[self insertSubview:imageView atIndex:0];
-	}
+    CIImage *ciImage = [CIImage imageWithCGImage:image.CGImage];
+    CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
+    [filter setValue:ciImage forKey:kCIInputImageKey];
+    [filter setValue:[NSNumber numberWithFloat: blur] forKey:@"inputRadius"];
+    CIImage *result = [filter valueForKey:kCIOutputImageKey];
+    CIImage *croppedImage = [result imageByCroppingToRect:ciImage.extent];
+
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[[UIImage alloc] initWithCIImage:croppedImage]];
+    imageView.frame = arg1;
+    imageView.alpha = getAlpha(); 
+    [self insertSubview:imageView atIndex:0];
+  }
 }
 %end
 
