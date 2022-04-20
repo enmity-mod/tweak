@@ -9,3 +9,7 @@ NSDictionary* getThemeMap();
 NSString* getThemeJSON(NSString *name);
 void setTheme(NSString *name, NSString *theme);
 BOOL deleteTheme();
+NSDictionary *getBackgroundMap();
+int getBlur();
+NSString *getURL();
+float getAlpha();
