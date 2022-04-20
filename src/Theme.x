@@ -1076,17 +1076,6 @@ UIColor* getColor(NSString *name) {
   }
 %end
 
-%hook DCDTableView
--(void)setBackgroundColor:(UIColor*)arg1 {
-	NSString *url = getURL();
-
-	if(url) {
-		%orig([UIColor clearColor]);
-		return;
-	}
-	%orig(arg1);
-}
-%end
 
 %hook DCDMessageTableViewCell
 -(void)setBackgroundColor:(UIColor*)arg1 {
@@ -1202,11 +1191,16 @@ UIColor* getColor(NSString *name) {
 %hook DCDChat
 -(void)setBounds:(CGRect)arg1 {
 	%orig;
+  UIView *subview = [self.subviews firstObject];
+	if([subview isKindOfClass:[UIImageView class]]) {
+		return;
+	}
 	if(background == nil) {
     background = getBackgroundMap();
   }
 	NSString *url = getURL();
 	if(url) {
+    [subview setBackgroundColor:[UIColor clearColor]];
 		int blur = getBlur();
 		NSString *img = [background objectForKey:@"url"];
 		UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:img]]];
@@ -1227,8 +1221,7 @@ UIColor* getColor(NSString *name) {
 %end
 
 %ctor {
-  %init(DCDTableView = objc_getClass("discord_ios_discord_ios_swift_lib.DCDTableView"));
-  // %init
+  %init
 
 	NSBundle* bundle = [NSBundle bundleWithPath:@"/System/Library/PrivateFrameworks/TextInputUI.framework"];
   if (!bundle.loaded) [bundle load];
