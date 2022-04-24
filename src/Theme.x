@@ -936,15 +936,13 @@ UIColor* getColor(NSString *name) {
 %group KEYBOARD
 
 %hook UIKeyboard
-  - (id)initWithFrame:(CGRect)frame {
-    id orig = %orig;
+  - (void)didMoveToWindow {
+    %orig;
 
     id color = getColor(@"KEYBOARD");
     if (color != nil) {
       [self setBackgroundColor:color];
     }
-
-    return orig;
   }
 
   %end
