@@ -105,7 +105,7 @@ NSString* getTheme() {
   return theme;
 }
 
-// Get the theme mode
+// Get the theme mode
 int getMode() {
   NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
   int mode = [userDefaults integerForKey:@"theme_mode"];
@@ -142,7 +142,7 @@ NSDictionary* getThemeMap() {
   return [themeMap copy];
 }
 
-// Get the theme file daata
+// Get the theme file daata
 NSString* getThemeJSON(NSString *name) {
   NSString *themeFile = [NSString stringWithFormat:@"%@/%@.json", THEMES_PATH, name];
   if (!checkFileExists(themeFile)) {
@@ -154,7 +154,7 @@ NSString* getThemeJSON(NSString *name) {
   return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 }
 
-// Set the theme name
+// Set the theme name
 void setTheme(NSString *name, NSString *mode) {
   NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 
@@ -172,12 +172,12 @@ void setTheme(NSString *name, NSString *mode) {
 
 NSDictionary *getBackgroundMap() {
   NSString *name = getTheme();
-  if(name == nil) {
+  if (name == nil) {
     return nil;
   }
   
   NSString *themeJson = getThemeJSON(name);
-  if(themeJson == nil) {
+  if (themeJson == nil) {
     return nil;
   }
   
@@ -191,12 +191,12 @@ NSDictionary *getBackgroundMap() {
 }
 
 // Get the bg blur
-int getBlur() {
-  if(background == nil) {
+int getBackgroundBlur() {
+  if (background == nil) {
     background = getBackgroundMap();
   }
 
-	if(![background objectForKey:@"blur"]) {
+	if (![background objectForKey:@"blur"]) {
 		return 0;
 	}
 
@@ -204,12 +204,12 @@ int getBlur() {
 }
 
 // Get the bg image
-NSString *getURL() {
-  if(background == nil) {
+NSString *getBackgroundURL() {
+  if (background == nil) {
     background = getBackgroundMap();
   }
 
-	if(![background objectForKey:@"url"]) {
+	if (![background objectForKey:@"url"]) {
 		return @"";
 	}
 
@@ -217,12 +217,12 @@ NSString *getURL() {
 }
 
 // Get the bg alpha
-float getAlpha() {
-  if(background == nil) {
+float getBackgroundAlpha() {
+  if (background == nil) {
     background = getBackgroundMap();
   }
 
-	if(![background objectForKey:@"alpha"]) {
+	if (![background objectForKey:@"alpha"]) {
 		return 1.0;
 	}
 
@@ -1079,9 +1079,9 @@ UIColor* getColor(NSString *name) {
 
 %hook DCDMessageTableViewCell
 -(void)setBackgroundColor:(UIColor*)arg1 {
-	NSString *url = getURL();
+	NSString *url = getBackgroundURL();
 
-	if(url) {
+	if (url) {
 		%orig([UIColor clearColor]);
 		return;
 	}
@@ -1091,9 +1091,9 @@ UIColor* getColor(NSString *name) {
 
 %hook DCDDMBeginningMessageTableViewCell
 -(void)setBackgroundColor:(UIColor*)arg1 {
-	NSString *url = getURL();
+	NSString *url = getBackgroundURL();
 
-	if(url) {
+	if (url) {
 		%orig([UIColor clearColor]);
 		return;
 	}
@@ -1103,9 +1103,9 @@ UIColor* getColor(NSString *name) {
 
 %hook DCDSystemMessageTableViewCell
 -(void)setBackgroundColor:(UIColor*)arg1 {
-	NSString *url = getURL();
+	NSString *url = getBackgroundURL();
 
-	if(url) {
+	if (url) {
 		%orig([UIColor clearColor]);
 		return;
 	}
@@ -1115,9 +1115,9 @@ UIColor* getColor(NSString *name) {
 
 %hook DCDSeparatorTableViewCell
 -(void)setBackgroundColor:(UIColor*)arg1 {
-	NSString *url = getURL();
+	NSString *url = getBackgroundURL();
 
-	if(url) {
+	if (url) {
 		%orig([UIColor clearColor]);
 		return;
 	}
@@ -1127,9 +1127,9 @@ UIColor* getColor(NSString *name) {
 
 %hook DCDUploadProgressTableViewCell
 -(void)setBackgroundColor:(UIColor*)arg1 {
-	NSString *url = getURL();
+	NSString *url = getBackgroundURL();
 
-	if(url) {
+	if (url) {
 		%orig([UIColor clearColor]);
 		return;
 	}
@@ -1139,9 +1139,9 @@ UIColor* getColor(NSString *name) {
 
 %hook DCDCustomMessageTableViewCell
 -(void)setBackgroundColor:(UIColor*)arg1 {
-	NSString *url = getURL();
+	NSString *url = getBackgroundURL();
 
-	if(url) {
+	if (url) {
 		%orig([UIColor clearColor]);
 		return;
 	}
@@ -1151,9 +1151,9 @@ UIColor* getColor(NSString *name) {
 
 %hook DCDSeparatorButton
 -(void)setBackgroundColor:(UIColor*)arg1 {
-	NSString *url = getURL();
+	NSString *url = getBackgroundURL();
 
-	if(url) {
+	if (url) {
 		%orig([UIColor clearColor]);
 		return;
 	}
@@ -1163,9 +1163,9 @@ UIColor* getColor(NSString *name) {
 
 %hook DCDBlockedMessageTableViewCell
 -(void)setBackgroundColor:(UIColor*)arg1 {
-	NSString *url = getURL();
+	NSString *url = getBackgroundURL();
 
-	if(url) {
+	if (url) {
 		%orig([UIColor clearColor]);
 		return;
 	}
@@ -1175,9 +1175,9 @@ UIColor* getColor(NSString *name) {
 
 %hook DCDLoadingTableViewCell
 -(void)setBackgroundColor:(UIColor*)arg1 {
-	NSString *url = getURL();
+	NSString *url = getBackgroundURL();
 
-	if(url) {
+	if (url) {
 		%orig([UIColor clearColor]);
 		return;
 	}
@@ -1192,18 +1192,17 @@ UIColor* getColor(NSString *name) {
 -(void)setBounds:(CGRect)arg1 {
   %orig;
   UIView *subview = [self.subviews firstObject];
-  if([subview isKindOfClass:[UIImageView class]]) {
+  if ([subview isKindOfClass:[UIImageView class]]) {
     return;
   }
-  if(background == nil) {
+  if (background == nil) {
     background = getBackgroundMap();
   }
-  NSString *url = getURL();
-  if(url) {
+  NSString *url = getBackgroundURL();
+  if (url) {
     [subview setBackgroundColor:[UIColor clearColor]];
-    int blur = getBlur();
-    NSString *img = [background objectForKey:@"url"];
-    UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:img]]];
+    int blur = getBackgroundBlur();
+    UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:url]]];
 
     CIImage *ciImage = [CIImage imageWithCGImage:image.CGImage];
     CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
@@ -1214,7 +1213,7 @@ UIColor* getColor(NSString *name) {
 
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[[UIImage alloc] initWithCIImage:croppedImage]];
     imageView.frame = arg1;
-    imageView.alpha = getAlpha(); 
+    imageView.alpha = getBackgroundAlpha(); 
     [self insertSubview:imageView atIndex:0];
   }
 }
