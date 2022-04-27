@@ -12,7 +12,7 @@ NSDictionary* createResponse(NSString *uuid, NSString *data) {
 
 // Send a response back
 void sendResponse(NSDictionary *response) {
-  NSError *err; 
+  NSError *err;
   NSData *data = [NSJSONSerialization
                     dataWithJSONObject:response
                     options:0
@@ -44,7 +44,7 @@ BOOL validateCommand(NSString *command) {
 
 // Clean the received command
 NSString* cleanCommand(NSString *command) {
-  NSString *json = [[command 
+  NSString *json = [[command
             stringByReplacingOccurrencesOfString:ENMITY_PROTOCOL
             withString:@""]
           stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -96,17 +96,12 @@ void handleCommand(NSDictionary *command) {
     }
 
     NSString *pluginName = getPluginName(url);
-    NSString *title = [[NSString alloc] init];
-    NSString *message = [[NSString alloc] init];
-    if (checkPlugin(pluginName)) {
-      title = @"Plugin already exists";
-      message = [NSString stringWithFormat:@"Are you sure you want to overwrite %@?", pluginName];
-    } else {
-      title = @"Install plugin";
-      message = [NSString stringWithFormat:@"Are you sure you want to install %@?", pluginName];
-    }
+    NSString *title = @"Install plugin";
+    NSString *message = @"Are you sure you want to install %@?";
 
     confirm(title, message, ^() {
+      BOOL exists = checkPlugin(pluginName);
+
       BOOL success = installPlugin(url);
       if (success) {
         if ([uuid isEqualToString:@"-1"]) {
@@ -114,7 +109,7 @@ void handleCommand(NSDictionary *command) {
           return;
         }
 
-        sendResponse(createResponse(uuid, [NSString stringWithFormat:@"**%@** has been installed.", pluginName]));
+        sendResponse(createResponse(uuid, exists ? @"overridden_plugin" : @"installed_plugin"));
         return;
       }
 
@@ -123,7 +118,7 @@ void handleCommand(NSDictionary *command) {
         return;
       }
 
-      sendResponse(createResponse(uuid, [NSString stringWithFormat:@"An error happened while installing *%@*.", pluginName]));
+      sendResponse(createResponse(uuid, @"fucky_wucky"));
     });
 
     return;
@@ -193,7 +188,7 @@ void handleCommand(NSDictionary *command) {
 
 %hook AppDelegate
 
-- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options {  
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options {
   NSString *input = url.absoluteString;
 	if (!validateCommand(input)) {
     %orig;
