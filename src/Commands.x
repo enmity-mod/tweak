@@ -96,8 +96,15 @@ void handleCommand(NSDictionary *command) {
     }
 
     NSString *pluginName = getPluginName(url);
-    NSString *title = @"Install plugin";
-    NSString *message = @"Are you sure you want to install %@?";
+    NSString *title = [[NSString alloc] init];
+    NSString *message = [[NSString alloc] init];
+    if (checkPlugin(pluginName)) {
+      title = @"Plugin already exists";
+      message = [NSString stringWithFormat:@"Are you sure you want to overwrite %@?", pluginName];
+    } else {
+      title = @"Install plugin";
+      message = [NSString stringWithFormat:@"Are you sure you want to install %@?", pluginName];
+    }
 
     confirm(title, message, ^() {
       BOOL exists = checkPlugin(pluginName);
