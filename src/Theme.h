@@ -5,6 +5,7 @@ BOOL uninstallTheme(NSString *name);
 NSArray* getThemes();
 NSString* getTheme();
 int getMode();
+BOOL checkTheme(NSString *name);
 NSDictionary* getThemeMap();
 NSString* getThemeJSON(NSString *name);
 void setTheme(NSString *name, NSString *theme);

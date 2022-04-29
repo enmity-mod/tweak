@@ -163,13 +163,23 @@ void handleCommand(NSDictionary *command) {
   }
 
   if ([name isEqualToString:@"uninstall-theme"]) {
-    BOOL success = uninstallTheme(params[0]);
-    if (success) {
-      sendResponse(createResponse(uuid, @"Theme has been uninstalled."));
+    NSString *themeName = params[0];
+
+    BOOL exists = checkTheme(themeName);
+    if (!exists) {
+      sendResponse(createResponse(uuid, [NSString stringWithFormat:@"**%@** isn't currently installed.", themeName]));
       return;
     }
 
-    sendResponse(createResponse(uuid, @"An error happened while uninstalling the theme."));
+    confirm(@"Uninstall theme", [NSString stringWithFormat:@"Are you sure you want to uninstall %@?", themeName], ^() {
+      BOOL success = uninstallTheme(params[0]);
+      if (success) {
+        sendResponse(createResponse(uuid, @"Theme has been uninstalled."));
+        return;
+      }
+
+      sendResponse(createResponse(uuid, @"An error happened while uninstalling the theme."));
+    });
   }
 
   if ([name isEqualToString:@"apply-theme"]) {

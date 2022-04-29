@@ -60,6 +60,18 @@ BOOL installTheme(NSURL *url) {
   return success;
 }
 
+// Check if a plugin exists
+BOOL checkTheme(NSString *name) {
+  NSString *path = [NSString stringWithFormat:@"%@/%@.json", THEMES_PATH, name];
+  NSFileManager *fileManager = [NSFileManager defaultManager];
+
+  if ([fileManager fileExistsAtPath:path]) {
+    return true;
+  }
+
+  return false;
+}
+
 // Uninstall a theme
 BOOL uninstallTheme(NSString *name) {
   NSString *themePath = [NSString stringWithFormat:@"%@/%@.json", THEMES_PATH, name];
