@@ -52,6 +52,12 @@ UIColor* colorFromRGBAString(NSString *rgbaString) {
   return [UIColor colorWithRed:[[rgbaValues objectAtIndex:0] floatValue]/255.0f green:[[rgbaValues objectAtIndex:1] floatValue]/255.0f blue:[[rgbaValues objectAtIndex:2] floatValue]/255.0f alpha:[[rgbaValues objectAtIndex:3] floatValue]];
 }
 
+// Get the name of a theme via it's url
+NSString* getThemeName(NSURL *url) {
+  NSString *stripped = [[url lastPathComponent] stringByReplacingOccurrencesOfString:@".disable" withString:@""];
+  return [stripped stringByReplacingOccurrencesOfString:@".json" withString:@""];
+}
+
 // Install a theme
 BOOL installTheme(NSURL *url) {
   NSString *dest = [NSString stringWithFormat:@"%@/%@", THEMES_PATH, [url lastPathComponent]];

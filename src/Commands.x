@@ -78,6 +78,23 @@ NSDictionary* parseCommand(NSString *json) {
   return [command copy];
 }
 
+void handleThemeInstall(NSString *uuid, NSURL *url, BOOL exists, NSString *themeName) {
+  BOOL success = installTheme(url);
+  if (success) {
+    if ([uuid isEqualToString:@"-1"]) return;
+
+    sendResponse(createResponse(uuid, exists ? @"overridden_theme" : @"installed_theme"));
+    return;
+  }
+
+  if ([uuid isEqualToString:@"-1"]) {
+    alert([NSString stringWithFormat:@"An error happened while installing %@.", themeName]);
+    return;
+  }
+
+  sendResponse(createResponse(uuid, @"fucky_wucky"));
+}
+
 // Handle the command
 void handleCommand(NSDictionary *command) {
   NSString *name = [command objectForKey:@"command"];
@@ -153,13 +170,22 @@ void handleCommand(NSDictionary *command) {
 
   if ([name isEqualToString:@"install-theme"]) {
     NSURL *url = [NSURL URLWithString:params[0]];
-    BOOL success = installTheme(url);
-    if (success) {
-      sendResponse(createResponse(uuid, @"Theme has been installed."));
+    if (!url || ![[url pathExtension] isEqualToString:@"json"]) {
       return;
     }
 
-    sendResponse(createResponse(uuid, @"An error happened while installing the theme."));
+    NSString *themeName = getThemeName(url);
+    BOOL exists = checkTheme(themeName);
+
+    if (exists) {
+      id title = @"Theme already exists";
+      id description = [NSString stringWithFormat:@"Are you sure you want to overwrite %@?", themeName];
+      confirm(title, description, ^() {
+        handleThemeInstall(uuid, url, exists, themeName);
+      });
+    } else {
+      handleThemeInstall(uuid, url, exists, themeName);
+    }
   }
 
   if ([name isEqualToString:@"uninstall-theme"]) {
