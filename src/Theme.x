@@ -61,6 +61,18 @@ BOOL installTheme(NSURL *url) {
   return success;
 }
 
+// Check if a plugin exists
+BOOL checkTheme(NSString *name) {
+  NSString *path = [NSString stringWithFormat:@"%@/%@.json", THEMES_PATH, name];
+  NSFileManager *fileManager = [NSFileManager defaultManager];
+
+  if ([fileManager fileExistsAtPath:path]) {
+    return true;
+  }
+
+  return false;
+}
+
 // Uninstall a theme
 BOOL uninstallTheme(NSString *name) {
   NSString *themePath = [NSString stringWithFormat:@"%@/%@.json", THEMES_PATH, name];
@@ -105,7 +117,7 @@ NSString* getTheme() {
   return theme;
 }
 
-// Get the theme mode
+// Get the theme mode
 int getMode() {
   NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
   int mode = [userDefaults integerForKey:@"theme_mode"];
@@ -142,7 +154,7 @@ NSDictionary* getThemeMap() {
   return [themeMap copy];
 }
 
-// Get the theme file daata
+// Get the theme file daata
 NSString* getThemeJSON(NSString *name) {
   NSString *themeFile = [NSString stringWithFormat:@"%@/%@.json", THEMES_PATH, name];
   if (!checkFileExists(themeFile)) {
@@ -168,16 +180,17 @@ void setTheme(NSString *name, NSString *mode) {
   [userDefaults setObject:name forKey:@"theme"];
   [userDefaults setInteger:[mode intValue] forKey:@"theme_mode"];
   colors = nil;
+  background = nil;
 }
 
 NSDictionary *getBackgroundMap() {
   NSString *name = getTheme();
-  if (name == nil) {
+  if(name == nil) {
     return nil;
   }
   
   NSString *themeJson = getThemeJSON(name);
-  if (themeJson == nil) {
+  if(themeJson == nil) {
     return nil;
   }
   
@@ -192,11 +205,11 @@ NSDictionary *getBackgroundMap() {
 
 // Get the bg blur
 int getBackgroundBlur() {
-  if (background == nil) {
+  if(background == nil) {
     background = getBackgroundMap();
   }
 
-	if (![background objectForKey:@"blur"]) {
+	if(![background objectForKey:@"blur"]) {
 		return 0;
 	}
 
@@ -205,11 +218,11 @@ int getBackgroundBlur() {
 
 // Get the bg image
 NSString *getBackgroundURL() {
-  if (background == nil) {
+  if(background == nil) {
     background = getBackgroundMap();
   }
 
-	if (![background objectForKey:@"url"]) {
+	if(![background objectForKey:@"url"]) {
 		return @"";
 	}
 
@@ -218,11 +231,11 @@ NSString *getBackgroundURL() {
 
 // Get the bg alpha
 float getBackgroundAlpha() {
-  if (background == nil) {
+  if(background == nil) {
     background = getBackgroundMap();
   }
 
-	if (![background objectForKey:@"alpha"]) {
+	if(![background objectForKey:@"alpha"]) {
 		return 1.0;
 	}
 
@@ -252,733 +265,731 @@ UIColor* getColor(NSString *name) {
 }
 
 %hook DCDThemeColor
++ (id)TEXTBOX_MARKDOWN_SYNTAX {
+  id original = %orig;
+  id color = getColor(@"TEXTBOX_MARKDOWN_SYNTAX");
 
-  + (id)TEXTBOX_MARKDOWN_SYNTAX {
-    id original = %orig;
-    id color = getColor(@"TEXTBOX_MARKDOWN_SYNTAX");
-
-    if (color) {
-      return color;
-    }
-
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)ACTIVITY_CARD_BACKGROUND {
-    id original = %orig;
-    id color = getColor(@"ACTIVITY_CARD_BACKGROUND");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)ACTIVITY_CARD_BACKGROUND {
+  id original = %orig;
+  id color = getColor(@"ACTIVITY_CARD_BACKGROUND");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)CHANNELTEXTAREA_BACKGROUND {
-    id original = %orig;
-    id color = getColor(@"CHANNELTEXTAREA_BACKGROUND");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)CHANNELTEXTAREA_BACKGROUND {
+  id original = %orig;
+  id color = getColor(@"CHANNELTEXTAREA_BACKGROUND");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)GUILD_HEADER_TEXT_SHADOW {
-    id original = %orig;
-    id color = getColor(@"GUILD_HEADER_TEXT_SHADOW");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)GUILD_HEADER_TEXT_SHADOW {
+  id original = %orig;
+  id color = getColor(@"GUILD_HEADER_TEXT_SHADOW");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)CHANNELS_DEFAULT {
-    id original = %orig;
-    id color = getColor(@"CHANNELS_DEFAULT");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)CHANNELS_DEFAULT {
+  id original = %orig;
+  id color = getColor(@"CHANNELS_DEFAULT");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)BACKGROUND_MESSAGE_HOVER {
-    id original = %orig;
-    id color = getColor(@"BACKGROUND_MESSAGE_HOVER");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)BACKGROUND_MESSAGE_HOVER {
+  id original = %orig;
+  id color = getColor(@"BACKGROUND_MESSAGE_HOVER");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)BACKGROUND_MENTIONED_HOVER {
-    id original = %orig;
-    id color = getColor(@"BACKGROUND_MENTIONED_HOVER");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)BACKGROUND_MENTIONED_HOVER {
+  id original = %orig;
+  id color = getColor(@"BACKGROUND_MENTIONED_HOVER");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)BACKGROUND_MENTIONED {
-    id original = %orig;
-    id color = getColor(@"BACKGROUND_MENTIONED");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)BACKGROUND_MENTIONED {
+  id original = %orig;
+  id color = getColor(@"BACKGROUND_MENTIONED");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)CONTROL_BRAND_FOREGROUND_NEW {
-    id original = %orig;
-    id color = getColor(@"CONTROL_BRAND_FOREGROUND_NEW");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)CONTROL_BRAND_FOREGROUND_NEW {
+  id original = %orig;
+  id color = getColor(@"CONTROL_BRAND_FOREGROUND_NEW");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)CONTROL_BRAND_FOREGROUND {
-    id original = %orig;
-    id color = getColor(@"CONTROL_BRAND_FOREGROUND");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)CONTROL_BRAND_FOREGROUND {
+  id original = %orig;
+  id color = getColor(@"CONTROL_BRAND_FOREGROUND");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)FOCUS_PRIMARY {
-    id original = %orig;
-    id color = getColor(@"FOCUS_PRIMARY");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)FOCUS_PRIMARY {
+  id original = %orig;
+  id color = getColor(@"FOCUS_PRIMARY");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)LOGO_PRIMARY {
-    id original = %orig;
-    id color = getColor(@"LOGO_PRIMARY");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)LOGO_PRIMARY {
+  id original = %orig;
+  id color = getColor(@"LOGO_PRIMARY");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)ELEVATION_HIGH {
-    id original = %orig;
-    id color = getColor(@"ELEVATION_HIGH");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)ELEVATION_HIGH {
+  id original = %orig;
+  id color = getColor(@"ELEVATION_HIGH");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)ELEVATION_MEDIUM {
-    id original = %orig;
-    id color = getColor(@"ELEVATION_MEDIUM");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)ELEVATION_MEDIUM {
+  id original = %orig;
+  id color = getColor(@"ELEVATION_MEDIUM");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)ELEVATION_LOW {
-    id original = %orig;
-    id color = getColor(@"ELEVATION_LOW");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)ELEVATION_LOW {
+  id original = %orig;
+  id color = getColor(@"ELEVATION_LOW");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)ELEVATION_STROKE {
-    id original = %orig;
-    id color = getColor(@"ELEVATION_STROKE");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)ELEVATION_STROKE {
+  id original = %orig;
+  id color = getColor(@"ELEVATION_STROKE");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)SCROLLBAR_AUTO_SCROLLBAR_COLOR_TRACK {
-    id original = %orig;
-    id color = getColor(@"SCROLLBAR_AUTO_SCROLLBAR_COLOR_TRACK");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)SCROLLBAR_AUTO_SCROLLBAR_COLOR_TRACK {
+  id original = %orig;
+  id color = getColor(@"SCROLLBAR_AUTO_SCROLLBAR_COLOR_TRACK");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)SCROLLBAR_AUTO_SCROLLBAR_COLOR_THUMB {
-    id original = %orig;
-    id color = getColor(@"SCROLLBAR_AUTO_SCROLLBAR_COLOR_THUMB");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)SCROLLBAR_AUTO_SCROLLBAR_COLOR_THUMB {
+  id original = %orig;
+  id color = getColor(@"SCROLLBAR_AUTO_SCROLLBAR_COLOR_THUMB");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)SCROLLBAR_AUTO_TRACK {
-    id original = %orig;
-    id color = getColor(@"SCROLLBAR_AUTO_TRACK");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)SCROLLBAR_AUTO_TRACK {
+  id original = %orig;
+  id color = getColor(@"SCROLLBAR_AUTO_TRACK");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)SCROLLBAR_AUTO_THUMB {
-    id original = %orig;
-    id color = getColor(@"SCROLLBAR_AUTO_THUMB");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)SCROLLBAR_AUTO_THUMB {
+  id original = %orig;
+  id color = getColor(@"SCROLLBAR_AUTO_THUMB");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)SCROLLBAR_THIN_TRACK {
-    id original = %orig;
-    id color = getColor(@"SCROLLBAR_THIN_TRACK");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)SCROLLBAR_THIN_TRACK {
+  id original = %orig;
+  id color = getColor(@"SCROLLBAR_THIN_TRACK");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)SCROLLBAR_THIN_THUMB {
-    id original = %orig;
-    id color = getColor(@"SCROLLBAR_THIN_THUMB");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)SCROLLBAR_THIN_THUMB {
+  id original = %orig;
+  id color = getColor(@"SCROLLBAR_THIN_THUMB");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)STATUS_DANGER_TEXT {
-    id original = %orig;
-    id color = getColor(@"STATUS_DANGER_TEXT");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)STATUS_DANGER_TEXT {
+  id original = %orig;
+  id color = getColor(@"STATUS_DANGER_TEXT");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)STATUS_DANGER_BACKGROUND {
-    id original = %orig;
-    id color = getColor(@"STATUS_DANGER_BACKGROUND");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)STATUS_DANGER_BACKGROUND {
+  id original = %orig;
+  id color = getColor(@"STATUS_DANGER_BACKGROUND");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)STATUS_WARNING_TEXT {
-    id original = %orig;
-    id color = getColor(@"STATUS_WARNING_TEXT");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)STATUS_WARNING_TEXT {
+  id original = %orig;
+  id color = getColor(@"STATUS_WARNING_TEXT");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)STATUS_WARNING_BACKGROUND {
-    id original = %orig;
-    id color = getColor(@"STATUS_WARNING_BACKGROUND");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)STATUS_WARNING_BACKGROUND {
+  id original = %orig;
+  id color = getColor(@"STATUS_WARNING_BACKGROUND");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)STATUS_POSITIVE_TEXT {
-    id original = %orig;
-    id color = getColor(@"STATUS_POSITIVE_TEXT");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)STATUS_POSITIVE_TEXT {
+  id original = %orig;
+  id color = getColor(@"STATUS_POSITIVE_TEXT");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)STATUS_POSITIVE_BACKGROUND {
-    id original = %orig;
-    id color = getColor(@"STATUS_POSITIVE_BACKGROUND");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)STATUS_POSITIVE_BACKGROUND {
+  id original = %orig;
+  id color = getColor(@"STATUS_POSITIVE_BACKGROUND");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)INFO_HELP_TEXT {
-    id original = %orig;
-    id color = getColor(@"INFO_HELP_TEXT");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)INFO_HELP_TEXT {
+  id original = %orig;
+  id color = getColor(@"INFO_HELP_TEXT");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)INFO_HELP_FOREGROUND {
-    id original = %orig;
-    id color = getColor(@"INFO_HELP_FOREGROUND");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)INFO_HELP_FOREGROUND {
+  id original = %orig;
+  id color = getColor(@"INFO_HELP_FOREGROUND");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)INFO_HELP_BACKGROUND {
-    id original = %orig;
-    id color = getColor(@"INFO_HELP_BACKGROUND");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)INFO_HELP_BACKGROUND {
+  id original = %orig;
+  id color = getColor(@"INFO_HELP_BACKGROUND");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)INFO_DANGER_TEXT {
-    id original = %orig;
-    id color = getColor(@"INFO_DANGER_TEXT");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)INFO_DANGER_TEXT {
+  id original = %orig;
+  id color = getColor(@"INFO_DANGER_TEXT");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)INFO_DANGER_FOREGROUNG {
-    id original = %orig;
-    id color = getColor(@"INFO_DANGER_FOREGROUNG");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)INFO_DANGER_FOREGROUNG {
+  id original = %orig;
+  id color = getColor(@"INFO_DANGER_FOREGROUNG");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)INFO_DANGER_BACKGROUND {
-    id original = %orig;
-    id color = getColor(@"INFO_DANGER_BACKGROUND");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)INFO_DANGER_BACKGROUND {
+  id original = %orig;
+  id color = getColor(@"INFO_DANGER_BACKGROUND");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)INFO_WARNING_TEXT {
-    id original = %orig;
-    id color = getColor(@"INFO_WARNING_TEXT");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)INFO_WARNING_TEXT {
+  id original = %orig;
+  id color = getColor(@"INFO_WARNING_TEXT");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)INFO_WARNING_FOREGROUND {
-    id original = %orig;
-    id color = getColor(@"INFO_WARNING_FOREGROUND");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)INFO_WARNING_FOREGROUND {
+  id original = %orig;
+  id color = getColor(@"INFO_WARNING_FOREGROUND");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)INFO_WARNING_BACKGROUND {
-    id original = %orig;
-    id color = getColor(@"INFO_WARNING_BACKGROUND");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)INFO_WARNING_BACKGROUND {
+  id original = %orig;
+  id color = getColor(@"INFO_WARNING_BACKGROUND");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)INFO_POSITIVE_TEXT {
-    id original = %orig;
-    id color = getColor(@"INFO_POSITIVE_TEXT");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)INFO_POSITIVE_TEXT {
+  id original = %orig;
+  id color = getColor(@"INFO_POSITIVE_TEXT");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)INFO_POSITIVE_FOREGROUND {
-    id original = %orig;
-    id color = getColor(@"INFO_POSITIVE_FOREGROUND");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)INFO_POSITIVE_FOREGROUND {
+  id original = %orig;
+  id color = getColor(@"INFO_POSITIVE_FOREGROUND");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)INFO_POSITIVE_BACKGROUND {
-    id original = %orig;
-    id color = getColor(@"INFO_POSITIVE_BACKGROUND");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)INFO_POSITIVE_BACKGROUND {
+  id original = %orig;
+  id color = getColor(@"INFO_POSITIVE_BACKGROUND");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)BACKGROUND_MODIFIER_ACCENT {
-    id original = %orig;
-    id color = getColor(@"BACKGROUND_MODIFIER_ACCENT");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)BACKGROUND_MODIFIER_ACCENT {
+  id original = %orig;
+  id color = getColor(@"BACKGROUND_MODIFIER_ACCENT");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)BACKGROUND_MODIFIER_SELECTED {
-    id original = %orig;
-    id color = getColor(@"BACKGROUND_MODIFIER_SELECTED");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)BACKGROUND_MODIFIER_SELECTED {
+  id original = %orig;
+  id color = getColor(@"BACKGROUND_MODIFIER_SELECTED");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)BACKGROUND_MODIFIER_ACTIVE {
-    id original = %orig;
-    id color = getColor(@"BACKGROUND_MODIFIER_ACTIVE");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)BACKGROUND_MODIFIER_ACTIVE {
+  id original = %orig;
+  id color = getColor(@"BACKGROUND_MODIFIER_ACTIVE");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)BACKGROUND_MODIFIER_HOVER {
-    id original = %orig;
-    id color = getColor(@"BACKGROUND_MODIFIER_HOVER");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)BACKGROUND_MODIFIER_HOVER {
+  id original = %orig;
+  id color = getColor(@"BACKGROUND_MODIFIER_HOVER");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)BACKGROUND_MOBILE_SECONDARY {
-    id original = %orig;
-    id color = getColor(@"BACKGROUND_MOBILE_SECONDARY");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)BACKGROUND_MOBILE_SECONDARY {
+  id original = %orig;
+  id color = getColor(@"BACKGROUND_MOBILE_SECONDARY");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)BACKGROUND_MOBILE_PRIMARY {
-    id original = %orig;
-    id color = getColor(@"BACKGROUND_MOBILE_PRIMARY");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)BACKGROUND_MOBILE_PRIMARY {
+  id original = %orig;
+  id color = getColor(@"BACKGROUND_MOBILE_PRIMARY");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)BACKGROUND_FLOATING {
-    id original = %orig;
-    id color = getColor(@"BACKGROUND_FLOATING");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)BACKGROUND_FLOATING {
+  id original = %orig;
+  id color = getColor(@"BACKGROUND_FLOATING");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)BACKGROUND_ACCENT {
-    id original = %orig;
-    id color = getColor(@"BACKGROUND_ACCENT");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)BACKGROUND_ACCENT {
+  id original = %orig;
+  id color = getColor(@"BACKGROUND_ACCENT");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)BACKGROUND_TERTIARY {
-    id original = %orig;
-    id color = getColor(@"BACKGROUND_TERTIARY");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)BACKGROUND_TERTIARY {
+  id original = %orig;
+  id color = getColor(@"BACKGROUND_TERTIARY");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)BACKGROUND_SECONDARY_ALT {
-    id original = %orig;
-    id color = getColor(@"BACKGROUND_SECONDARY_ALT");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)BACKGROUND_SECONDARY_ALT {
+  id original = %orig;
+  id color = getColor(@"BACKGROUND_SECONDARY_ALT");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)BACKGROUND_SECONDARY {
-    id original = %orig;
-    id color = getColor(@"BACKGROUND_SECONDARY");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)BACKGROUND_SECONDARY {
+  id original = %orig;
+  id color = getColor(@"BACKGROUND_SECONDARY");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)BACKGROUND_PRIMARY {
-    id original = %orig;
-    id color = getColor(@"BACKGROUND_PRIMARY");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)BACKGROUND_PRIMARY {
+  id original = %orig;
+  id color = getColor(@"BACKGROUND_PRIMARY");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)INTERACTIVE_MUTED {
-    id original = %orig;
-    id color = getColor(@"INTERACTIVE_MUTED");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)INTERACTIVE_MUTED {
+  id original = %orig;
+  id color = getColor(@"INTERACTIVE_MUTED");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)INTERACTIVE_ACTIVE {
-    id original = %orig;
-    id color = getColor(@"INTERACTIVE_ACTIVE");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)INTERACTIVE_ACTIVE {
+  id original = %orig;
+  id color = getColor(@"INTERACTIVE_ACTIVE");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)INTERACTIVE_HOVER {
-    id original = %orig;
-    id color = getColor(@"INTERACTIVE_HOVER");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)INTERACTIVE_HOVER {
+  id original = %orig;
+  id color = getColor(@"INTERACTIVE_HOVER");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)INTERACTIVE_NORMAL {
-    id original = %orig;
-    id color = getColor(@"INTERACTIVE_NORMAL");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)INTERACTIVE_NORMAL {
+  id original = %orig;
+  id color = getColor(@"INTERACTIVE_NORMAL");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)TEXT_BRAND {
-    id original = %orig;
-    id color = getColor(@"TEXT_BRAND");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)TEXT_BRAND {
+  id original = %orig;
+  id color = getColor(@"TEXT_BRAND");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)TEXT_DANGER {
-    id original = %orig;
-    id color = getColor(@"TEXT_DANGER");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)TEXT_DANGER {
+  id original = %orig;
+  id color = getColor(@"TEXT_DANGER");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)TEXT_WARNING {
-    id original = %orig;
-    id color = getColor(@"TEXT_WARNING");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)TEXT_WARNING {
+  id original = %orig;
+  id color = getColor(@"TEXT_WARNING");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)TEXT_POSITIVE {
-    id original = %orig;
-    id color = getColor(@"TEXT_POSITIVE");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)TEXT_POSITIVE {
+  id original = %orig;
+  id color = getColor(@"TEXT_POSITIVE");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)TEXT_LINK_LOW_SATURATION {
-    id original = %orig;
-    id color = getColor(@"TEXT_LINK_LOW_SATURATION");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)TEXT_LINK_LOW_SATURATION {
+  id original = %orig;
+  id color = getColor(@"TEXT_LINK_LOW_SATURATION");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)TEXT_LINK {
-    id original = %orig;
-    id color = getColor(@"TEXT_LINK");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)TEXT_LINK {
+  id original = %orig;
+  id color = getColor(@"TEXT_LINK");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)TEXT_MUTED {
-    id original = %orig;
-    id color = getColor(@"TEXT_MUTED");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)TEXT_MUTED {
+  id original = %orig;
+  id color = getColor(@"TEXT_MUTED");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)TEXT_NORMAL {
-    id original = %orig;
-    id color = getColor(@"TEXT_NORMAL");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)TEXT_NORMAL {
+  id original = %orig;
+  id color = getColor(@"TEXT_NORMAL");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)HEADER_SECONDARY {
-    id original = %orig;
-    id color = getColor(@"HEADER_SECONDARY");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)HEADER_SECONDARY {
+  id original = %orig;
+  id color = getColor(@"HEADER_SECONDARY");
 
-    return original;
+  if (color) {
+    return color;
   }
 
-  + (id)HEADER_PRIMARY {
-    id original = %orig;
-    id color = getColor(@"HEADER_PRIMARY");
+  return original;
+}
 
-    if (color) {
-      return color;
-    }
++ (id)HEADER_PRIMARY {
+  id original = %orig;
+  id color = getColor(@"HEADER_PRIMARY");
 
-    return original;
+  if (color) {
+    return color;
   }
 
+  return original;
+}
 %end
 
 @interface UIKeyboard : UIView
@@ -994,192 +1005,99 @@ UIColor* getColor(NSString *name) {
 @end
 
 %group KEYBOARD
-
 %hook UIKeyboard
-  - (void)didMoveToWindow {
-    %orig;
+- (void)didMoveToWindow {
+  %orig;
 
-    id color = getColor(@"KEYBOARD");
-    if (color != nil) {
-      [self setBackgroundColor:color];
-    }
+  id color = getColor(@"KEYBOARD");
+  if (color != nil) {
+    [self setBackgroundColor:color];
   }
+}
 
-  %end
-
-  %hook UIKeyboardDockView
-
-  - (void)didMoveToWindow {
-    %orig;
-
-    id color = getColor(@"KEYBOARD");
-    if (color != nil) {
-      [self setBackgroundColor:color];
-    }
-  }
-
-  %end
-
-  %hook UIKBRenderConfig
-
-  - (void)setLightKeyboard:(BOOL)arg1 {
-    %orig(NO);
-  }
-
-  %end
-
-  %hook TUIPredictionView
-
-  - (void)didMoveToWindow {
-    %orig;
-
-    id color = getColor(@"KEYBOARD");
-    if (color != nil) {
-      [self setBackgroundColor:color];
-
-      for (UIView *subview in self.subviews) {
-          [subview setBackgroundColor:color];
-      }
-    }
-  }
-
-  %end
-
-  %hook TUIEmojiSearchInputView
-
-  - (void)didMoveToWindow {
-    %orig;
-
-    id color = getColor(@"KEYBOARD");
-    if (color != nil) {
-      [self setBackgroundColor:color];
-    }
-  }
-
-  %end
 %end
+
+%hook UIKeyboardDockView
+- (void)didMoveToWindow {
+  %orig;
+
+  id color = getColor(@"KEYBOARD");
+  if (color != nil) {
+    [self setBackgroundColor:color];
+  }
+}
+%end
+
+%hook UIKBRenderConfig
+- (void)setLightKeyboard:(BOOL)arg1 {
+  %orig(NO);
+}
+%end
+
+%hook TUIPredictionView
+- (void)didMoveToWindow {
+  %orig;
+
+  id color = getColor(@"KEYBOARD");
+  if (color != nil) {
+    [self setBackgroundColor:color];
+
+    for (UIView *subview in self.subviews) {
+        [subview setBackgroundColor:color];
+    }
+  }
+}
+%end
+
+%hook TUIEmojiSearchInputView
+- (void)didMoveToWindow {
+  %orig;
+
+  id color = getColor(@"KEYBOARD");
+  if (color != nil) {
+    [self setBackgroundColor:color];
+  }
+}
+%end
+%end
+
 
 @interface DCDUploadProgressView : UIView
 @end
 
 %hook DCDUploadProgressView
-  - (void)didMoveToWindow {
-    %orig;
+- (void)didMoveToWindow {
+  %orig;
 
-    id color = getColor(@"BACKGROUND_SECONDARY_ALT");
-    if (color != nil) {
-      UIView *subview = self.subviews[0];
-      [subview setBackgroundColor:color];
-    }
+  id color = getColor(@"BACKGROUND_SECONDARY_ALT");
+  if (color != nil) {
+    UIView *subview = self.subviews[0];
+    [subview setBackgroundColor:color];
   }
-%end
-
-
-%hook DCDMessageTableViewCell
--(void)setBackgroundColor:(UIColor*)arg1 {
-	NSString *url = getBackgroundURL();
-
-	if (url) {
-		%orig([UIColor clearColor]);
-		return;
-	}
-	%orig(arg1);
 }
 %end
 
-%hook DCDDMBeginningMessageTableViewCell
+%hook DCDBaseMessageTableViewCell
 -(void)setBackgroundColor:(UIColor*)arg1 {
-	NSString *url = getBackgroundURL();
+  NSString *url = getBackgroundURL();
 
-	if (url) {
-		%orig([UIColor clearColor]);
-		return;
-	}
-	%orig(arg1);
-}
-%end
-
-%hook DCDSystemMessageTableViewCell
--(void)setBackgroundColor:(UIColor*)arg1 {
-	NSString *url = getBackgroundURL();
-
-	if (url) {
-		%orig([UIColor clearColor]);
-		return;
-	}
-	%orig(arg1);
+    if (url) {
+        %orig([UIColor clearColor]);
+        return;
+    }
+    %orig(arg1);
 }
 %end
 
 %hook DCDSeparatorTableViewCell
 -(void)setBackgroundColor:(UIColor*)arg1 {
-	NSString *url = getBackgroundURL();
+    NSString *url = getBackgroundURL();
 
-	if (url) {
-		%orig([UIColor clearColor]);
-		return;
-	}
-	%orig(arg1);
-}
-%end
-
-%hook DCDUploadProgressTableViewCell
--(void)setBackgroundColor:(UIColor*)arg1 {
-	NSString *url = getBackgroundURL();
-
-	if (url) {
-		%orig([UIColor clearColor]);
-		return;
-	}
-	%orig(arg1);
-}
-%end
-
-%hook DCDCustomMessageTableViewCell
--(void)setBackgroundColor:(UIColor*)arg1 {
-	NSString *url = getBackgroundURL();
-
-	if (url) {
-		%orig([UIColor clearColor]);
-		return;
-	}
-	%orig(arg1);
-}
-%end
-
-%hook DCDSeparatorButton
--(void)setBackgroundColor:(UIColor*)arg1 {
-	NSString *url = getBackgroundURL();
-
-	if (url) {
-		%orig([UIColor clearColor]);
-		return;
-	}
-	%orig(arg1);
-}
-%end
-
-%hook DCDBlockedMessageTableViewCell
--(void)setBackgroundColor:(UIColor*)arg1 {
-	NSString *url = getBackgroundURL();
-
-	if (url) {
-		%orig([UIColor clearColor]);
-		return;
-	}
-	%orig(arg1);
-}
-%end
-
-%hook DCDLoadingTableViewCell
--(void)setBackgroundColor:(UIColor*)arg1 {
-	NSString *url = getBackgroundURL();
-
-	if (url) {
-		%orig([UIColor clearColor]);
-		return;
-	}
-	%orig(arg1);
+    if (url) {
+        %orig([UIColor clearColor]);
+        return;
+    }
+    %orig(arg1);
 }
 %end
 
@@ -1187,19 +1105,23 @@ UIColor* getColor(NSString *name) {
 @end
 
 %hook DCDChat
--(void)setBounds:(CGRect)arg1 {
+-(void)configureSubviewsWithContentAdjustment:(double)arg1 {
   %orig;
+
   UIView *subview = [self.subviews firstObject];
   if ([subview isKindOfClass:[UIImageView class]]) {
     return;
   }
+
   if (background == nil) {
     background = getBackgroundMap();
   }
+
   NSString *url = getBackgroundURL();
+
   if (url) {
-    [subview setBackgroundColor:[UIColor clearColor]];
     int blur = getBackgroundBlur();
+    [subview setBackgroundColor:[UIColor clearColor]];
     UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:url]]];
 
     CIImage *ciImage = [CIImage imageWithCGImage:image.CGImage];
@@ -1210,9 +1132,11 @@ UIColor* getColor(NSString *name) {
     CIImage *croppedImage = [result imageByCroppingToRect:ciImage.extent];
 
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[[UIImage alloc] initWithCIImage:croppedImage]];
-    imageView.frame = arg1;
+    imageView.frame = subview.frame;
     imageView.alpha = getBackgroundAlpha(); 
     [self insertSubview:imageView atIndex:0];
+  } else {
+    [subview setBackgroundColor:getColor(@"BACKGROUND_PRIMARY")]; // im not sure if this is needed or not lmao; or if this is even the right color
   }
 }
 %end
@@ -1220,7 +1144,7 @@ UIColor* getColor(NSString *name) {
 %ctor {
   %init
 
-  NSBundle* bundle = [NSBundle bundleWithPath:@"/System/Library/PrivateFrameworks/TextInputUI.framework"];
+	NSBundle* bundle = [NSBundle bundleWithPath:@"/System/Library/PrivateFrameworks/TextInputUI.framework"];
   if (!bundle.loaded) [bundle load];
   %init(KEYBOARD);
 }
