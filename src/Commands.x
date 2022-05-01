@@ -12,7 +12,7 @@ NSDictionary* createResponse(NSString *uuid, NSString *data) {
 
 // Send a response back
 void sendResponse(NSDictionary *response) {
-  NSError *err; 
+  NSError *err;
   NSData *data = [NSJSONSerialization
                     dataWithJSONObject:response
                     options:0
@@ -44,7 +44,7 @@ BOOL validateCommand(NSString *command) {
 
 // Clean the received command
 NSString* cleanCommand(NSString *command) {
-  NSString *json = [[command 
+  NSString *json = [[command
             stringByReplacingOccurrencesOfString:ENMITY_PROTOCOL
             withString:@""]
           stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -78,6 +78,23 @@ NSDictionary* parseCommand(NSString *json) {
   return [command copy];
 }
 
+void handleThemeInstall(NSString *uuid, NSURL *url, BOOL exists, NSString *themeName) {
+  BOOL success = installTheme(url);
+  if (success) {
+    if ([uuid isEqualToString:@"-1"]) return;
+
+    sendResponse(createResponse(uuid, exists ? @"overridden_theme" : @"installed_theme"));
+    return;
+  }
+
+  if ([uuid isEqualToString:@"-1"]) {
+    alert([NSString stringWithFormat:@"An error happened while installing %@.", themeName]);
+    return;
+  }
+
+  sendResponse(createResponse(uuid, @"fucky_wucky"));
+}
+
 // Handle the command
 void handleCommand(NSDictionary *command) {
   NSString *name = [command objectForKey:@"command"];
@@ -107,6 +124,8 @@ void handleCommand(NSDictionary *command) {
     }
 
     confirm(title, message, ^() {
+      BOOL exists = checkPlugin(pluginName);
+
       BOOL success = installPlugin(url);
       if (success) {
         if ([uuid isEqualToString:@"-1"]) {
@@ -114,7 +133,7 @@ void handleCommand(NSDictionary *command) {
           return;
         }
 
-        sendResponse(createResponse(uuid, [NSString stringWithFormat:@"**%@** has been installed.", pluginName]));
+        sendResponse(createResponse(uuid, exists ? @"overridden_plugin" : @"installed_plugin"));
         return;
       }
 
@@ -123,7 +142,7 @@ void handleCommand(NSDictionary *command) {
         return;
       }
 
-      sendResponse(createResponse(uuid, [NSString stringWithFormat:@"An error happened while installing *%@*.", pluginName]));
+      sendResponse(createResponse(uuid, @"fucky_wucky"));
     });
 
     return;
@@ -151,23 +170,42 @@ void handleCommand(NSDictionary *command) {
 
   if ([name isEqualToString:@"install-theme"]) {
     NSURL *url = [NSURL URLWithString:params[0]];
-    BOOL success = installTheme(url);
-    if (success) {
-      sendResponse(createResponse(uuid, @"Theme has been installed."));
+    if (!url || ![[url pathExtension] isEqualToString:@"json"]) {
       return;
     }
 
-    sendResponse(createResponse(uuid, @"An error happened while installing the theme."));
+    NSString *themeName = getThemeName(url);
+    BOOL exists = checkTheme(themeName);
+
+    if (exists) {
+      id title = @"Theme already exists";
+      id description = [NSString stringWithFormat:@"Are you sure you want to overwrite %@?", themeName];
+      confirm(title, description, ^() {
+        handleThemeInstall(uuid, url, exists, themeName);
+      });
+    } else {
+      handleThemeInstall(uuid, url, exists, themeName);
+    }
   }
 
   if ([name isEqualToString:@"uninstall-theme"]) {
-    BOOL success = uninstallTheme(params[0]);
-    if (success) {
-      sendResponse(createResponse(uuid, @"Theme has been uninstalled."));
+    NSString *themeName = params[0];
+
+    BOOL exists = checkTheme(themeName);
+    if (!exists) {
+      sendResponse(createResponse(uuid, [NSString stringWithFormat:@"**%@** isn't currently installed.", themeName]));
       return;
     }
 
-    sendResponse(createResponse(uuid, @"An error happened while uninstalling the theme."));
+    confirm(@"Uninstall theme", [NSString stringWithFormat:@"Are you sure you want to uninstall %@?", themeName], ^() {
+      BOOL success = uninstallTheme(params[0]);
+      if (success) {
+        sendResponse(createResponse(uuid, @"Theme has been uninstalled."));
+        return;
+      }
+
+      sendResponse(createResponse(uuid, @"An error happened while uninstalling the theme."));
+    });
   }
 
   if ([name isEqualToString:@"apply-theme"]) {
@@ -193,7 +231,7 @@ void handleCommand(NSDictionary *command) {
 
 %hook AppDelegate
 
-- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options {  
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options {
   NSString *input = url.absoluteString;
 	if (!validateCommand(input)) {
     %orig;
