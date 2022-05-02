@@ -1,67 +1,98 @@
-name: Create release
+name: Build (and release)
 on:
   push:
-    tags:
-       - '*'
+    paths:
+    - '**.h'
+    - '**.js'
+    - '**.x'
+    - 'control'
+    - '**.plist'
+    - 'Makefile'
+    - '.github/workflows/build.yml'
   workflow_dispatch:
+  pull_request:
+  release:
+    types:
+    - created
 
 jobs:
   build:
-    name: Build and publish Enmity for iOS
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
-          submodules: true
-
-      - name: Check cache
-        id: verifiy-cache
-        run: |
-          echo "::set-output name=heads::`git ls-remote https://github.com/theos/theos | head -n 1 | cut -f 1`-`git ls-remote https://github.com/theos/sdks | head -n 1 | cut -f 1`"
-
-      - name: Use cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ${{ github.workspace }}/theos
-          key: ${{ runner.os }}-${{ steps.verify-cache.outputs.heads }}
+          submodules: recursive
 
       - name: Prepare Theos
-        uses: Randomblock1/theos-action@v1
-      
+        uses: beerpiss/theos-action@v1
+        with: 
+          cache-dir-theos: ${{ github.workspace }}/theos
+          cache-dir-sdks: ${{ github.workspace }}/theos/sdks
+
       - name: Prepare Azule
-        run : |
-          git clone https://github.com/Al4ise/Azule ${{ github.workspace }}/Azule
+        uses: actions/checkout@v3
+        with: 
+          repository: Al4ise/Azule
+          path: Azule
 
       - name: Prepare Enmity Patcher
         run : |
           curl -L https://github.com/enmity-mod/enmity-patcher/releases/latest/download/patcher.mac-amd64 -o ${{ github.workspace }}/patcher
           chmod +x patcher
 
-      - name: Patch Discord
-        run : |
-          ${{ github.workspace }}/patcher
-
       - name: Build package
-        run: |
-          rm -f packages/*
-          make package FINALPACKAGE=1
-
-      - name: Find deb
         id: find_deb
-        run : |
+        run: |
+          gmake clean package FINALPACKAGE=1
           echo "::set-output name=deb::$(find packages -name "*.deb" -print -quit)"
-      
+          echo "::set-output name=deb_basename::$(basename $(find packages -name "*.deb" -print -quit))"
+
       - name: Create Enmity.ipa
         run : |
+          ${{ github.workspace }}/patcher
           mkdir out
           ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f ${{ steps.find_deb.outputs.deb }}
           mv $(find out -name "*.ipa" -print -quit) out/Enmity.ipa
 
-      - name: Create release
-        uses: softprops/action-gh-release@v1
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v3
         with:
-          tag_name: release-${{ github.ref_name }}
-          files:  |
-            ${{ steps.find_deb.outputs.deb }}
-            out/Enmity.ipa
+          name: ${{ steps.find_deb.outputs.deb_basename }}
+          path: ${{ steps.find_deb.outputs.deb }} 
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Enmity.ipa
+          path: out/Enmity.ipa
+
+  upload-release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags'))
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: ./artifacts
+      
+      - name: Attaching binaries to release
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          assets=()
+          for asset in ./artifacts/**/*; do
+            if [ -d "$asset" ]; then continue; fi
+            assets+=("$asset")
+          done
+          if [ "${{ github.event_name }}" = "release" ] && [ ! "$(gh release view $GITHUB_REF_NAME --json assets | jq '.assets | length')" = "2" ]; then
+            # Only reupload if stuff is missing (somehow)
+            gh release upload --clobber $GITHUB_REF_NAME "${assets[@]}"  
+          elif ! gh release view $GITHUB_REF_NAME 2>&1 >/dev/null; then
+            # Only create new release if there isn't one already
+            gh release create $GITHUB_REF_NAME -t $GITHUB_REF_NAME "${assets[@]}"
+          fi  
