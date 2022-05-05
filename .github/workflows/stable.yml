@@ -1,13 +1,14 @@
-name: Create release
+name: Create a stable release
 on:
   push:
-    tags:
-       - '*'
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
   build:
     name: Build and publish Enmity for iOS
+    if: startsWith(github.ref, 'refs/tags/v') && github.event.base_ref == 'refs/heads/main'
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2

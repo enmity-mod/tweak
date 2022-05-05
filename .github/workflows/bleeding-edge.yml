@@ -1,0 +1,70 @@
+name: Create a bleeding-edge release
+on:
+  push:
+    branches:
+      - bleeding-edge
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and publish Enmity Alpha for iOS
+    if: github.event.base_ref == 'refs/heads/bleeding-edge'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: 'bleeding-edge'
+          submodules: true
+
+      - name: Check cache
+        id: verifiy-cache
+        run: |
+          echo "::set-output name=heads::`git ls-remote https://github.com/theos/theos | head -n 1 | cut -f 1`-`git ls-remote https://github.com/theos/sdks | head -n 1 | cut -f 1`"
+
+      - name: Use cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ github.workspace }}/theos
+          key: ${{ runner.os }}-${{ steps.verify-cache.outputs.heads }}
+
+      - name: Prepare Theos
+        uses: Randomblock1/theos-action@v1
+      
+      - name: Prepare Azule
+        run : |
+          git clone https://github.com/Al4ise/Azule ${{ github.workspace }}/Azule
+
+      - name: Prepare Enmity Patcher
+        run : |
+          curl -L https://github.com/enmity-mod/enmity-patcher/releases/latest/download/patcher.mac-amd64 -o ${{ github.workspace }}/patcher
+          chmod +x patcher
+
+      - name: Patch Discord
+        run : |
+          ${{ github.workspace }}/patcher
+
+      - name: Build package
+        run: |
+          rm -f packages/*
+          make package FINALPACKAGE=1
+
+      - name: Find deb
+        id: find_deb
+        run : |
+          echo "::set-output name=deb::$(find packages -name "*.deb" -print -quit)"
+      
+      - name: Create Enmity.ipa
+        run : |
+          mkdir out
+          ${{ github.workspace }}/Azule/azule -p "Enmity Alpha" -i Enmity.ipa -o out -f ${{ steps.find_deb.outputs.deb }}
+          mv $(find out -name "*.ipa" -print -quit) out/Enmity-alpha.ipa
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.sha }}
+          files:  |
+            ${{ steps.find_deb.outputs.deb }}
+            out/Enmity-alpha.ipa
+          prerelease: true
