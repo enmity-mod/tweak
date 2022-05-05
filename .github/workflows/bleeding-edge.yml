@@ -8,7 +8,6 @@ on:
 jobs:
   build:
     name: Build and publish Enmity Alpha for iOS
-    if: github.event.base_ref == 'refs/heads/bleeding-edge'
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
@@ -47,7 +46,7 @@ jobs:
       - name: Build package
         run: |
           rm -f packages/*
-          make package FINALPACKAGE=1
+          make package FINALPACKAGE=1 BLEEDING_EDGE=1
 
       - name: Find deb
         id: find_deb
@@ -58,13 +57,17 @@ jobs:
         run : |
           mkdir out
           ${{ github.workspace }}/Azule/azule -p "Enmity Alpha" -i Enmity.ipa -o out -f ${{ steps.find_deb.outputs.deb }}
-          mv $(find out -name "*.ipa" -print -quit) out/Enmity-alpha.ipa
+          mv $(find out -name "*.ipa" -print -quit) out/Enmity-Alpha.ipa
+        
+      - name: Set outputs
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.sha }}
+          tag_name: alpha-${{ steps.vars.outputs.sha_short }}
           files:  |
             ${{ steps.find_deb.outputs.deb }}
-            out/Enmity-alpha.ipa
+            out/Enmity-Alpha.ipa
           prerelease: true
