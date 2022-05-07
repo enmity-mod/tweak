@@ -4,7 +4,7 @@
 // Get the download url for Enmity.js
 NSString* getDownloadURL() {
   if (!IS_DEBUG) {
-    return @"https://files.enmity.app/Enmity.js";
+    return ENMITY_URL;
   }
 
   return [NSString stringWithFormat:@"http://%@:8080/Enmity.js", DEBUG_IP];
@@ -12,7 +12,7 @@ NSString* getDownloadURL() {
 
 // Check for update
 BOOL checkForUpdate() {
-  if (IS_DEBUG) {
+  if (IS_DEBUG || IS_BLEEDING_EDGE) {
     return true;
   }
   
@@ -42,6 +42,11 @@ BOOL checkForUpdate() {
     }
   }
 
+  // Force update if Enmity.js couldn't be found
+  if (!checkFileExists(ENMITY_PATH)) {
+    return true;
+  }
+
   return false;
 }
 
@@ -59,7 +64,7 @@ NSString* getHash(NSString *url) {
 
 // Make sure the Enmity hash matches with the github hash
 BOOL compareRemoteHashes() {
-  if (IS_DEBUG) {
+  if (IS_DEBUG || IS_BLEEDING_EDGE) {
     return true;
   }
 
@@ -78,7 +83,7 @@ BOOL compareRemoteHashes() {
 
 // Make sure the downloaded Enmity file matches with the Github hash
 BOOL compareLocalHashes() {
-  if (IS_DEBUG) {
+  if (IS_DEBUG || IS_BLEEDING_EDGE) {
     return true;
   }
 
