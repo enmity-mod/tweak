@@ -11,3 +11,7 @@ NSDictionary* getThemeMap();
 NSString* getThemeJSON(NSString *name);
 void setTheme(NSString *name, NSString *theme);
 BOOL deleteTheme();
+NSDictionary *getBackgroundMap();
+int getBackgroundBlur();
+NSString *getBackgroundURL();
+float getBackgroundAlpha();
