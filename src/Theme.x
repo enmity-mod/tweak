@@ -1132,6 +1132,42 @@ id originalKeyboardColor;
 }
 %end
 
+%hook DCDBlockedMessageTableViewCell
+-(void)setBackgroundColor:(UIColor*)arg1 {
+		NSString *url = getBackgroundURL();
+
+		if (url) {
+				%orig([UIColor clearColor]);
+				return;
+		}
+		%orig(arg1);
+}
+%end
+
+%hook DCDSystemMessageTableViewCell
+-(void)setBackgroundColor:(UIColor*)arg1 {
+		NSString *url = getBackgroundURL();
+
+		if (url) {
+				%orig([UIColor clearColor]);
+				return;
+		}
+		%orig(arg1);
+}
+%end
+
+%hook DCDLoadingTableViewCell
+-(void)setBackgroundColor:(UIColor*)arg1 {
+		NSString *url = getBackgroundURL();
+
+		if (url) {
+				%orig([UIColor clearColor]);
+				return;
+		}
+		%orig(arg1);
+}
+%end
+
 @interface DCDChat : UIView
 @end
 
