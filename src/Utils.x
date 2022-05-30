@@ -15,7 +15,7 @@ BOOL checkForUpdate() {
   if (IS_DEBUG || IS_BLEEDING_EDGE) {
     return true;
   }
-  
+
   NSMutableURLRequest *enmityRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:getDownloadURL()]];
   enmityRequest.timeoutInterval = 5.0;
   enmityRequest.cachePolicy = NSURLRequestReloadIgnoringCacheData;
@@ -109,7 +109,7 @@ BOOL compareLocalHashes() {
   return [githubHash isEqualToString:enmityHash];
 }
 
-// Download a file 
+// Download a file
 BOOL downloadFile(NSString *source, NSString *dest) {
   NSMutableURLRequest *downloadRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:source]];
   downloadRequest.cachePolicy = NSURLRequestReloadIgnoringCacheData;
@@ -135,7 +135,7 @@ BOOL checkFileExists(NSString *path) {
   return [fileManager fileExistsAtPath:path];
 }
 
-// Create a folder 
+// Create a folder
 BOOL createFolder(NSString *path) {
   NSFileManager *fileManager = [NSFileManager defaultManager];
 
@@ -166,7 +166,7 @@ NSArray* readFolder(NSString *path) {
   if (err) {
     return [[NSArray alloc] init];
   }
-  
+
   return files;
 }
 

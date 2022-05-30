@@ -1,9 +1,9 @@
 const oObjectFreeze = this.Object.freeze;
-Object.freeze = function(obj, ...args) {
-  if (!obj?.hasOwnProperty) { 
-    return oObjectFreeze.apply(this, [obj, ...args])
+Object.freeze = function (obj, ...args) {
+  if (!obj?.hasOwnProperty) {
+    return oObjectFreeze.apply(this, [obj, ...args]);
   }
-  try { 
+  try {
     const theme = %@;
 
     if (obj.hasOwnProperty?.('BACKGROUND_PRIMARY')) {
@@ -26,9 +26,9 @@ Object.freeze = function(obj, ...args) {
         ...theme.unsafe_colors
       }, ...args]);
     }
-  } catch(e) {
+  } catch (e) {
     console.log(e);
   }
 
   return oObjectFreeze.apply(this, [obj, ...args]);
-}
+};

@@ -195,12 +195,12 @@ NSDictionary *getBackgroundMap() {
 	if (name == nil) {
 		return nil;
 	}
-	
+
 	NSString *themeJson = getThemeJSON(name);
 	if (themeJson == nil) {
 		return nil;
 	}
-	
+
 	NSError *error;
 	NSMutableDictionary *theme = [NSJSONSerialization JSONObjectWithData:[themeJson dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
 	if (error) {
@@ -1054,8 +1054,8 @@ id originalKeyboardColor;
 %hook TUIPredictionView
 - (void)didMoveToWindow {
 	%orig;
-  
-  
+
+
 	id color = getColor(@"KEYBOARD");
 	if (originalKeyboardColor != nil && originalKeyboardColor != color) {
     originalKeyboardColor = [self backgroundColor];
@@ -1109,62 +1109,67 @@ id originalKeyboardColor;
 %end
 
 %hook DCDBaseMessageTableViewCell
--(void)setBackgroundColor:(UIColor*)arg1 {
+- (void)setBackgroundColor:(UIColor*)arg1 {
 	NSString *url = getBackgroundURL();
 
-		if (url) {
-				%orig([UIColor clearColor]);
-				return;
-		}
-		%orig(arg1);
+  if (url) {
+      %orig([UIColor clearColor]);
+      return;
+  }
+
+  %orig(arg1);
 }
 %end
 
 %hook DCDSeparatorTableViewCell
--(void)setBackgroundColor:(UIColor*)arg1 {
-		NSString *url = getBackgroundURL();
+- (void)setBackgroundColor:(UIColor*)arg1 {
+  NSString *url = getBackgroundURL();
 
-		if (url) {
-				%orig([UIColor clearColor]);
-				return;
-		}
-		%orig(arg1);
+  if (url) {
+      %orig([UIColor clearColor]);
+      return;
+  }
+
+  %orig(arg1);
 }
 %end
 
 %hook DCDBlockedMessageTableViewCell
--(void)setBackgroundColor:(UIColor*)arg1 {
-		NSString *url = getBackgroundURL();
+- (void)setBackgroundColor:(UIColor*)arg1 {
+  NSString *url = getBackgroundURL();
 
-		if (url) {
-				%orig([UIColor clearColor]);
-				return;
-		}
-		%orig(arg1);
+  if (url) {
+      %orig([UIColor clearColor]);
+      return;
+  }
+
+  %orig(arg1);
 }
 %end
 
 %hook DCDSystemMessageTableViewCell
--(void)setBackgroundColor:(UIColor*)arg1 {
-		NSString *url = getBackgroundURL();
+- (void)setBackgroundColor:(UIColor*)arg1 {
+  NSString *url = getBackgroundURL();
 
-		if (url) {
-				%orig([UIColor clearColor]);
-				return;
-		}
-		%orig(arg1);
+  if (url) {
+      %orig([UIColor clearColor]);
+      return;
+  }
+
+  %orig(arg1);
 }
 %end
 
 %hook DCDLoadingTableViewCell
--(void)setBackgroundColor:(UIColor*)arg1 {
-		NSString *url = getBackgroundURL();
+- (void)setBackgroundColor:(UIColor*)arg1 {
+  NSString *url = getBackgroundURL();
 
-		if (url) {
-				%orig([UIColor clearColor]);
-				return;
-		}
-		%orig(arg1);
+  if (url) {
+      %orig([UIColor clearColor]);
+      return;
+  }
+
+  %orig(arg1);
 }
 %end
 
@@ -1172,7 +1177,7 @@ id originalKeyboardColor;
 @end
 
 %hook DCDChat
--(void)configureSubviewsWithContentAdjustment:(double)arg1 {
+- (void)configureSubviewsWithContentAdjustment:(double)arg1 {
 	%orig;
 
 	UIView *subview = [self.subviews firstObject];
