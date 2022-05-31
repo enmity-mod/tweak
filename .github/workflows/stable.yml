@@ -47,7 +47,7 @@ jobs:
       - name: Build package
         run: |
           rm -f packages/*
-          make package FINALPACKAGE=1
+          make package FINALPACKAGE=1 BLEEDING_EDGE=0
 
       - name: Find deb
         id: find_deb
