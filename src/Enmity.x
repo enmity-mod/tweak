@@ -23,6 +23,12 @@
 - (void)executeApplicationScript:(NSData *)script url:(NSURL *)url async:(BOOL)async {
 	NSString *bundlePath = getBundlePath();
 
+	// Apply React DevTools patch
+  NSString *devtoolsInitCode = getFileFromBundle(bundlePath, @"devtools");
+	NSData* devtoolsInit = [devtoolsInitCode dataUsingEncoding:NSUTF8StringEncoding];
+	NSLog(@"Injecting React DevTools patch");
+	%orig(devtoolsInit, ENMITY_SOURCE, false);
+
 	// Apply modules patch
 	NSString *modulesPatchCode = getFileFromBundle(bundlePath, @"modules");
 	NSData* modulesPatch = [modulesPatchCode dataUsingEncoding:NSUTF8StringEncoding];

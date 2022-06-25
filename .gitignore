@@ -1,3 +1,4 @@
 packages/
 .theos/
 .DS_Store
+node_modules/
