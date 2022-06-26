@@ -36,7 +36,7 @@ jobs:
 
       - name: Prepare Enmity Patcher
         run : |
-          curl -L https://github.com/enmity-mod/enmity-patcher/releases/latest/download/patcher.mac-amd64 -o ${{ github.workspace }}/patcher
+          curl -L https://github.com/enmity-mod/patcher/releases/latest/download/patcher.mac-amd64 -o ${{ github.workspace }}/patcher
           chmod +x patcher
 
       - name: Patch Discord
