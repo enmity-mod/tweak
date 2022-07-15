@@ -2,68 +2,54 @@
 #import "Utils.h"
 #import "Plugins.h"
 
-@interface AppDelegate
-    @property (nonatomic, strong) UIWindow *window;
-@end
-
-%hook AppDelegate
-
-- (id)sourceURLForBridge:(id)arg1 {
-	return %orig;
-}
-
-- (void)startWithLaunchOptions:(id)options {
-	%orig;
-}
-
-%end
-
 %hook RCTCxxBridge
 
 - (void)executeApplicationScript:(NSData *)script url:(NSURL *)url async:(BOOL)async {
 	NSString *bundlePath = getBundlePath();
 
 	// Apply React DevTools patch
-  NSString *devtoolsInitCode = getFileFromBundle(bundlePath, @"devtools");
-	NSData* devtoolsInit = [devtoolsInitCode dataUsingEncoding:NSUTF8StringEncoding];
-	NSLog(@"Injecting React DevTools patch");
-	%orig(devtoolsInit, ENMITY_SOURCE, false);
+  @try {
+    NSString *devtoolsBundle = getFileFromBundle(bundlePath, @"devtools");
+    NSData *devtools = [devtoolsBundle dataUsingEncoding:NSUTF8StringEncoding];
+    NSLog(@"Injecting React DevTools patch");
+    %orig(devtools, ENMITY_SOURCE, false);
+  } @catch(NSException *e) {
+    NSLog(@"React DevTools failed to initialize. %@", e);
+  }
 
 	// Apply modules patch
-	NSString *modulesPatchCode = getFileFromBundle(bundlePath, @"modules");
-	NSData* modulesPatch = [modulesPatchCode dataUsingEncoding:NSUTF8StringEncoding];
-	NSLog(@"Injecting modules patch");
-	%orig(modulesPatch, ENMITY_SOURCE, false);
+	@try {
+    NSString *modulesBundle = getFileFromBundle(bundlePath, @"modules");
+    NSData *modules = [modulesBundle dataUsingEncoding:NSUTF8StringEncoding];
+
+    NSLog(@"Injecting modules patch");
+    %orig(modules, ENMITY_SOURCE, false);
+  } @catch(NSException *e) {
+    NSLog(@"Modules patch injection failed, expect issues. %@", e);
+  }
 
 	// Apply theme patch
 	NSString *theme = getTheme();
 	if (theme != nil) {
-		NSString *themeJson = getThemeJSON(theme);
-		NSString *themePatchCode = [NSString stringWithFormat:getFileFromBundle(bundlePath, @"themes"), themeJson];
+    @try {
+      NSString *json = getThemeJSON(theme);
+      NSString *themeBundle = [NSString stringWithFormat:getFileFromBundle(bundlePath, @"themes"), json];
+      NSData* theme = [themeBundle dataUsingEncoding:NSUTF8StringEncoding];
 
-		NSData* themePatch = [themePatchCode dataUsingEncoding:NSUTF8StringEncoding];
-		NSLog(@"Injecting theme patch");
-		%orig(themePatch, ENMITY_SOURCE, false);
+      NSLog(@"Injecting theme patch");
+      %orig(theme, ENMITY_SOURCE, false);
+    } @catch(NSException *e) {
+      NSLog(@"Theme patch injection failed, expect unthemed areas. %@", e);
+    }
 	}
 
-	// Load bundle
-	NSLog(@"Injecting bundle");
+	NSLog(@"Injecting discord's bundle");
 	%orig(script, url, false);
 
+  // Check for updates
 	if (checkForUpdate()) {
-		if (compareRemoteHashes()) {
-			NSLog(@"Downloading Enmity.js to %@", ENMITY_PATH);
-			downloadFile(getDownloadURL(), ENMITY_PATH);
-
-			// Check if Enmity hash is valid
-			if (!compareLocalHashes()) {
-				%orig([@"alert(`Enmity.js hash isn't matching, not injecting Enmity.`);" dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
-				return;
-			}
-		} else {
-			%orig([@"alert(`Enmity hashes check fail, skipping update and not injecting Enmity.`);" dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
-			return;
-		}
+    NSLog(@"Downloading Enmity.js to %@", ENMITY_PATH);
+    downloadFile(getDownloadURL(), ENMITY_PATH);
 	}
 
 	// Check if Enmity was downloaded properly
@@ -74,13 +60,19 @@
 	}
 
 	// Global values
-	NSString *debugCode = [NSString stringWithFormat:@"window.enmity_debug = %s;", IS_DEBUG ? "true" : "false"];
-	%orig([debugCode dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
+  NSString *debugState = [NSString stringWithFormat:@"window.enmity_debug = %s;", IS_DEBUG ? "true" : "false"];
+  %orig([debugState dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
+
+
+  // Bind debug bundle ip address
 	if (IS_DEBUG) {
 		NSString *debugIpCode = [NSString stringWithFormat:@"window.enmity_debug_ip = '%@';", DEBUG_IP];
 		%orig([debugIpCode dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
 	}
-	%orig([@"window.plugins = {}; window.plugins.enabled = []; window.plugins.disabled = [];" dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
+
+  // Initialize addon states
+  NSString *addonInit = @"window.plugins = { enabled: [], disabled: [] };";
+	%orig([addonInit dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
 
 	// Inject themes
 	NSArray *themesList = getThemes();
@@ -90,48 +82,79 @@
 
 	NSMutableArray *themes = [[NSMutableArray alloc] init];
 	for (NSString *theme in themesList) {
-		NSString *themeJson = getThemeJSON(theme);
-		[themes addObject:themeJson];
+    @try {
+      NSString *themeJson = getThemeJSON(theme);
+      [themes addObject:themeJson];
+    } @catch(NSException *e) {
+      // RIP.
+    }
 	}
 
-	NSString *themesCode = [NSString stringWithFormat:@"window.themes = {}; window.themes.list = [%@]; window.themes.theme = \"%@\";", [themes componentsJoinedByString:@","], theme];
-	%orig([themesCode dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
+  @try {
+    NSString *themesBundle = [NSString stringWithFormat:@"window.themes = {}; window.themes.list = [%@]; window.themes.theme = \"%@\";", [themes componentsJoinedByString:@","], theme];
+
+    NSLog(@"Injecting themes storage patch.");
+    %orig([themesBundle dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
+  } @catch(NSException *e) {
+    NSLog(@"Failed to inject themes storage patch. %@", e);
+  }
 
 	// Inject Enmity script
-	NSError* error = nil;
-	NSData* enmity = [NSData dataWithContentsOfFile:ENMITY_PATH options:0 error:&error];
-	if (error) {
-		NSLog(@"Couldn't load Enmity.js");
-		return;
-	}
+  @try {
+    NSError* error = nil;
+    NSData* enmity = [NSData dataWithContentsOfFile:ENMITY_PATH options:0 error:&error];
+    if (error) {
+      NSLog(@"Couldn't load Enmity.js");
+      return;
+    }
 
-	NSString *enmityCode = [[NSString alloc] initWithData:enmity encoding:NSUTF8StringEncoding];
-	enmityCode = wrapPlugin(enmityCode, 9000, @"Enmity.js");
+    NSString *code = [[NSString alloc] initWithData:enmity encoding:NSUTF8StringEncoding];
+    code = wrapPlugin(code, 9000, @"Enmity.js");
 
-	NSLog(@"Injecting Enmity");
-	%orig([enmityCode dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
+    NSLog(@"Injecting enmity's bundle");
+    %orig([code dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
+  } @catch(NSException *e) {
+    NSLog(@"Failed to load enmity bundle, enmity will not work. %@", e);
+    return;
+  }
+
 
 	// Load plugins
 	NSLog(@"Injecting Plugins");
-	NSArray* pluginsList = getPlugins();
-	int pluginID = 9001;
-	for (NSString *plugin in pluginsList) {
-		NSString *pluginPath = getPluginPath(plugin);
+	NSArray* plugins = getPlugins();
 
-		%orig([[NSString stringWithFormat:@"window.plugins.%s.push('%@')", isEnabled(pluginPath) ? "enabled" : "disabled", getPluginName([NSURL URLWithString:plugin])] dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
+	int moduleID = 9001;
+
+	for (NSString *plugin in plugins) {
+		NSString *path = getPluginPath(plugin);
+    NSString *name = getPluginName([NSURL URLWithString:plugin]);
+
+    @try {
+      char *enabled = isEnabled(path) ? "enabled" : "disabled";
+      NSString *code = [NSString stringWithFormat:@"window.plugins.%s.push('%@')", enabled, name];
+
+      %orig([code dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
+    } @catch(NSException *e) {
+      NSLog(@"Failed to push plugin %@. %@", name, e);
+      continue;
+    }
 
 		NSError* error = nil;
-		NSData* pluginData = [NSData dataWithContentsOfFile:pluginPath options:0 error:&error];
+		NSData* data = [NSData dataWithContentsOfFile:path options:0 error:&error];
 		if (error) {
 			NSLog(@"Couldn't load %@", plugin);
 			continue;
 		}
 
-		NSString *pluginCode = [[NSString alloc] initWithData:pluginData encoding:NSUTF8StringEncoding];
+		NSString *bundle = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 
-		NSLog(@"Injecting %@", plugin);
-		%orig([wrapPlugin(pluginCode, pluginID, plugin) dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
-		pluginID += 1;
+    @try {
+      NSLog(@"Injecting %@", plugin);
+      %orig([wrapPlugin(bundle, moduleID, plugin) dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
+      moduleID += 1;
+    } @catch(NSException *e) {
+      NSLog(@"Failed to inject %@. %@", plugin, e);
+    }
 	}
 }
 

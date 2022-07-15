@@ -50,65 +50,6 @@ BOOL checkForUpdate() {
   return false;
 }
 
-NSString* getHash(NSString *url) {
-  NSMutableURLRequest *hashRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
-  NSError *err;
-  NSData *hash = [NSURLConnection sendSynchronousRequest:hashRequest returningResponse:nil error:&err];
-
-  if (err) {
-    return nil;
-  }
-
-  return [[NSString alloc] initWithData:hash encoding:NSUTF8StringEncoding];
-}
-
-// Make sure the Enmity hash matches with the github hash
-BOOL compareRemoteHashes() {
-  if (IS_DEBUG || IS_BLEEDING_EDGE) {
-    return true;
-  }
-
-  NSString *githubHash = getHash(GITHUB_HASH);
-  if (githubHash == nil) {
-    return false;
-  }
-
-  NSString *remoteHash = getHash(REMOTE_HASH);
-  if (remoteHash == nil) {
-    return false;
-  }
-
-  return [githubHash isEqualToString:remoteHash];
-}
-
-// Make sure the downloaded Enmity file matches with the Github hash
-BOOL compareLocalHashes() {
-  if (IS_DEBUG || IS_BLEEDING_EDGE) {
-    return true;
-  }
-
-  NSString *githubHash = getHash(GITHUB_HASH);
-  if (githubHash == nil) {
-    return false;
-  }
-
-  NSError *err;
-  NSData *enmityFile = [NSData dataWithContentsOfFile:ENMITY_PATH options:0 error:&err];
-  if (err) {
-    return false;
-  }
-
-  unsigned char enmityRawHash[CC_SHA256_DIGEST_LENGTH];
-	CC_SHA256(enmityFile.bytes, enmityFile.length, enmityRawHash);
-
-  NSMutableString *enmityHash = [NSMutableString stringWithCapacity:CC_SHA256_DIGEST_LENGTH * 2];
-	for (int i = 0; i < CC_SHA256_DIGEST_LENGTH; i++) {
-		[enmityHash appendFormat:@"%02x", enmityRawHash[i]];
-	}
-
-  return [githubHash isEqualToString:enmityHash];
-}
-
 // Download a file
 BOOL downloadFile(NSString *source, NSString *dest) {
   NSMutableURLRequest *downloadRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:source]];
