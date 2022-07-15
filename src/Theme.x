@@ -453,6 +453,9 @@ id originalKeyboardColor;
 - (void)configureSubviewsWithContentAdjustment:(double)arg1 {
 	%orig;
 
+  id chatColor = getColor(@"BACKGROUND_PRIMARY");
+  [self setBackgroundColor:chatColor];
+
 	UIView *subview = [self.subviews firstObject];
 	if ([subview isKindOfClass:[UIImageView class]]) {
 		return;
