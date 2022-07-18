@@ -56,7 +56,7 @@ BOOL installPlugin(NSURL *url) {
   }
 
   BOOL success = downloadFile(url.absoluteString, dest);
-  
+
   return success;
 }
 
@@ -68,9 +68,7 @@ BOOL deletePlugin(NSString *name) {
 
   NSFileManager *fileManager = [NSFileManager defaultManager];
   NSError *err;
-  [fileManager
-    removeItemAtPath:getPluginPath(name)
-    error:&err];
+  [fileManager removeItemAtPath:getPluginPath(name) error:&err];
 
   if (err) {
     return false;
@@ -104,7 +102,7 @@ BOOL disablePlugin(NSString *name) {
 // Enable a plugin
 BOOL enablePlugin(NSString *name) {
   NSString *path = getPluginPath(name);
-  
+
   if (isEnabled(path)) {
     return false;
   }

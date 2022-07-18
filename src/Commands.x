@@ -44,12 +44,9 @@ BOOL validateCommand(NSString *command) {
 
 // Clean the received command
 NSString* cleanCommand(NSString *command) {
-  NSString *json = [[command
-            stringByReplacingOccurrencesOfString:ENMITY_PROTOCOL
-            withString:@""]
-          stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+  NSString *json = [[command stringByReplacingOccurrencesOfString:ENMITY_PROTOCOL withString:@""] stringByRemovingPercentEncoding];
 
-  NSLog(@"json: %@", json);
+  NSLog(@"json payload cleaned: %@", json);
 
   return json;
 }

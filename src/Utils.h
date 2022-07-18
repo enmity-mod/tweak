@@ -4,7 +4,7 @@
 
 #define BUNDLE_PATH @"/Library/Application Support/Enmity/EnmityFiles.bundle"
 
-#if BLEEDING_EDGE == 1
+#ifdef BETA
 #   define IS_BLEEDING_EDGE true
 #   define ENMITY_URL @"https://raw.githubusercontent.com/enmity-mod/enmity/main/dist/Enmity.js"
 #else

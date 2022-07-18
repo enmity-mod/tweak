@@ -29,7 +29,7 @@ jobs:
 
       - name: Prepare Theos
         uses: Randomblock1/theos-action@v1
-      
+
       - name: Prepare Azule
         run : |
           git clone https://github.com/Al4ise/Azule ${{ github.workspace }}/Azule
@@ -46,19 +46,19 @@ jobs:
       - name: Build package
         run: |
           rm -f packages/*
-          make package FINALPACKAGE=1 BLEEDING_EDGE=1
+          make package FINALPACKAGE=1 BETA=1
 
       - name: Find deb
         id: find_deb
         run : |
           echo "::set-output name=deb::$(find packages -name "*.deb" -print -quit)"
-      
+
       - name: Create Enmity.ipa
         run : |
           mkdir out
           ${{ github.workspace }}/Azule/azule -p "Enmity Alpha" -i Enmity.ipa -o out -f ${{ steps.find_deb.outputs.deb }}
           mv $(find out -name "*.ipa" -print -quit) out/Enmity-Alpha.ipa
-        
+
       - name: Set outputs
         id: vars
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
