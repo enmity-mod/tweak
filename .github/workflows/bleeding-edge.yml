@@ -16,7 +16,7 @@ jobs:
           submodules: true
 
       - name: Check cache
-        id: verifiy-cache
+        id: verify-cache
         run: |
           echo "::set-output name=heads::`git ls-remote https://github.com/theos/theos | head -n 1 | cut -f 1`-`git ls-remote https://github.com/theos/sdks | head -n 1 | cut -f 1`"
 
@@ -66,7 +66,7 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: alpha-${{ steps.vars.outputs.sha_short }}
+          tag_name: v${{ steps.vars.outputs.sha_short }} ALPHA
           files:  |
             ${{ steps.find_deb.outputs.deb }}
             out/Enmity-Alpha.ipa
