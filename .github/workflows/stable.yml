@@ -72,7 +72,7 @@ jobs:
         run : |
           echo "::set-output name=deb::$(find packages -name "*.deb" -print -quit)"
 
-      - name: Create Enmity.ipa
+      - name: Create Enmity.Dev.ipa
         run : |
           mkdir out
           ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f ${{ steps.find_deb_dev.outputs.deb }}
