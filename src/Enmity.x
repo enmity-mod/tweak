@@ -4,17 +4,26 @@
 
 %hook RCTCxxBridge
 
+#ifdef DEVTOOLS
+#    define DEVTOOLS_ENABLED true
+#else
+#    define DEVTOOLS_ENABLED false
+#endif
+
 - (void)executeApplicationScript:(NSData *)script url:(NSURL *)url async:(BOOL)async {
 	NSString *bundlePath = getBundlePath();
 
-	// Apply React DevTools patch
-  @try {
-    NSString *devtoolsBundle = getFileFromBundle(bundlePath, @"devtools");
-    NSData *devtools = [devtoolsBundle dataUsingEncoding:NSUTF8StringEncoding];
-    NSLog(@"Injecting React DevTools patch");
-    %orig(devtools, ENMITY_SOURCE, false);
-  } @catch(NSException *e) {
-    NSLog(@"React DevTools failed to initialize. %@", e);
+
+	// Apply React DevTools patch if its enabled
+  if (DEVTOOLS_ENABLED) {
+    @try {
+      NSString *devtoolsBundle = getFileFromBundle(bundlePath, @"devtools");
+      NSData *devtools = [devtoolsBundle dataUsingEncoding:NSUTF8StringEncoding];
+      NSLog(@"Injecting React DevTools patch");
+      %orig(devtools, ENMITY_SOURCE, false);
+    } @catch(NSException *e) {
+      NSLog(@"React DevTools failed to initialize. %@", e);
+    }
   }
 
 	// Apply modules patch
