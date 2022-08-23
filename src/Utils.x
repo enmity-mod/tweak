@@ -4,7 +4,7 @@
 // Get the download url for Enmity.js
 NSString* getDownloadURL() {
   if (!IS_DEBUG) {
-    return ENMITY_URL;
+    return @"https://raw.githubusercontent.com/enmity-mod/enmity/main/dist/Enmity.js";
   }
 
   return [NSString stringWithFormat:@"http://%@:8080/Enmity.js", DEBUG_IP];
@@ -12,7 +12,7 @@ NSString* getDownloadURL() {
 
 // Check for update
 BOOL checkForUpdate() {
-  if (IS_DEBUG || IS_BLEEDING_EDGE) {
+  if (IS_DEBUG) {
     return true;
   }
 
