@@ -49,6 +49,7 @@ jobs:
       - name: Build package
         run: |
           rm -f packages/*
+          mkdir out
           make clean package FINALPACKAGE=1
 
       - name: Find deb
@@ -59,7 +60,6 @@ jobs:
 
       - name: Create Enmity.ipa
         run : |
-          mkdir out
           ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f out/Enmity.deb
           mv $(find out -name "*.ipa" -print -quit) out/Enmity.ipa
 
