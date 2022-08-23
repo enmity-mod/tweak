@@ -49,34 +49,34 @@ jobs:
       - name: Build package
         run: |
           rm -f packages/*
-          make package FINALPACKAGE=1
+          make clean package FINALPACKAGE=1
 
       - name: Find deb
         id: find_deb
         run : |
           echo "::set-output name=deb::$(find packages -name "*.deb" -print -quit)"
-          mv $(find packages -name "*.deb" -print -quit) Enmity.deb
+          mv $(find packages -name "*.deb" -print -quit) out/Enmity.deb
 
       - name: Create Enmity.ipa
         run : |
           mkdir out
-          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f Enmity.deb
+          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f out/Enmity.deb
           mv $(find out -name "*.ipa" -print -quit) out/Enmity.ipa
 
       - name: Build dev deb
         run: |
           rm -f packages/*
-          make package FINALPACKAGE=1 DEVTOOLS=1
+          make clean package FINALPACKAGE=1 DEVTOOLS=1
 
       - name: Find dev deb
         id: find_deb_dev
         run : |
           echo "::set-output name=deb::$(find packages -name "*.deb" -print -quit)"
-          mv $(find packages -name "*.deb" -print -quit) Enmity.Dev.deb
+          mv $(find packages -name "*.deb" -print -quit) out/Enmity.Dev.deb
 
       - name: Create Enmity.Dev.ipa
         run : |
-          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f Enmity.Dev.deb
+          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f out/Enmity.Dev.deb
           mv $(find out -name "*.ipa" -print -quit) out/Enmity.Dev.ipa
 
       - name: Create release
@@ -84,7 +84,4 @@ jobs:
         with:
           tag_name: v${{ github.ref_name }}
           files:  |
-            Enmity.deb
-            Enmity.Dev.deb
-            out/Enmity.ipa
-            out/Enmity.Dev.ipa
+            out/*
