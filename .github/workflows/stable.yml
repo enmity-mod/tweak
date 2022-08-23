@@ -55,7 +55,7 @@ jobs:
         id: find_deb
         run : |
           echo "::set-output name=deb::$(find packages -name "*.deb" -print -quit)"
-          mv ${{ steps.find_deb.outputs.deb }} Enmity.deb
+          mv $(find packages -name "*.deb" -print -quit) Enmity.deb
 
       - name: Create Enmity.ipa
         run : |
@@ -71,7 +71,7 @@ jobs:
         id: find_deb_dev
         run : |
           echo "::set-output name=deb::$(find packages -name "*.deb" -print -quit)"
-          mv ${{ steps.find_deb_dev.outputs.deb }} Enmity.Dev.deb
+          mv $(find packages -name "*.deb" -print -quit) Enmity.Dev.deb
 
       - name: Create Enmity.Dev.ipa
         run : |
