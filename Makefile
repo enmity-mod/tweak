@@ -6,7 +6,7 @@ include $(THEOS)/makefiles/common.mk
 DEBUG_IP = 127.0.0.1
 TWEAK_NAME = Enmity
 Enmity_FILES = $(shell find src -name "*.x")
-Enmity_CFLAGS = -DDEBUG_IP=@\"$(DEBUG_IP)\" -DDEVTOOLS=$(DEVTOOLS) -fobjc-arc
+Enmity_CFLAGS = -DDEBUG_IP=@\"$(DEBUG_IP)\" -fobjc-arc
 Enmity_FRAMEWORKS = UIKit Foundation CoreGraphics CoreImage
 
 BUNDLE_NAME = EnmityFiles
