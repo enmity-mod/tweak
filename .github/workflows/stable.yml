@@ -55,12 +55,12 @@ jobs:
         id: find_deb
         run : |
           echo "::set-output name=deb::$(find packages -name "*.deb" -print -quit)"
+          mv ${{ steps.find_deb.outputs.deb }} Enmity.deb
 
       - name: Create Enmity.ipa
         run : |
           mkdir out
-          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f ${{ steps.find_deb.outputs.deb }}
-          mv $(find out -name "*.ipa" -print -quit) out/Enmity.ipa
+          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f Enmity.deb
 
       - name: Build dev deb
         run: |
@@ -71,19 +71,19 @@ jobs:
         id: find_deb_dev
         run : |
           echo "::set-output name=deb::$(find packages -name "*.deb" -print -quit)"
+          mv ${{ steps.find_deb_dev.outputs.deb }} Enmity.Dev.deb
 
       - name: Create Enmity.Dev.ipa
         run : |
           mkdir out
-          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f ${{ steps.find_deb_dev.outputs.deb }}
-          mv $(find out -name "*.ipa" -print -quit) out/Enmity.Dev.ipa
+          ${{ github.workspace }}/Azule/azule -i Enmity.Dev.ipa -o out -f Enmity.Dev.deb
 
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ github.ref_name }}
           files:  |
-            ${{ steps.find_deb.outputs.deb }}
-            ${{ steps.find_deb_dev.outputs.deb }}
-            out/Enmity.ipa
-            out/Enmity.Dev.ipa
+            Enmity.deb
+            Enmity.Dev.deb
+            Enmity.ipa
+            Enmity.Dev.ipa
