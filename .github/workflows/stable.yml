@@ -61,6 +61,7 @@ jobs:
       - name: Build package
         run: |
           rm -f packages/*
+          echo $"$(sed 's/Name\:.*/Name\: Enmity/' control)" > control
           make clean package FINALPACKAGE=1
           mv $(find packages -name "*.deb" -print -quit) out/Enmity.deb
 
