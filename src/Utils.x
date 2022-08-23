@@ -12,11 +12,11 @@ NSString* getDownloadURL() {
 
 // Check for update
 BOOL checkForUpdate() {
-  if (IS_DEBUG) {
+  if (IS_DEBUG || !checkFileExists(ENMITY_PATH)) {
     return true;
   }
 
-  NSMutableURLRequest *enmityRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:getDownloadURL()]];
+  NSMutableURLRequest *enmityRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://api.github.com/repos/enmity-mod/enmity/commits?path=dist%2FEnmity.js&page=1&per_page=1"]];
   enmityRequest.timeoutInterval = 5.0;
   enmityRequest.cachePolicy = NSURLRequestReloadIgnoringCacheData;
   NSHTTPURLResponse *response;
@@ -40,11 +40,6 @@ BOOL checkForUpdate() {
       [userDefaults setObject:lastModified forKey:@"enmity-version"];
       return true;
     }
-  }
-
-  // Force update if Enmity.js couldn't be found
-  if (!checkFileExists(ENMITY_PATH)) {
-    return true;
   }
 
   return false;
