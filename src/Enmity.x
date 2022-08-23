@@ -4,15 +4,8 @@
 
 %hook RCTCxxBridge
 
-#ifdef DEVTOOLS
-#    define DEVTOOLS_ENABLED true
-#else
-#    define DEVTOOLS_ENABLED false
-#endif
-
 - (void)executeApplicationScript:(NSData *)script url:(NSURL *)url async:(BOOL)async {
 	NSString *bundlePath = getBundlePath();
-
 
 	// Apply React DevTools patch if its enabled
   if (DEVTOOLS_ENABLED) {

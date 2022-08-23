@@ -50,7 +50,7 @@ jobs:
       - name: Build dev deb
         run: |
           rm -f packages/*
-          make clean package FINALPACKAGE=1 DEVTOOLS=1
+          make clean package FINALPACKAGE=1 DEVTOOLS
           mv $(find packages -name "*.deb" -print -quit) out/Enmity.Dev.deb
 
       - name: Create Enmity.Dev.ipa
