@@ -9,11 +9,11 @@
 #define ENMITY_PATH [NSString stringWithFormat:@"%@/%@", NSHomeDirectory(), @"Documents/Enmity.js"]
 #define ENMITY_SOURCE [NSURL URLWithString:@"enmity"]
 
-// Define the URL used to download Enmity, also disable logs in release mode
+// Disable logs in release mode
 #ifdef DEBUG
 #   define IS_DEBUG true
-#		define NSLog(fmt, ... ) NSLog((@"[Enmity-iOS] " fmt), ##__VA_ARGS__);
-#else 
+#   define NSLog(fmt, ... ) NSLog((@"[Enmity] " fmt), ##__VA_ARGS__);
+#else
 #   define IS_DEBUG false
-#		define NSLog(...) (void)0
+#   define NSLog(...) (void)0
 #endif

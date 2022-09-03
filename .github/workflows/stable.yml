@@ -47,28 +47,29 @@ jobs:
           ${{ github.workspace }}/patcher
           mkdir out
 
-      - name: Build dev deb
-        run: |
-          rm -f packages/*
-          make clean package FINALPACKAGE=1 DEVTOOLS=1
-          mv $(find packages -name "*.deb" -print -quit) out/Enmity.Dev.deb
-
-      - name: Create Enmity.Dev.ipa
-        run : |
-          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f out/Enmity.Dev.deb
-          mv out/Enmity+Enmity.Dev.deb.ipa out/Enmity.Dev.ipa
-
       - name: Build package
         run: |
           rm -f packages/*
-          echo $"$(sed 's/Name\:.*/Name\: Enmity/' control)" > control
           make clean package FINALPACKAGE=1
-          mv $(find packages -name "*.deb" -print -quit) out/Enmity.deb
+          mv $(find packages -name "*.deb" -print -quit) out/enmity.deb
 
       - name: Create Enmity.ipa
         run : |
-          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f out/Enmity.deb
-          mv out/Enmity+Enmity.deb.ipa out/Enmity.ipa
+          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f out/enmity.deb
+          mv out/Enmity+enmity.deb.ipa out/enmity.ipa
+
+      - name: Build dev deb
+        run: |
+          rm -f packages/*
+          echo $"$(sed 's/Name\:.*/Name\: Enmity (Dev)/' control)" > control
+          echo $"$(sed 's/Package\:.*/Package\: app.enmity.dev/' control)" > control
+          make clean package FINALPACKAGE=1 DEVTOOLS=1
+          mv $(find packages -name "*.deb" -print -quit) out/enmity.dev.deb
+
+      - name: Create Enmity.Dev.ipa
+        run : |
+          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f out/enmity.dev.deb
+          mv out/Enmity+enmity.dev.deb.ipa out/enmity.dev.ipa
 
       - name: Create release
         uses: softprops/action-gh-release@v1

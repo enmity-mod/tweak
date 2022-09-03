@@ -1,3 +1,3 @@
-import { connectToDevTools } from "react-devtools-core";
+import { connectToDevTools } from 'react-devtools-core';
 
-window.__enmityConnectToDevTools = connectToDevTools;
+window.connectToDevTools = connectToDevTools;
