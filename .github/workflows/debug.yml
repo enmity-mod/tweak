@@ -1,0 +1,66 @@
+name: Create a debug build (PRIVATE)
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and publish Enmity for iOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: 'main'
+          submodules: true
+
+      - name: Check cache
+        id: verify-cache
+        run: |
+          echo "::set-output name=heads::`git ls-remote https://github.com/theos/theos | head -n 1 | cut -f 1`-`git ls-remote https://github.com/theos/sdks | head -n 1 | cut -f 1`"
+      - name: Use cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ github.workspace }}/theos
+          key: ${{ runner.os }}-${{ steps.verify-cache.outputs.heads }}
+
+      - name: Prepare Theos
+        uses: Randomblock1/theos-action@v1
+
+      - name: Prepare Azule
+        run : |
+          git clone https://github.com/Al4ise/Azule ${{ github.workspace }}/Azule
+      - name: Prepare Enmity Patcher
+        run : |
+          curl -L https://github.com/enmity-mod/patcher/releases/latest/download/patcher.mac-amd64 -o ${{ github.workspace }}/patcher
+          chmod +x patcher
+      - name: Patch Discord
+        run : |
+          ${{ github.workspace }}/patcher
+          mkdir out
+      - name: Build package
+        run: |
+          rm -f packages/*
+          make clean package 
+          mv $(find packages -name "*.deb" -print -quit) out/enmity.deb
+      - name: Create Enmity.ipa
+        run : |
+          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f out/enmity.deb
+          mv out/Enmity+enmity.deb.ipa out/enmity.ipa
+      - name: Build dev deb
+        run: |
+          rm -f packages/*
+          echo $"$(sed 's/Name\:.*/Name\: Enmity (Dev)/' control)" > control
+          echo $"$(sed 's/Package\:.*/Package\: app.enmity.dev/' control)" > control
+          make clean package FINALPACKAGE=1 DEVTOOLS=1
+          mv $(find packages -name "*.deb" -print -quit) out/enmity.dev.deb
+      - name: Create Enmity.Dev.ipa
+        run : |
+          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f out/enmity.dev.deb
+          mv out/Enmity+enmity.dev.deb.ipa out/enmity.dev.ipa
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ github.ref_name }}
+          prerelease: true
+          files:  |
+            out/*
