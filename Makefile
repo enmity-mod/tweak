@@ -3,7 +3,7 @@ TARGET := iphone:clang:latest:7.0
 
 include $(THEOS)/makefiles/common.mk
 
-DEBUG_IP = 127.0.0.1
+DEBUG_IP = 192.168.0.35
 TWEAK_NAME = Enmity
 DEVTOOLS = 0
 Enmity_FILES = $(shell find src -name "*.x")
