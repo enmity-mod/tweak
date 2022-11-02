@@ -60,7 +60,7 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ github.ref_name }}
+          tag_name: DEBUG
           prerelease: true
           files:  |
             out/*
