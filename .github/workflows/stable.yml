@@ -51,12 +51,12 @@ jobs:
         run: |
           rm -f packages/*
           make clean package FINALPACKAGE=1
-          mv $(find packages -name "*.deb" -print -quit) out/enmity.deb
+          mv $(find packages -name "*.deb" -print -quit) out/Enmity.deb
 
       - name: Create Enmity.ipa
         run : |
           ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f out/enmity.deb
-          mv out/Enmity+enmity.deb.ipa out/enmity.ipa
+          mv out/Enmity+enmity.deb.ipa out/Enmity.ipa
 
       - name: Build dev deb
         run: |
@@ -64,12 +64,12 @@ jobs:
           echo $"$(sed 's/Name\:.*/Name\: Enmity (Dev)/' control)" > control
           echo $"$(sed 's/Package\:.*/Package\: app.enmity.dev/' control)" > control
           make clean package FINALPACKAGE=1 DEVTOOLS=1
-          mv $(find packages -name "*.deb" -print -quit) out/enmity.dev.deb
+          mv $(find packages -name "*.deb" -print -quit) out/Enmity.Development.deb
 
       - name: Create Enmity.Dev.ipa
         run : |
-          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f out/enmity.dev.deb
-          mv out/Enmity+enmity.dev.deb.ipa out/enmity.dev.ipa
+          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f out/Enmity.Development.deb
+          mv out/Enmity+enmity.dev.deb.ipa out/Enmity.Development.ipa
 
       - name: Create release
         uses: softprops/action-gh-release@v1
