@@ -50,7 +50,7 @@ jobs:
       - name: Build package
         run: |
           rm -f packages/*
-          make clean package FINALPACKAGE=1
+          gmake clean package FINALPACKAGE=1
           mv $(find packages -name "*.deb" -print -quit) out/Enmity.deb
 
       - name: Create Enmity.ipa
@@ -63,7 +63,7 @@ jobs:
           rm -f packages/*
           echo $"$(sed 's/Name\:.*/Name\: Enmity (Dev)/' control)" > control
           echo $"$(sed 's/Package\:.*/Package\: app.enmity.dev/' control)" > control
-          make clean package FINALPACKAGE=1 DEVTOOLS=1
+          gmake clean package FINALPACKAGE=1 DEVTOOLS=1
           mv $(find packages -name "*.deb" -print -quit) out/Enmity.Development.deb
 
       - name: Create Enmity.Dev.ipa
