@@ -37,8 +37,9 @@ jobs:
           echo $"$(sed 's/Name\:.*/Name\: Enmity (Dev)/' control)" > control
           echo $"$(sed 's/Package\:.*/Package\: app.enmity.dev/' control)" > control
           gmake clean package FINALPACKAGE=1 DEVTOOLS=1
+          mkdir out
           mv $(find packages -name "*.deb" -print -quit) out/Enmity.Development.deb
-          
+
       - name: Create release
         uses: marvinpinto/action-automatic-releases@latest
         with:
