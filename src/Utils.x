@@ -3,7 +3,7 @@
 
 // Get the download url for Enmity.js
 NSString* getDownloadURL() {
-  return @"http://rosies-macbook-air.local:2222/Enmity.js";
+  return @"https://raw.githubusercontent.com/acquitelol/enmity/main/dist/Enmity.js";
 }
 
 // Check for update
