@@ -1,4 +1,5 @@
 {
+	"type": "module",
 	"dependencies": {
 		"@rollup/plugin-commonjs": "^22.0.1",
 		"@rollup/plugin-node-resolve": "^13.3.0",
@@ -6,5 +7,8 @@
 		"react-devtools-core": "^4.24.7",
 		"rollup": "^2.75.7",
 		"rollup-plugin-esbuild": "^4.9.1"
+	},
+	"devDependencies": {
+		"xregexp": "^5.1.1"
 	}
 }

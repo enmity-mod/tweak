@@ -501,1630 +501,205 @@ id originalKeyboardColor;
 	%init(KEYBOARD);
 }
 
+// Simple macro to decrease that ~2000 line of code madness of death into ~700
+// I don't understand why this wasnt done to begin with.
+// If a color needed special treatment it could be done without the macro, but most if not all the colors were the exact same but with different IDs.
+#define HOOK_COLOR(clr) \
+    + (id)clr { \
+        id original = %orig; \
+        id color = getColor(@#clr); \
+        \
+        if (color) { \
+            return color; \
+        } \
+        \
+        return original; \
+    }
+
 // Rain hellfire on discord.
 %hook UIColor
 
-// Mention bubble text
-+ (id)BRAND_NEW_260 {
-    id original = %orig;
-    id color = getColor(@"BRAND_NEW_260");
+HOOK_COLOR(BRAND_NEW_260)
+HOOK_COLOR(BRAND_NEW_300)
+HOOK_COLOR(BRAND_NEW_330)
+HOOK_COLOR(BRAND_NEW_345)
+HOOK_COLOR(BRAND_NEW_360)
+HOOK_COLOR(BRAND_NEW_400)
+HOOK_COLOR(BRAND_NEW_430)
+HOOK_COLOR(BRAND_NEW_460)
+HOOK_COLOR(BRAND_NEW_500)
+HOOK_COLOR(BRAND_NEW_530)
+HOOK_COLOR(BRAND_NEW_560)
+HOOK_COLOR(BRAND_NEW_600)
+HOOK_COLOR(BRAND_NEW_630)
+HOOK_COLOR(BRAND_NEW_660)
+HOOK_COLOR(BRAND_NEW_700)
+HOOK_COLOR(BRAND_260)
+HOOK_COLOR(BRAND_300)
+HOOK_COLOR(BRAND_330)
+HOOK_COLOR(BRAND_345)
+HOOK_COLOR(BRAND_360)
+HOOK_COLOR(BRAND_400)
+HOOK_COLOR(BRAND_430)
+HOOK_COLOR(BRAND_460)
+HOOK_COLOR(BRAND_500)
+HOOK_COLOR(BRAND_530)
+HOOK_COLOR(BRAND_560)
+HOOK_COLOR(BRAND_600)
+HOOK_COLOR(BRAND_630)
+HOOK_COLOR(BRAND_660)
+HOOK_COLOR(BRAND_700)
 
-    if (color) {
-        return color;
-    }
+HOOK_COLOR(BRAND_NEW)
+HOOK_COLOR(BRAND)
 
-    return original;
-}
+HOOK_COLOR(STATUS_YELLOW)
 
-// Mention bubble background color
-+ (id)BRAND_NEW_500 {
-    id original = %orig;
-    id color = getColor(@"BRAND_NEW_500");
-
-    if (color) {
-        return color;
-    }
-
-    return original;
-}
-
-// Bot tag color
-+ (id)BRAND_NEW {
-    id original = %orig;
-    id color = getColor(@"BRAND_NEW");
-
-    if (color) {
-        return color;
-    }
-
-    return original;
-}
-
-// outer border of reaction color (hopefully??????)
-+ (id)BRAND {
-	id original = %orig;
-	id color = getColor(@"BRAND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-// Message view mention background color
-+ (id)STATUS_YELLOW {
-    id original = %orig;
-    id color = getColor(@"STATUS_YELLOW");
-
-    if (color) {
-        return color;
-    }
-
-    return original;
-}
 %end
 
 %hook DCDThemeColor
-+ (id)HEADER_PRIMARY {
-	id original = %orig;
-	id color = getColor(@"HEADER_PRIMARY");
 
-	if (color) {
-		return color;
-	}
+HOOK_COLOR(HEADER_PRIMARY)
+HOOK_COLOR(HEADER_SECONDARY)
+HOOK_COLOR(TEXT_NORMAL)
+HOOK_COLOR(TEXT_MUTED)
+HOOK_COLOR(TEXT_LINK)
+HOOK_COLOR(TEXT_LINK_LOW_SATURATION)
+HOOK_COLOR(TEXT_POSITIVE)
+HOOK_COLOR(TEXT_WARNING)
+HOOK_COLOR(TEXT_DANGER)
+HOOK_COLOR(TEXT_BRAND)
+HOOK_COLOR(INTERACTIVE_NORMAL)
+HOOK_COLOR(INTERACTIVE_HOVER)
+HOOK_COLOR(INTERACTIVE_ACTIVE)
+HOOK_COLOR(INTERACTIVE_MUTED)
+HOOK_COLOR(BACKGROUND_PRIMARY)
+HOOK_COLOR(BACKGROUND_SECONDARY)
+HOOK_COLOR(BACKGROUND_SECONDARY_ALT)
+HOOK_COLOR(BACKGROUND_TERTIARY)
+HOOK_COLOR(BACKGROUND_ACCENT)
+HOOK_COLOR(BACKGROUND_FLOATING)
+HOOK_COLOR(BACKGROUND_NESTED_FLOATING)
+HOOK_COLOR(BACKGROUND_MOBILE_PRIMARY)
+HOOK_COLOR(BACKGROUND_MOBILE_SECONDARY)
+HOOK_COLOR(CHAT_BACKGROUND)
+HOOK_COLOR(CHAT_BORDER)
+HOOK_COLOR(CHAT_INPUT_CONTAINER_BACKGROUND)
+HOOK_COLOR(BACKGROUND_MODIFIER_HOVER)
+HOOK_COLOR(BACKGROUND_MODIFIER_ACTIVE)
+HOOK_COLOR(BACKGROUND_MODIFIER_SELECTED)
+HOOK_COLOR(BACKGROUND_MODIFIER_ACCENT)
+HOOK_COLOR(INFO_POSITIVE_BACKGROUND)
+HOOK_COLOR(INFO_POSITIVE_FOREGROUND)
+HOOK_COLOR(INFO_POSITIVE_TEXT)
+HOOK_COLOR(INFO_WARNING_BACKGROUND)
+HOOK_COLOR(INFO_WARNING_FOREGROUND)
+HOOK_COLOR(INFO_WARNING_TEXT)
+HOOK_COLOR(INFO_DANGER_BACKGROUND)
+HOOK_COLOR(INFO_DANGER_FOREGROUND)
+HOOK_COLOR(INFO_DANGER_TEXT)
+HOOK_COLOR(INFO_HELP_BACKGROUND)
+HOOK_COLOR(INFO_HELP_FOREGROUND)
+HOOK_COLOR(INFO_HELP_TEXT)
+HOOK_COLOR(STATUS_POSITIVE_BACKGROUND)
+HOOK_COLOR(STATUS_POSITIVE_TEXT)
+HOOK_COLOR(STATUS_WARNING_BACKGROUND)
+HOOK_COLOR(STATUS_WARNING_TEXT)
+HOOK_COLOR(STATUS_DANGER_BACKGROUND)
+HOOK_COLOR(STATUS_DANGER_TEXT)
+HOOK_COLOR(STATUS_DANGER)
+HOOK_COLOR(STATUS_POSITIVE)
+HOOK_COLOR(STATUS_WARNING)
+HOOK_COLOR(BUTTON_DANGER_BACKGROUND)
+HOOK_COLOR(BUTTON_DANGER_BACKGROUND_HOVER)
+HOOK_COLOR(BUTTON_DANGER_BACKGROUND_ACTIVE)
+HOOK_COLOR(BUTTON_DANGER_BACKGROUND_DISABLED)
+HOOK_COLOR(BUTTON_POSITIVE_BACKGROUND)
+HOOK_COLOR(BUTTON_POSITIVE_BACKGROUND_HOVER)
+HOOK_COLOR(BUTTON_POSITIVE_BACKGROUND_ACTIVE)
+HOOK_COLOR(BUTTON_POSITIVE_BACKGROUND_DISABLED)
+HOOK_COLOR(BUTTON_SECONDARY_BACKGROUND)
+HOOK_COLOR(BUTTON_SECONDARY_BACKGROUND_HOVER)
+HOOK_COLOR(BUTTON_SECONDARY_BACKGROUND_ACTIVE)
+HOOK_COLOR(BUTTON_SECONDARY_BACKGROUND_DISABLED)
+HOOK_COLOR(BUTTON_OUTLINE_DANGER_TEXT)
+HOOK_COLOR(BUTTON_OUTLINE_DANGER_BORDER)
+HOOK_COLOR(BUTTON_OUTLINE_DANGER_BACKGROUND)
+HOOK_COLOR(BUTTON_OUTLINE_DANGER_BACKGROUND_HOVER)
+HOOK_COLOR(BUTTON_OUTLINE_DANGER_TEXT_HOVER)
+HOOK_COLOR(BUTTON_OUTLINE_DANGER_BORDER_HOVER)
+HOOK_COLOR(BUTTON_OUTLINE_DANGER_BACKGROUND_ACTIVE)
+HOOK_COLOR(BUTTON_OUTLINE_DANGER_TEXT_ACTIVE)
+HOOK_COLOR(BUTTON_OUTLINE_DANGER_BORDER_ACTIVE)
+HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_TEXT)
+HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_BORDER)
+HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_BACKGROUND)
+HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_BACKGROUND_HOVER)
+HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_TEXT_HOVER)
+HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_BORDER_HOVER)
+HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_BACKGROUND_ACTIVE)
+HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_TEXT_ACTIVE)
+HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_BORDER_ACTIVE)
+HOOK_COLOR(BUTTON_OUTLINE_BRAND_TEXT)
+HOOK_COLOR(BUTTON_OUTLINE_BRAND_BORDER)
+HOOK_COLOR(BUTTON_OUTLINE_BRAND_BACKGROUND)
+HOOK_COLOR(BUTTON_OUTLINE_BRAND_BACKGROUND_HOVER)
+HOOK_COLOR(BUTTON_OUTLINE_BRAND_TEXT_HOVER)
+HOOK_COLOR(BUTTON_OUTLINE_BRAND_BORDER_HOVER)
+HOOK_COLOR(BUTTON_OUTLINE_BRAND_BACKGROUND_ACTIVE)
+HOOK_COLOR(BUTTON_OUTLINE_BRAND_TEXT_ACTIVE)
+HOOK_COLOR(BUTTON_OUTLINE_BRAND_BORDER_ACTIVE)
+HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_TEXT)
+HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_BORDER)
+HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_BACKGROUND)
+HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_BACKGROUND_HOVER)
+HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_TEXT_HOVER)
+HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_BORDER_HOVER)
+HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_BACKGROUND_ACTIVE)
+HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_TEXT_ACTIVE)
+HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_BORDER_ACTIVE)
+HOOK_COLOR(MODAL_BACKGROUND)
+HOOK_COLOR(MODAL_FOOTER_BACKGROUND)
+HOOK_COLOR(SCROLLBAR_THIN_THUMB)
+HOOK_COLOR(SCROLLBAR_THIN_TRACK)
+HOOK_COLOR(SCROLLBAR_AUTO_THUMB)
+HOOK_COLOR(SCROLLBAR_AUTO_TRACK)
+HOOK_COLOR(SCROLLBAR_AUTO_SCROLLBAR_COLOR_THUMB)
+HOOK_COLOR(SCROLLBAR_AUTO_SCROLLBAR_COLOR_TRACK)
+HOOK_COLOR(INPUT_BACKGROUND)
+HOOK_COLOR(INPUT_PLACEHOLDER_TEXT)
+HOOK_COLOR(ELEVATION_STROKE)
+HOOK_COLOR(ELEVATION_LOW)
+HOOK_COLOR(ELEVATION_MEDIUM)
+HOOK_COLOR(ELEVATION_HIGH)
+HOOK_COLOR(LOGO_PRIMARY)
+HOOK_COLOR(FOCUS_PRIMARY)
+HOOK_COLOR(CONTROL_BRAND_FOREGROUND)
+HOOK_COLOR(CONTROL_BRAND_FOREGROUND_NEW)
+HOOK_COLOR(BACKGROUND_MENTIONED)
+HOOK_COLOR(BACKGROUND_MENTIONED_HOVER)
+HOOK_COLOR(BACKGROUND_MESSAGE_HOVER)
+HOOK_COLOR(BACKGROUND_MESSAGE_AUTOMOD)
+HOOK_COLOR(BACKGROUND_MESSAGE_AUTOMOD_HOVER)
+HOOK_COLOR(CHANNELS_DEFAULT)
+HOOK_COLOR(CHANNEL_ICON)
+HOOK_COLOR(CHANNEL_TEXT_AREA_PLACEHOLDER)
+HOOK_COLOR(GUILD_HEADER_TEXT_SHADOW)
+HOOK_COLOR(CHANNELTEXTAREA_BACKGROUND)
+HOOK_COLOR(ACTIVITY_CARD_BACKGROUND)
+HOOK_COLOR(TEXTBOX_MARKDOWN_SYNTAX)
+HOOK_COLOR(SPOILER_REVEALED_BACKGROUND)
+HOOK_COLOR(SPOILER_HIDDEN_BACKGROUND)
+HOOK_COLOR(ANDROID_NAVIGATION_BAR_BACKGROUND)
+HOOK_COLOR(DEPRECATED_CARD_BG)
+HOOK_COLOR(DEPRECATED_CARD_EDITABLE_BG)
+HOOK_COLOR(DEPRECATED_STORE_BG)
+HOOK_COLOR(DEPRECATED_QUICKSWITCHER_INPUT_BACKGROUND)
+HOOK_COLOR(DEPRECATED_QUICKSWITCHER_INPUT_PLACEHOLDER)
+HOOK_COLOR(DEPRECATED_TEXT_INPUT_BG)
+HOOK_COLOR(DEPRECATED_TEXT_INPUT_BORDER)
+HOOK_COLOR(DEPRECATED_TEXT_INPUT_BORDER_HOVER)
+HOOK_COLOR(DEPRECATED_TEXT_INPUT_BORDER_DISABLED)
+HOOK_COLOR(DEPRECATED_TEXT_INPUT_PREFIX)
 
-	return original;
-}
-
-+ (id)HEADER_SECONDARY {
-	id original = %orig;
-	id color = getColor(@"HEADER_SECONDARY");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)TEXT_NORMAL {
-	id original = %orig;
-	id color = getColor(@"TEXT_NORMAL");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)TEXT_MUTED {
-	id original = %orig;
-	id color = getColor(@"TEXT_MUTED");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)TEXT_LINK {
-	id original = %orig;
-	id color = getColor(@"TEXT_LINK");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)TEXT_LINK_LOW_SATURATION {
-	id original = %orig;
-	id color = getColor(@"TEXT_LINK_LOW_SATURATION");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)TEXT_POSITIVE {
-	id original = %orig;
-	id color = getColor(@"TEXT_POSITIVE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)TEXT_WARNING {
-	id original = %orig;
-	id color = getColor(@"TEXT_WARNING");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)TEXT_DANGER {
-	id original = %orig;
-	id color = getColor(@"TEXT_DANGER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)TEXT_BRAND {
-	id original = %orig;
-	id color = getColor(@"TEXT_BRAND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)INTERACTIVE_NORMAL {
-	id original = %orig;
-	id color = getColor(@"INTERACTIVE_NORMAL");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)INTERACTIVE_HOVER {
-	id original = %orig;
-	id color = getColor(@"INTERACTIVE_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)INTERACTIVE_ACTIVE {
-	id original = %orig;
-	id color = getColor(@"INTERACTIVE_ACTIVE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)INTERACTIVE_MUTED {
-	id original = %orig;
-	id color = getColor(@"INTERACTIVE_MUTED");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BACKGROUND_PRIMARY {
-	id original = %orig;
-	id color = getColor(@"BACKGROUND_PRIMARY");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BACKGROUND_SECONDARY {
-	id original = %orig;
-	id color = getColor(@"BACKGROUND_SECONDARY");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BACKGROUND_SECONDARY_ALT {
-	id original = %orig;
-	id color = getColor(@"BACKGROUND_SECONDARY_ALT");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BACKGROUND_TERTIARY {
-	id original = %orig;
-	id color = getColor(@"BACKGROUND_TERTIARY");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BACKGROUND_ACCENT {
-	id original = %orig;
-	id color = getColor(@"BACKGROUND_ACCENT");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BACKGROUND_FLOATING {
-	id original = %orig;
-	id color = getColor(@"BACKGROUND_FLOATING");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BACKGROUND_NESTED_FLOATING {
-	id original = %orig;
-	id color = getColor(@"BACKGROUND_NESTED_FLOATING");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BACKGROUND_MOBILE_PRIMARY {
-	id original = %orig;
-	id color = getColor(@"BACKGROUND_MOBILE_PRIMARY");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BACKGROUND_MOBILE_SECONDARY {
-	id original = %orig;
-	id color = getColor(@"BACKGROUND_MOBILE_SECONDARY");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)CHAT_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"CHAT_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)CHAT_BORDER {
-	id original = %orig;
-	id color = getColor(@"CHAT_BORDER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)CHAT_INPUT_CONTAINER_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"CHAT_INPUT_CONTAINER_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BACKGROUND_MODIFIER_HOVER {
-	id original = %orig;
-	id color = getColor(@"BACKGROUND_MODIFIER_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BACKGROUND_MODIFIER_ACTIVE {
-	id original = %orig;
-	id color = getColor(@"BACKGROUND_MODIFIER_ACTIVE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BACKGROUND_MODIFIER_SELECTED {
-	id original = %orig;
-	id color = getColor(@"BACKGROUND_MODIFIER_SELECTED");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BACKGROUND_MODIFIER_ACCENT {
-	id original = %orig;
-	id color = getColor(@"BACKGROUND_MODIFIER_ACCENT");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)INFO_POSITIVE_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"INFO_POSITIVE_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)INFO_POSITIVE_FOREGROUND {
-	id original = %orig;
-	id color = getColor(@"INFO_POSITIVE_FOREGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)INFO_POSITIVE_TEXT {
-	id original = %orig;
-	id color = getColor(@"INFO_POSITIVE_TEXT");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)INFO_WARNING_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"INFO_WARNING_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)INFO_WARNING_FOREGROUND {
-	id original = %orig;
-	id color = getColor(@"INFO_WARNING_FOREGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)INFO_WARNING_TEXT {
-	id original = %orig;
-	id color = getColor(@"INFO_WARNING_TEXT");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)INFO_DANGER_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"INFO_DANGER_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)INFO_DANGER_FOREGROUND {
-	id original = %orig;
-	id color = getColor(@"INFO_DANGER_FOREGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)INFO_DANGER_TEXT {
-	id original = %orig;
-	id color = getColor(@"INFO_DANGER_TEXT");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)INFO_HELP_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"INFO_HELP_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)INFO_HELP_FOREGROUND {
-	id original = %orig;
-	id color = getColor(@"INFO_HELP_FOREGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)INFO_HELP_TEXT {
-	id original = %orig;
-	id color = getColor(@"INFO_HELP_TEXT");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)STATUS_POSITIVE_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"STATUS_POSITIVE_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)STATUS_POSITIVE_TEXT {
-	id original = %orig;
-	id color = getColor(@"STATUS_POSITIVE_TEXT");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)STATUS_WARNING_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"STATUS_WARNING_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)STATUS_WARNING_TEXT {
-	id original = %orig;
-	id color = getColor(@"STATUS_WARNING_TEXT");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)STATUS_DANGER_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"STATUS_DANGER_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)STATUS_DANGER_TEXT {
-	id original = %orig;
-	id color = getColor(@"STATUS_DANGER_TEXT");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)STATUS_DANGER {
-	id original = %orig;
-	id color = getColor(@"STATUS_DANGER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)STATUS_POSITIVE {
-	id original = %orig;
-	id color = getColor(@"STATUS_POSITIVE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)STATUS_WARNING {
-	id original = %orig;
-	id color = getColor(@"STATUS_WARNING");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_DANGER_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"BUTTON_DANGER_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_DANGER_BACKGROUND_HOVER {
-	id original = %orig;
-	id color = getColor(@"BUTTON_DANGER_BACKGROUND_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_DANGER_BACKGROUND_ACTIVE {
-	id original = %orig;
-	id color = getColor(@"BUTTON_DANGER_BACKGROUND_ACTIVE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_DANGER_BACKGROUND_DISABLED {
-	id original = %orig;
-	id color = getColor(@"BUTTON_DANGER_BACKGROUND_DISABLED");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_POSITIVE_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"BUTTON_POSITIVE_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_POSITIVE_BACKGROUND_HOVER {
-	id original = %orig;
-	id color = getColor(@"BUTTON_POSITIVE_BACKGROUND_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_POSITIVE_BACKGROUND_ACTIVE {
-	id original = %orig;
-	id color = getColor(@"BUTTON_POSITIVE_BACKGROUND_ACTIVE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_POSITIVE_BACKGROUND_DISABLED {
-	id original = %orig;
-	id color = getColor(@"BUTTON_POSITIVE_BACKGROUND_DISABLED");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_SECONDARY_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"BUTTON_SECONDARY_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_SECONDARY_BACKGROUND_HOVER {
-	id original = %orig;
-	id color = getColor(@"BUTTON_SECONDARY_BACKGROUND_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_SECONDARY_BACKGROUND_ACTIVE {
-	id original = %orig;
-	id color = getColor(@"BUTTON_SECONDARY_BACKGROUND_ACTIVE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_SECONDARY_BACKGROUND_DISABLED {
-	id original = %orig;
-	id color = getColor(@"BUTTON_SECONDARY_BACKGROUND_DISABLED");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_DANGER_TEXT {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_DANGER_TEXT");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_DANGER_BORDER {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_DANGER_BORDER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_DANGER_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_DANGER_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_DANGER_BACKGROUND_HOVER {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_DANGER_BACKGROUND_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_DANGER_TEXT_HOVER {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_DANGER_TEXT_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_DANGER_BORDER_HOVER {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_DANGER_BORDER_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_DANGER_BACKGROUND_ACTIVE {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_DANGER_BACKGROUND_ACTIVE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_DANGER_TEXT_ACTIVE {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_DANGER_TEXT_ACTIVE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_DANGER_BORDER_ACTIVE {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_DANGER_BORDER_ACTIVE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_POSITIVE_TEXT {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_POSITIVE_TEXT");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_POSITIVE_BORDER {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_POSITIVE_BORDER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_POSITIVE_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_POSITIVE_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_POSITIVE_BACKGROUND_HOVER {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_POSITIVE_BACKGROUND_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_POSITIVE_TEXT_HOVER {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_POSITIVE_TEXT_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_POSITIVE_BORDER_HOVER {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_POSITIVE_BORDER_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_POSITIVE_BACKGROUND_ACTIVE {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_POSITIVE_BACKGROUND_ACTIVE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_POSITIVE_TEXT_ACTIVE {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_POSITIVE_TEXT_ACTIVE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_POSITIVE_BORDER_ACTIVE {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_POSITIVE_BORDER_ACTIVE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_BRAND_TEXT {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_BRAND_TEXT");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_BRAND_BORDER {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_BRAND_BORDER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_BRAND_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_BRAND_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_BRAND_BACKGROUND_HOVER {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_BRAND_BACKGROUND_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_BRAND_TEXT_HOVER {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_BRAND_TEXT_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_BRAND_BORDER_HOVER {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_BRAND_BORDER_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_BRAND_BACKGROUND_ACTIVE {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_BRAND_BACKGROUND_ACTIVE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_BRAND_TEXT_ACTIVE {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_BRAND_TEXT_ACTIVE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_BRAND_BORDER_ACTIVE {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_BRAND_BORDER_ACTIVE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_PRIMARY_TEXT {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_PRIMARY_TEXT");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_PRIMARY_BORDER {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_PRIMARY_BORDER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_PRIMARY_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_PRIMARY_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_PRIMARY_BACKGROUND_HOVER {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_PRIMARY_BACKGROUND_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_PRIMARY_TEXT_HOVER {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_PRIMARY_TEXT_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_PRIMARY_BORDER_HOVER {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_PRIMARY_BORDER_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_PRIMARY_BACKGROUND_ACTIVE {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_PRIMARY_BACKGROUND_ACTIVE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_PRIMARY_TEXT_ACTIVE {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_PRIMARY_TEXT_ACTIVE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BUTTON_OUTLINE_PRIMARY_BORDER_ACTIVE {
-	id original = %orig;
-	id color = getColor(@"BUTTON_OUTLINE_PRIMARY_BORDER_ACTIVE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)MODAL_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"MODAL_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)MODAL_FOOTER_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"MODAL_FOOTER_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)SCROLLBAR_THIN_THUMB {
-	id original = %orig;
-	id color = getColor(@"SCROLLBAR_THIN_THUMB");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)SCROLLBAR_THIN_TRACK {
-	id original = %orig;
-	id color = getColor(@"SCROLLBAR_THIN_TRACK");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)SCROLLBAR_AUTO_THUMB {
-	id original = %orig;
-	id color = getColor(@"SCROLLBAR_AUTO_THUMB");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)SCROLLBAR_AUTO_TRACK {
-	id original = %orig;
-	id color = getColor(@"SCROLLBAR_AUTO_TRACK");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)SCROLLBAR_AUTO_SCROLLBAR_COLOR_THUMB {
-	id original = %orig;
-	id color = getColor(@"SCROLLBAR_AUTO_SCROLLBAR_COLOR_THUMB");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)SCROLLBAR_AUTO_SCROLLBAR_COLOR_TRACK {
-	id original = %orig;
-	id color = getColor(@"SCROLLBAR_AUTO_SCROLLBAR_COLOR_TRACK");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)INPUT_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"INPUT_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)INPUT_PLACEHOLDER_TEXT {
-	id original = %orig;
-	id color = getColor(@"INPUT_PLACEHOLDER_TEXT");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)ELEVATION_STROKE {
-	id original = %orig;
-	id color = getColor(@"ELEVATION_STROKE");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)ELEVATION_LOW {
-	id original = %orig;
-	id color = getColor(@"ELEVATION_LOW");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)ELEVATION_MEDIUM {
-	id original = %orig;
-	id color = getColor(@"ELEVATION_MEDIUM");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)ELEVATION_HIGH {
-	id original = %orig;
-	id color = getColor(@"ELEVATION_HIGH");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)LOGO_PRIMARY {
-	id original = %orig;
-	id color = getColor(@"LOGO_PRIMARY");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)FOCUS_PRIMARY {
-	id original = %orig;
-	id color = getColor(@"FOCUS_PRIMARY");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)CONTROL_BRAND_FOREGROUND {
-	id original = %orig;
-	id color = getColor(@"CONTROL_BRAND_FOREGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)CONTROL_BRAND_FOREGROUND_NEW {
-	id original = %orig;
-	id color = getColor(@"CONTROL_BRAND_FOREGROUND_NEW");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BACKGROUND_MENTIONED {
-	id original = %orig;
-	id color = getColor(@"BACKGROUND_MENTIONED");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BACKGROUND_MENTIONED_HOVER {
-	id original = %orig;
-	id color = getColor(@"BACKGROUND_MENTIONED_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BACKGROUND_MESSAGE_HOVER {
-	id original = %orig;
-	id color = getColor(@"BACKGROUND_MESSAGE_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BACKGROUND_MESSAGE_AUTOMOD {
-	id original = %orig;
-	id color = getColor(@"BACKGROUND_MESSAGE_AUTOMOD");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)BACKGROUND_MESSAGE_AUTOMOD_HOVER {
-	id original = %orig;
-	id color = getColor(@"BACKGROUND_MESSAGE_AUTOMOD_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)CHANNELS_DEFAULT {
-	id original = %orig;
-	id color = getColor(@"CHANNELS_DEFAULT");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)CHANNEL_ICON {
-	id original = %orig;
-	id color = getColor(@"CHANNEL_ICON");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)CHANNEL_TEXT_AREA_PLACEHOLDER {
-	id original = %orig;
-	id color = getColor(@"CHANNEL_TEXT_AREA_PLACEHOLDER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)GUILD_HEADER_TEXT_SHADOW {
-	id original = %orig;
-	id color = getColor(@"GUILD_HEADER_TEXT_SHADOW");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)CHANNELTEXTAREA_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"CHANNELTEXTAREA_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)ACTIVITY_CARD_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"ACTIVITY_CARD_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)TEXTBOX_MARKDOWN_SYNTAX {
-	id original = %orig;
-	id color = getColor(@"TEXTBOX_MARKDOWN_SYNTAX");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)SPOILER_REVEALED_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"SPOILER_REVEALED_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)SPOILER_HIDDEN_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"SPOILER_HIDDEN_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)ANDROID_NAVIGATION_BAR_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"ANDROID_NAVIGATION_BAR_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)DEPRECATED_CARD_BG {
-	id original = %orig;
-	id color = getColor(@"DEPRECATED_CARD_BG");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)DEPRECATED_CARD_EDITABLE_BG {
-	id original = %orig;
-	id color = getColor(@"DEPRECATED_CARD_EDITABLE_BG");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)DEPRECATED_STORE_BG {
-	id original = %orig;
-	id color = getColor(@"DEPRECATED_STORE_BG");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)DEPRECATED_QUICKSWITCHER_INPUT_BACKGROUND {
-	id original = %orig;
-	id color = getColor(@"DEPRECATED_QUICKSWITCHER_INPUT_BACKGROUND");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)DEPRECATED_QUICKSWITCHER_INPUT_PLACEHOLDER {
-	id original = %orig;
-	id color = getColor(@"DEPRECATED_QUICKSWITCHER_INPUT_PLACEHOLDER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)DEPRECATED_TEXT_INPUT_BG {
-	id original = %orig;
-	id color = getColor(@"DEPRECATED_TEXT_INPUT_BG");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)DEPRECATED_TEXT_INPUT_BORDER {
-	id original = %orig;
-	id color = getColor(@"DEPRECATED_TEXT_INPUT_BORDER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)DEPRECATED_TEXT_INPUT_BORDER_HOVER {
-	id original = %orig;
-	id color = getColor(@"DEPRECATED_TEXT_INPUT_BORDER_HOVER");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)DEPRECATED_TEXT_INPUT_BORDER_DISABLED {
-	id original = %orig;
-	id color = getColor(@"DEPRECATED_TEXT_INPUT_BORDER_DISABLED");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
-
-+ (id)DEPRECATED_TEXT_INPUT_PREFIX {
-	id original = %orig;
-	id color = getColor(@"DEPRECATED_TEXT_INPUT_PREFIX");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
-}
 %end
