@@ -502,6 +502,57 @@ id originalKeyboardColor;
 }
 
 // Rain hellfire on discord.
+%hook UIColor
+
+// Mention bubble text
++ (id)BRAND_NEW_260 {
+    id original = %orig;
+    id color = getColor(@"BRAND_NEW_260");
+
+    if (color) {
+        return color;
+    }
+
+    return original;
+}
+
+// Mention bubble background color
++ (id)BRAND_NEW_500 {
+    id original = %orig;
+    id color = getColor(@"BRAND_NEW_500");
+
+    if (color) {
+        return color;
+    }
+
+    return original;
+}
+
+// Bot tag color
++ (id)BRAND_NEW {
+    id original = %orig;
+    id color = getColor(@"BRAND_NEW");
+
+    if (color) {
+        return color;
+    }
+
+    return original;
+}
+
+// Message view mention background color
++ (id)STATUS_YELLOW {
+    id original = %orig;
+    id color = getColor(@"STATUS_YELLOW");
+
+    if (color) {
+        return color;
+    }
+
+    return original;
+}
+%end
+
 %hook DCDThemeColor
 + (id)HEADER_PRIMARY {
 	id original = %orig;

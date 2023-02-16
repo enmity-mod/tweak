@@ -3,7 +3,7 @@ Name: Enmity
 Version: 2.1.4
 Architecture: iphoneos-arm
 Description: The power of addons, all in your hand.
-Maintainer: Zoey, eternal
+Maintainer: Zoey, eternal, rosie (locally)
 Author: Enmity Team
 Section: Tweaks
 Depends: mobilesubstrate (>= 0.9.5000)
