@@ -543,7 +543,7 @@ id originalKeyboardColor;
 // One of these is the correct color that im looking for (mention border)
 + (id)BRAND_NEW_345 {
 	id original = %orig;
-	id color = getColor(@"BRAND_NEW_345")
+	id color = getColor(@"BRAND_NEW_345");
 
 	if (color) {
 		return color;
@@ -554,7 +554,7 @@ id originalKeyboardColor;
 
 + (id)BRAND_NEW_360 {
 	id original = %orig;
-	id color = getColor(@"BRAND_NEW_360")
+	id color = getColor(@"BRAND_NEW_360");
 
 	if (color) {
 		return color;
