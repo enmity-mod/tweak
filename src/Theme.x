@@ -549,7 +549,7 @@ id originalKeyboardColor;
 		return color;
 	}
 
-	return original
+	return original;
 }
 
 // Message view mention background color
