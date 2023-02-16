@@ -540,27 +540,16 @@ id originalKeyboardColor;
     return original;
 }
 
-// One of these is the correct color that im looking for (mention border)
-+ (id)BRAND_NEW_345 {
+// outer border of reaction color (hopefully??????)
++ (id)BRAND {
 	id original = %orig;
-	id color = getColor(@"BRAND_NEW_345");
+	id color = getColor(@"BRAND");
 
 	if (color) {
 		return color;
 	}
 
-	return original;
-}
-
-+ (id)BRAND_NEW_360 {
-	id original = %orig;
-	id color = getColor(@"BRAND_NEW_360");
-
-	if (color) {
-		return color;
-	}
-
-	return original;
+	return original
 }
 
 // Message view mention background color
