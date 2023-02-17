@@ -453,10 +453,10 @@ id originalKeyboardColor;
 - (void)configureSubviewsWithContentAdjustment:(double)arg1 {
 	%orig;
 
-  id chatColor = getColor(@"BACKGROUND_PRIMARY");
-  if (chatColor) {
-    [self setBackgroundColor:chatColor];
-  }
+	id chatColor = getColor(@"BACKGROUND_PRIMARY");
+	if (chatColor) {
+		[self setBackgroundColor:chatColor];
+	}
 
 	UIView *subview = [self.subviews firstObject];
 	if ([subview isKindOfClass:[UIImageView class]]) {
@@ -467,9 +467,9 @@ id originalKeyboardColor;
 		background = getBackgroundMap();
 	}
 
-  if (background == nil) {
-    return;
-  }
+	if (background == nil) {
+		return;
+	}
 
 	NSString *url = getBackgroundURL();
 
@@ -511,215 +511,203 @@ static id HookColor(Class cls, SEL selector, id origColor) {
     return origColor;
 }
 
+/**
+ * ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+ *
+ * DCDThemeColor Hooking
+ *
+ * ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+ */
 %hook UIColor
 
-+ (void)load {
-    SEL sel;
-    IMP imp = (IMP)&HookColor;
++ (id)BRAND_NEW_260 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_NEW_300 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_NEW_330 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_NEW_345 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_NEW_360 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_NEW_400 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_NEW_430 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_NEW_460 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_NEW_500 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_NEW_530 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_NEW_560 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_NEW_600 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_NEW_630 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_NEW_660 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_NEW_700 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_260 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_300 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_330 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_345 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_360 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_400 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_430 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_460 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_500 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_530 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_560 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_600 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_630 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_660 { return HookColor(self, _cmd, %orig); }
++ (id)BRAND_700 { return HookColor(self, _cmd, %orig); }
 
-	#define HOOK_COLOR(clr) \
-		sel = NSSelectorFromString(@#clr); \
-		if (![self respondsToSelector:sel]) { \
-			class_addMethod(self, sel, imp, "@@:"); \
-		}
++ (id)BRAND_NEW { return HookColor(self, _cmd, %orig); }
++ (id)BRAND { return HookColor(self, _cmd, %orig); }
 
-	HOOK_COLOR(BRAND_NEW_260)
-	HOOK_COLOR(BRAND_NEW_300)
-	HOOK_COLOR(BRAND_NEW_330)
-	HOOK_COLOR(BRAND_NEW_345)
-	HOOK_COLOR(BRAND_NEW_360)
-	HOOK_COLOR(BRAND_NEW_400)
-	HOOK_COLOR(BRAND_NEW_430)
-	HOOK_COLOR(BRAND_NEW_460)
-	HOOK_COLOR(BRAND_NEW_500)
-	HOOK_COLOR(BRAND_NEW_530)
-	HOOK_COLOR(BRAND_NEW_560)
-	HOOK_COLOR(BRAND_NEW_600)
-	HOOK_COLOR(BRAND_NEW_630)
-	HOOK_COLOR(BRAND_NEW_660)
-	HOOK_COLOR(BRAND_NEW_700)
-	HOOK_COLOR(BRAND_260)
-	HOOK_COLOR(BRAND_300)
-	HOOK_COLOR(BRAND_330)
-	HOOK_COLOR(BRAND_345)
-	HOOK_COLOR(BRAND_360)
-	HOOK_COLOR(BRAND_400)
-	HOOK_COLOR(BRAND_430)
-	HOOK_COLOR(BRAND_460)
-	HOOK_COLOR(BRAND_500)
-	HOOK_COLOR(BRAND_530)
-	HOOK_COLOR(BRAND_560)
-	HOOK_COLOR(BRAND_600)
-	HOOK_COLOR(BRAND_630)
-	HOOK_COLOR(BRAND_660)
-	HOOK_COLOR(BRAND_700)
-
-	HOOK_COLOR(BRAND_NEW)
-	HOOK_COLOR(BRAND)
-
-	HOOK_COLOR(STATUS_YELLOW)
-
-	#undef HOOK_COLOR
-}
++ (id)STATUS_YELLOW { return HookColor(self, _cmd, %orig); }
 
 %end
 
+/**
+ * ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+ *
+ * DCDThemeColor Hooking
+ *
+ * ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+ */
 %hook DCDThemeColor
 
-+ (void)load {
-    SEL sel;
-    IMP imp = (IMP)&HookColor;
-
-	#define HOOK_COLOR(clr) \
-		sel = NSSelectorFromString(@#clr); \
-		if (![self respondsToSelector:sel]) { \
-			class_addMethod(self, sel, imp, "@@:"); \
-		}
-
-	HOOK_COLOR(HEADER_PRIMARY)
-	HOOK_COLOR(HEADER_SECONDARY)
-	HOOK_COLOR(TEXT_NORMAL)
-	HOOK_COLOR(TEXT_MUTED)
-	HOOK_COLOR(TEXT_LINK)
-	HOOK_COLOR(TEXT_LINK_LOW_SATURATION)
-	HOOK_COLOR(TEXT_POSITIVE)
-	HOOK_COLOR(TEXT_WARNING)
-	HOOK_COLOR(TEXT_DANGER)
-	HOOK_COLOR(TEXT_BRAND)
-	HOOK_COLOR(INTERACTIVE_NORMAL)
-	HOOK_COLOR(INTERACTIVE_HOVER)
-	HOOK_COLOR(INTERACTIVE_ACTIVE)
-	HOOK_COLOR(INTERACTIVE_MUTED)
-	HOOK_COLOR(BACKGROUND_PRIMARY)
-	HOOK_COLOR(BACKGROUND_SECONDARY)
-	HOOK_COLOR(BACKGROUND_SECONDARY_ALT)
-	HOOK_COLOR(BACKGROUND_TERTIARY)
-	HOOK_COLOR(BACKGROUND_ACCENT)
-	HOOK_COLOR(BACKGROUND_FLOATING)
-	HOOK_COLOR(BACKGROUND_NESTED_FLOATING)
-	HOOK_COLOR(BACKGROUND_MOBILE_PRIMARY)
-	HOOK_COLOR(BACKGROUND_MOBILE_SECONDARY)
-	HOOK_COLOR(CHAT_BACKGROUND)
-	HOOK_COLOR(CHAT_BORDER)
-	HOOK_COLOR(CHAT_INPUT_CONTAINER_BACKGROUND)
-	HOOK_COLOR(BACKGROUND_MODIFIER_HOVER)
-	HOOK_COLOR(BACKGROUND_MODIFIER_ACTIVE)
-	HOOK_COLOR(BACKGROUND_MODIFIER_SELECTED)
-	HOOK_COLOR(BACKGROUND_MODIFIER_ACCENT)
-	HOOK_COLOR(INFO_POSITIVE_BACKGROUND)
-	HOOK_COLOR(INFO_POSITIVE_FOREGROUND)
-	HOOK_COLOR(INFO_POSITIVE_TEXT)
-	HOOK_COLOR(INFO_WARNING_BACKGROUND)
-	HOOK_COLOR(INFO_WARNING_FOREGROUND)
-	HOOK_COLOR(INFO_WARNING_TEXT)
-	HOOK_COLOR(INFO_DANGER_BACKGROUND)
-	HOOK_COLOR(INFO_DANGER_FOREGROUND)
-	HOOK_COLOR(INFO_DANGER_TEXT)
-	HOOK_COLOR(INFO_HELP_BACKGROUND)
-	HOOK_COLOR(INFO_HELP_FOREGROUND)
-	HOOK_COLOR(INFO_HELP_TEXT)
-	HOOK_COLOR(STATUS_POSITIVE_BACKGROUND)
-	HOOK_COLOR(STATUS_POSITIVE_TEXT)
-	HOOK_COLOR(STATUS_WARNING_BACKGROUND)
-	HOOK_COLOR(STATUS_WARNING_TEXT)
-	HOOK_COLOR(STATUS_DANGER_BACKGROUND)
-	HOOK_COLOR(STATUS_DANGER_TEXT)
-	HOOK_COLOR(STATUS_DANGER)
-	HOOK_COLOR(STATUS_POSITIVE)
-	HOOK_COLOR(STATUS_WARNING)
-	HOOK_COLOR(BUTTON_DANGER_BACKGROUND)
-	HOOK_COLOR(BUTTON_DANGER_BACKGROUND_HOVER)
-	HOOK_COLOR(BUTTON_DANGER_BACKGROUND_ACTIVE)
-	HOOK_COLOR(BUTTON_DANGER_BACKGROUND_DISABLED)
-	HOOK_COLOR(BUTTON_POSITIVE_BACKGROUND)
-	HOOK_COLOR(BUTTON_POSITIVE_BACKGROUND_HOVER)
-	HOOK_COLOR(BUTTON_POSITIVE_BACKGROUND_ACTIVE)
-	HOOK_COLOR(BUTTON_POSITIVE_BACKGROUND_DISABLED)
-	HOOK_COLOR(BUTTON_SECONDARY_BACKGROUND)
-	HOOK_COLOR(BUTTON_SECONDARY_BACKGROUND_HOVER)
-	HOOK_COLOR(BUTTON_SECONDARY_BACKGROUND_ACTIVE)
-	HOOK_COLOR(BUTTON_SECONDARY_BACKGROUND_DISABLED)
-	HOOK_COLOR(BUTTON_OUTLINE_DANGER_TEXT)
-	HOOK_COLOR(BUTTON_OUTLINE_DANGER_BORDER)
-	HOOK_COLOR(BUTTON_OUTLINE_DANGER_BACKGROUND)
-	HOOK_COLOR(BUTTON_OUTLINE_DANGER_BACKGROUND_HOVER)
-	HOOK_COLOR(BUTTON_OUTLINE_DANGER_TEXT_HOVER)
-	HOOK_COLOR(BUTTON_OUTLINE_DANGER_BORDER_HOVER)
-	HOOK_COLOR(BUTTON_OUTLINE_DANGER_BACKGROUND_ACTIVE)
-	HOOK_COLOR(BUTTON_OUTLINE_DANGER_TEXT_ACTIVE)
-	HOOK_COLOR(BUTTON_OUTLINE_DANGER_BORDER_ACTIVE)
-	HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_TEXT)
-	HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_BORDER)
-	HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_BACKGROUND)
-	HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_BACKGROUND_HOVER)
-	HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_TEXT_HOVER)
-	HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_BORDER_HOVER)
-	HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_BACKGROUND_ACTIVE)
-	HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_TEXT_ACTIVE)
-	HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_BORDER_ACTIVE)
-	HOOK_COLOR(BUTTON_OUTLINE_BRAND_TEXT)
-	HOOK_COLOR(BUTTON_OUTLINE_BRAND_BORDER)
-	HOOK_COLOR(BUTTON_OUTLINE_BRAND_BACKGROUND)
-	HOOK_COLOR(BUTTON_OUTLINE_BRAND_BACKGROUND_HOVER)
-	HOOK_COLOR(BUTTON_OUTLINE_BRAND_TEXT_HOVER)
-	HOOK_COLOR(BUTTON_OUTLINE_BRAND_BORDER_HOVER)
-	HOOK_COLOR(BUTTON_OUTLINE_BRAND_BACKGROUND_ACTIVE)
-	HOOK_COLOR(BUTTON_OUTLINE_BRAND_TEXT_ACTIVE)
-	HOOK_COLOR(BUTTON_OUTLINE_BRAND_BORDER_ACTIVE)
-	HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_TEXT)
-	HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_BORDER)
-	HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_BACKGROUND)
-	HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_BACKGROUND_HOVER)
-	HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_TEXT_HOVER)
-	HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_BORDER_HOVER)
-	HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_BACKGROUND_ACTIVE)
-	HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_TEXT_ACTIVE)
-	HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_BORDER_ACTIVE)
-	HOOK_COLOR(MODAL_BACKGROUND)
-	HOOK_COLOR(MODAL_FOOTER_BACKGROUND)
-	HOOK_COLOR(SCROLLBAR_THIN_THUMB)
-	HOOK_COLOR(SCROLLBAR_THIN_TRACK)
-	HOOK_COLOR(SCROLLBAR_AUTO_THUMB)
-	HOOK_COLOR(SCROLLBAR_AUTO_TRACK)
-	HOOK_COLOR(SCROLLBAR_AUTO_SCROLLBAR_COLOR_THUMB)
-	HOOK_COLOR(SCROLLBAR_AUTO_SCROLLBAR_COLOR_TRACK)
-	HOOK_COLOR(INPUT_BACKGROUND)
-	HOOK_COLOR(INPUT_PLACEHOLDER_TEXT)
-	HOOK_COLOR(ELEVATION_STROKE)
-	HOOK_COLOR(ELEVATION_LOW)
-	HOOK_COLOR(ELEVATION_MEDIUM)
-	HOOK_COLOR(ELEVATION_HIGH)
-	HOOK_COLOR(LOGO_PRIMARY)
-	HOOK_COLOR(FOCUS_PRIMARY)
-	HOOK_COLOR(CONTROL_BRAND_FOREGROUND)
-	HOOK_COLOR(CONTROL_BRAND_FOREGROUND_NEW)
-	HOOK_COLOR(BACKGROUND_MENTIONED)
-	HOOK_COLOR(BACKGROUND_MENTIONED_HOVER)
-	HOOK_COLOR(BACKGROUND_MESSAGE_HOVER)
-	HOOK_COLOR(BACKGROUND_MESSAGE_AUTOMOD)
-	HOOK_COLOR(BACKGROUND_MESSAGE_AUTOMOD_HOVER)
-	HOOK_COLOR(CHANNELS_DEFAULT)
-	HOOK_COLOR(CHANNEL_ICON)
-	HOOK_COLOR(CHANNEL_TEXT_AREA_PLACEHOLDER)
-	HOOK_COLOR(GUILD_HEADER_TEXT_SHADOW)
-	HOOK_COLOR(CHANNELTEXTAREA_BACKGROUND)
-	HOOK_COLOR(ACTIVITY_CARD_BACKGROUND)
-	HOOK_COLOR(TEXTBOX_MARKDOWN_SYNTAX)
-	HOOK_COLOR(SPOILER_REVEALED_BACKGROUND)
-	HOOK_COLOR(SPOILER_HIDDEN_BACKGROUND)
-	HOOK_COLOR(ANDROID_NAVIGATION_BAR_BACKGROUND)
-	HOOK_COLOR(DEPRECATED_CARD_BG)
-	HOOK_COLOR(DEPRECATED_CARD_EDITABLE_BG)
-	HOOK_COLOR(DEPRECATED_STORE_BG)
-	HOOK_COLOR(DEPRECATED_QUICKSWITCHER_INPUT_BACKGROUND)
-	HOOK_COLOR(DEPRECATED_QUICKSWITCHER_INPUT_PLACEHOLDER)
-	HOOK_COLOR(DEPRECATED_TEXT_INPUT_BG)
-	HOOK_COLOR(DEPRECATED_TEXT_INPUT_BORDER)
-	HOOK_COLOR(DEPRECATED_TEXT_INPUT_BORDER_HOVER)
-	HOOK_COLOR(DEPRECATED_TEXT_INPUT_BORDER_DISABLED)
-	HOOK_COLOR(DEPRECATED_TEXT_INPUT_PREFIX)
-
-	#undef HOOK_COLOR
-}
++ (id)HEADER_PRIMARY { return HookColor(self, _cmd, %orig); }
++ (id)HEADER_SECONDARY { return HookColor(self, _cmd, %orig); }
++ (id)TEXT_NORMAL { return HookColor(self, _cmd, %orig); }
++ (id)TEXT_MUTED { return HookColor(self, _cmd, %orig); }
++ (id)TEXT_LINK { return HookColor(self, _cmd, %orig); }
++ (id)TEXT_LINK_LOW_SATURATION { return HookColor(self, _cmd, %orig); }
++ (id)TEXT_POSITIVE { return HookColor(self, _cmd, %orig); }
++ (id)TEXT_WARNING { return HookColor(self, _cmd, %orig); }
++ (id)TEXT_DANGER { return HookColor(self, _cmd, %orig); }
++ (id)TEXT_BRAND { return HookColor(self, _cmd, %orig); }
++ (id)INTERACTIVE_NORMAL { return HookColor(self, _cmd, %orig); }
++ (id)INTERACTIVE_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)INTERACTIVE_ACTIVE { return HookColor(self, _cmd, %orig); }
++ (id)INTERACTIVE_MUTED { return HookColor(self, _cmd, %orig); }
++ (id)BACKGROUND_PRIMARY { return HookColor(self, _cmd, %orig); }
++ (id)BACKGROUND_SECONDARY { return HookColor(self, _cmd, %orig); }
++ (id)BACKGROUND_SECONDARY_ALT { return HookColor(self, _cmd, %orig); }
++ (id)BACKGROUND_TERTIARY { return HookColor(self, _cmd, %orig); }
++ (id)BACKGROUND_ACCENT { return HookColor(self, _cmd, %orig); }
++ (id)BACKGROUND_FLOATING { return HookColor(self, _cmd, %orig); }
++ (id)BACKGROUND_NESTED_FLOATING { return HookColor(self, _cmd, %orig); }
++ (id)BACKGROUND_MOBILE_PRIMARY { return HookColor(self, _cmd, %orig); }
++ (id)BACKGROUND_MOBILE_SECONDARY { return HookColor(self, _cmd, %orig); }
++ (id)CHAT_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)CHAT_BORDER { return HookColor(self, _cmd, %orig); }
++ (id)CHAT_INPUT_CONTAINER_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)BACKGROUND_MODIFIER_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)BACKGROUND_MODIFIER_ACTIVE { return HookColor(self, _cmd, %orig); }
++ (id)BACKGROUND_MODIFIER_SELECTED { return HookColor(self, _cmd, %orig); }
++ (id)BACKGROUND_MODIFIER_ACCENT { return HookColor(self, _cmd, %orig); }
++ (id)INFO_POSITIVE_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)INFO_POSITIVE_FOREGROUND { return HookColor(self, _cmd, %orig); }
++ (id)INFO_POSITIVE_TEXT { return HookColor(self, _cmd, %orig); }
++ (id)INFO_WARNING_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)INFO_WARNING_FOREGROUND { return HookColor(self, _cmd, %orig); }
++ (id)INFO_WARNING_TEXT { return HookColor(self, _cmd, %orig); }
++ (id)INFO_DANGER_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)INFO_DANGER_FOREGROUND { return HookColor(self, _cmd, %orig); }
++ (id)INFO_DANGER_TEXT { return HookColor(self, _cmd, %orig); }
++ (id)INFO_HELP_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)INFO_HELP_FOREGROUND { return HookColor(self, _cmd, %orig); }
++ (id)INFO_HELP_TEXT { return HookColor(self, _cmd, %orig); }
++ (id)STATUS_POSITIVE_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)STATUS_POSITIVE_TEXT { return HookColor(self, _cmd, %orig); }
++ (id)STATUS_WARNING_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)STATUS_WARNING_TEXT { return HookColor(self, _cmd, %orig); }
++ (id)STATUS_DANGER_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)STATUS_DANGER_TEXT { return HookColor(self, _cmd, %orig); }
++ (id)STATUS_DANGER { return HookColor(self, _cmd, %orig); }
++ (id)STATUS_POSITIVE { return HookColor(self, _cmd, %orig); }
++ (id)STATUS_WARNING { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_DANGER_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_DANGER_BACKGROUND_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_DANGER_BACKGROUND_ACTIVE { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_DANGER_BACKGROUND_DISABLED { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_POSITIVE_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_POSITIVE_BACKGROUND_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_POSITIVE_BACKGROUND_ACTIVE { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_POSITIVE_BACKGROUND_DISABLED { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_SECONDARY_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_SECONDARY_BACKGROUND_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_SECONDARY_BACKGROUND_ACTIVE { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_SECONDARY_BACKGROUND_DISABLED { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_DANGER_TEXT { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_DANGER_BORDER { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_DANGER_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_DANGER_BACKGROUND_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_DANGER_TEXT_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_DANGER_BORDER_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_DANGER_BACKGROUND_ACTIVE { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_DANGER_TEXT_ACTIVE { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_DANGER_BORDER_ACTIVE { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_POSITIVE_TEXT { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_POSITIVE_BORDER { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_POSITIVE_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_POSITIVE_BACKGROUND_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_POSITIVE_TEXT_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_POSITIVE_BORDER_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_POSITIVE_BACKGROUND_ACTIVE { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_POSITIVE_TEXT_ACTIVE { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_POSITIVE_BORDER_ACTIVE { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_BRAND_TEXT { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_BRAND_BORDER { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_BRAND_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_BRAND_BACKGROUND_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_BRAND_TEXT_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_BRAND_BORDER_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_BRAND_BACKGROUND_ACTIVE { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_BRAND_TEXT_ACTIVE { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_BRAND_BORDER_ACTIVE { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_PRIMARY_TEXT { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_PRIMARY_BORDER { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_PRIMARY_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_PRIMARY_BACKGROUND_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_PRIMARY_TEXT_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_PRIMARY_BORDER_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_PRIMARY_BACKGROUND_ACTIVE { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_PRIMARY_TEXT_ACTIVE { return HookColor(self, _cmd, %orig); }
++ (id)BUTTON_OUTLINE_PRIMARY_BORDER_ACTIVE { return HookColor(self, _cmd, %orig); }
++ (id)MODAL_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)MODAL_FOOTER_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)SCROLLBAR_THIN_THUMB { return HookColor(self, _cmd, %orig); }
++ (id)SCROLLBAR_THIN_TRACK { return HookColor(self, _cmd, %orig); }
++ (id)SCROLLBAR_AUTO_THUMB { return HookColor(self, _cmd, %orig); }
++ (id)SCROLLBAR_AUTO_TRACK { return HookColor(self, _cmd, %orig); }
++ (id)SCROLLBAR_AUTO_SCROLLBAR_COLOR_THUMB { return HookColor(self, _cmd, %orig); }
++ (id)SCROLLBAR_AUTO_SCROLLBAR_COLOR_TRACK { return HookColor(self, _cmd, %orig); }
++ (id)INPUT_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)INPUT_PLACEHOLDER_TEXT { return HookColor(self, _cmd, %orig); }
++ (id)ELEVATION_STROKE { return HookColor(self, _cmd, %orig); }
++ (id)ELEVATION_LOW { return HookColor(self, _cmd, %orig); }
++ (id)ELEVATION_MEDIUM { return HookColor(self, _cmd, %orig); }
++ (id)ELEVATION_HIGH { return HookColor(self, _cmd, %orig); }
++ (id)LOGO_PRIMARY { return HookColor(self, _cmd, %orig); }
++ (id)FOCUS_PRIMARY { return HookColor(self, _cmd, %orig); }
++ (id)CONTROL_BRAND_FOREGROUND { return HookColor(self, _cmd, %orig); }
++ (id)CONTROL_BRAND_FOREGROUND_NEW { return HookColor(self, _cmd, %orig); }
++ (id)BACKGROUND_MENTIONED { return HookColor(self, _cmd, %orig); }
++ (id)BACKGROUND_MENTIONED_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)BACKGROUND_MESSAGE_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)BACKGROUND_MESSAGE_AUTOMOD { return HookColor(self, _cmd, %orig); }
++ (id)BACKGROUND_MESSAGE_AUTOMOD_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)CHANNELS_DEFAULT { return HookColor(self, _cmd, %orig); }
++ (id)CHANNEL_ICON { return HookColor(self, _cmd, %orig); }
++ (id)CHANNEL_TEXT_AREA_PLACEHOLDER { return HookColor(self, _cmd, %orig); }
++ (id)GUILD_HEADER_TEXT_SHADOW { return HookColor(self, _cmd, %orig); }
++ (id)CHANNELTEXTAREA_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)ACTIVITY_CARD_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)TEXTBOX_MARKDOWN_SYNTAX { return HookColor(self, _cmd, %orig); }
++ (id)SPOILER_REVEALED_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)SPOILER_HIDDEN_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)ANDROID_NAVIGATION_BAR_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)DEPRECATED_CARD_BG { return HookColor(self, _cmd, %orig); }
++ (id)DEPRECATED_CARD_EDITABLE_BG { return HookColor(self, _cmd, %orig); }
++ (id)DEPRECATED_STORE_BG { return HookColor(self, _cmd, %orig); }
++ (id)DEPRECATED_QUICKSWITCHER_INPUT_BACKGROUND { return HookColor(self, _cmd, %orig); }
++ (id)DEPRECATED_QUICKSWITCHER_INPUT_PLACEHOLDER { return HookColor(self, _cmd, %orig); }
++ (id)DEPRECATED_TEXT_INPUT_BG { return HookColor(self, _cmd, %orig); }
++ (id)DEPRECATED_TEXT_INPUT_BORDER { return HookColor(self, _cmd, %orig); }
++ (id)DEPRECATED_TEXT_INPUT_BORDER_HOVER { return HookColor(self, _cmd, %orig); }
++ (id)DEPRECATED_TEXT_INPUT_BORDER_DISABLED { return HookColor(self, _cmd, %orig); }
++ (id)DEPRECATED_TEXT_INPUT_PREFIX { return HookColor(self, _cmd, %orig); }
 
 %end
