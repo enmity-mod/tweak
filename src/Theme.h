@@ -1,5 +1,27 @@
 #define THEMES_PATH [NSString stringWithFormat:@"%@/%@", NSHomeDirectory(), @"Documents/Themes"]
 
+#define HOOK_COLOR(clr) +(id)clr { \
+	id original = %orig; \
+	id color = getColor(@#clr); \
+	if (color) { \
+		return color; \
+	} \
+	return original; \
+}
+
+#define HOOK_TABLE_CELL(name) %hook name \
+    - (void)setBackgroundColor:(UIColor*)arg1 { \
+        NSString *url = getBackgroundURL(); \
+        \
+        if (url) { \
+            %orig([UIColor clearColor]); \
+            return; \
+        } \
+        \
+        %orig(arg1); \
+    } \
+%end
+
 BOOL installTheme(NSURL *url);
 BOOL uninstallTheme(NSString *name);
 NSString* getThemeName(NSURL *url);

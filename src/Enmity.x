@@ -8,16 +8,14 @@
   NSString *bundlePath = getBundlePath();
 
   // Apply React DevTools patch if its enabled
-  #if DEVTOOLS == 1
-    @try {
-      NSString *devtoolsBundle = getFileFromBundle(bundlePath, @"devtools");
-      NSData *devtools = [devtoolsBundle dataUsingEncoding:NSUTF8StringEncoding];
-      NSLog(@"Injecting React DevTools patch");
-      %orig(devtools, ENMITY_SOURCE, false);
-    } @catch(NSException *e) {
-      NSLog(@"React DevTools failed to initialize. %@", e);
-    }
-  #endif
+  @try {
+    NSString *devtoolsBundle = getFileFromBundle(bundlePath, @"devtools");
+    NSData *devtools = [devtoolsBundle dataUsingEncoding:NSUTF8StringEncoding];
+    NSLog(@"Injecting React DevTools patch");
+    %orig(devtools, ENMITY_SOURCE, false);
+  } @catch(NSException *e) {
+    NSLog(@"React DevTools failed to initialize. %@", e);
+  }
 
   // Apply modules patch
   @try {
@@ -62,14 +60,8 @@
   }
 
   // Global values
-  NSString *debugState = [NSString stringWithFormat:@"window.enmity_debug = %s;", IS_DEBUG ? "true" : "false"];
+  NSString *debugState = [NSString stringWithFormat:@"window.enmity_debug = %s;", "true"];
   %orig([debugState dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
-
-  // Bind debug bundle ip address
-  if (IS_DEBUG) {
-    NSString *debugIpCode = [NSString stringWithFormat:@"window.enmity_debug_ip = '%@';", DEBUG_IP];
-    %orig([debugIpCode dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
-  }
 
   // Initialize addon states
   NSString *addonInit = @"window.plugins = { enabled: [], disabled: [] };";

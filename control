@@ -1,10 +1,10 @@
-Package: app.enmity
+Package: enmity
 Name: Enmity
 Version: 2.1.5
 Architecture: iphoneos-arm
-Description: The power of addons, all in your hand.
-Maintainer: Zoey, eternal, rosie (locally)
-Author: Enmity Team
+Description: Hotfix tweak for 168+
+Maintainer: Rosie (locally)
+Author: Zoey & Eternal
 Section: Tweaks
 Depends: mobilesubstrate (>= 0.9.5000)
 SileoDepiction: https://repo.enmity.app/depictions/enmity.json

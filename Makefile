@@ -5,9 +5,8 @@ include $(THEOS)/makefiles/common.mk
 
 DEBUG_IP = rosies-macbook-air.local
 TWEAK_NAME = Enmity
-DEVTOOLS = 0
-Enmity_FILES = $(shell find src -name "*.x")
-Enmity_CFLAGS = -DDEBUG_IP=@\"$(DEBUG_IP)\" -DDEVTOOLS=$(DEVTOOLS) -fobjc-arc
+Enmity_FILES = $(shell find src -name "*.x" && find src -name "*.xi")
+Enmity_CFLAGS = -fobjc-arc
 Enmity_FRAMEWORKS = UIKit Foundation CoreGraphics CoreImage
 
 BUNDLE_NAME = EnmityFiles

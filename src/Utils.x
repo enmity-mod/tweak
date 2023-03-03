@@ -8,7 +8,7 @@ NSString* getDownloadURL() {
 
 // Check for update
 BOOL checkForUpdate() {
-  if (IS_DEBUG || !checkFileExists(ENMITY_PATH)) {
+  if (!checkFileExists(ENMITY_PATH)) {
     return true;
   }
 

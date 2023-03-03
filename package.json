@@ -1,5 +1,8 @@
 {
 	"type": "module",
+	"scripts": {
+		"build": "rm -f packages/* && gmake clean package FINALPACKAGE=1 && mv $(find packages -name \"*.deb\") packages/Enmity.Debug.Official.deb"
+	},
 	"dependencies": {
 		"@rollup/plugin-commonjs": "^22.0.1",
 		"@rollup/plugin-node-resolve": "^13.3.0",

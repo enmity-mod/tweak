@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build and publish Enmity tweak and force custom IP
+    name: Build and publish Enmity tweak and force debug mode + fork
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
@@ -32,13 +32,7 @@ jobs:
         uses: Randomblock1/theos-action@v1
 
       - name: Build dev deb with github link
-        run: |
-          rm -f packages/*
-          echo $"$(sed 's/Name\:.*/Name\: Enmity (Dev)/' control)" > control
-          echo $"$(sed 's/Package\:.*/Package\: app.enmity.dev/' control)" > control
-          gmake clean package FINALPACKAGE=1 DEVTOOLS=1
-          mkdir out
-          mv $(find packages -name "*.deb" -print -quit) out/Enmity.Development.Github.deb
+        run: npm run build
 
       - name: Create release
         uses: marvinpinto/action-automatic-releases@latest
@@ -47,4 +41,4 @@ jobs:
           prerelease: false
           automatic_release_tag: test_tweak
           title: Testing Enmity Tweak
-          files: out/*.deb
+          files: packages/*.deb
