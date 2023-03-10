@@ -3,7 +3,7 @@
 
 // Get the download url for Enmity.js
 NSString* getDownloadURL() {
-  return @"https://raw.githubusercontent.com/acquitelol/enmity/main/dist/Enmity.js";
+  return @"https://raw.githubusercontent.com/acquitelol/enmity/themer-rewrite/dist/Enmity.js";
 }
 
 // Check for update

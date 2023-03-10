@@ -133,7 +133,8 @@ NSString* wrapPlugin(NSString *code, int pluginID, NSString *name) {
       "try {"\
         "%@"\
       "} catch(err) {"\
-        "console.error(`Fatal error with %@: ${err}`);"\
+        "const error = new Error(`Fatal error with %@: ${err}`);"\
+        "console.error(error.stack);"\
       "}"\
     "}, %d, []);"\
     "__r(%d);", code, name, pluginID, pluginID

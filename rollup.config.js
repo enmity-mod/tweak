@@ -8,7 +8,7 @@ function addWindowDeclaration() {
     name: 'window-is-this',
     generateBundle: (_, bundle) => {
       for (const file in bundle) {
-        bundle[file].code = 'const window = this;' + bundle[file].code;
+        bundle[file].code += 'const window = this;';
       }
     }
   }
