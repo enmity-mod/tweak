@@ -4,7 +4,8 @@
 #import "Enmity.h"
 #import "Theme.h"
 
-NSDictionary *colors = nil;
+NSDictionary *semanticColors = nil;
+NSDictionary *rawColors = nil;
 NSDictionary *background = nil;
 
 // Convert an UIColor element to a hex string
@@ -160,26 +161,29 @@ NSDictionary* getThemeMap(NSString *kind) {
 		NSDictionary *colorMap = theme[@"semanticColors"] ? theme[@"semanticColors"] : theme[@"theme_color_map"];
 		NSMutableDictionary *themeMap = [[NSMutableDictionary alloc] init];
 		for (NSString* colorName in colorMap) {
-			NSLog(@"Key: %@, Kind: %@", colorName, kind);
 			[themeMap setObject:colorMap[colorName][mode]	forKey: colorName];
 		}
 
 		return [themeMap copy];
 	}
 	
-	NSDictionary *colorMap = theme[@"rawColors"];
-	NSMutableDictionary *themeMap = [[NSMutableDictionary alloc] init];
-	for (NSString* colorName in colorMap) {
-		NSLog(@"Key: %@, Kind: %@", colorName, kind);
-		NSString *color = colorMap[colorName];
-		NSString *replacesPrimaryDark = [color stringByReplacingOccurrencesOfString:@"PRIMARY_DARK" withString:@"PRIMARY"];
-		NSString *replacesPrimaryLight = [replacesPrimaryDark stringByReplacingOccurrencesOfString:@"PRIMARY_LIGHT" withString:@"PRIMARY"];
-		NSString *replacesBrandNew = [replacesPrimaryLight stringByReplacingOccurrencesOfString:@"BRAND_NEW" withString:@"BRAND"];
-		NSString *replacesStatus = [replacesBrandNew stringByReplacingOccurrencesOfString:@"STATUS_" withString:@""];
-		[themeMap setObject:replacesStatus	forKey: colorName];
+	if ([kind isEqual:@"raw"]) {
+		NSDictionary *colorMap = theme[@"rawColors"] ? theme[@"rawColors"] : theme[@"colours"];
+		NSMutableDictionary *themeMap = [[NSMutableDictionary alloc] init];
+		for (NSString* colorName in colorMap) {
+			NSLog(@"Key: %@, Kind: %@", colorName, kind);
+			NSString *color = colorMap[colorName];
+			NSString *replacesPrimaryDark = [color stringByReplacingOccurrencesOfString:@"PRIMARY_DARK" withString:@"PRIMARY"];
+			NSString *replacesPrimaryLight = [replacesPrimaryDark stringByReplacingOccurrencesOfString:@"PRIMARY_LIGHT" withString:@"PRIMARY"];
+			NSString *replacesBrandNew = [replacesPrimaryLight stringByReplacingOccurrencesOfString:@"BRAND_NEW" withString:@"BRAND"];
+			NSString *replacesStatus = [replacesBrandNew stringByReplacingOccurrencesOfString:@"STATUS_" withString:@""];
+			[themeMap setObject:replacesStatus	forKey: colorName];
+		}
+
+		return [themeMap copy];
 	}
 
-	return [themeMap copy];
+	return [theme[@"semanticColors"] copy];
 }
 
 // Get the theme file daata
@@ -201,14 +205,16 @@ void setTheme(NSString *name, NSString *mode) {
 	if (name == nil && mode == nil) {
 		[userDefaults removeObjectForKey:@"theme"];
 		[userDefaults removeObjectForKey:@"theme_mode"];
-		colors = [[NSMutableDictionary alloc] init];
+		semanticColors = [[NSMutableDictionary alloc] init];
+		rawColors = [[NSMutableDictionary alloc] init];
 		background = [[NSMutableDictionary alloc] init];
 		return;
 	}
 
 	[userDefaults setObject:name forKey:@"theme"];
 	[userDefaults setInteger:[mode intValue] forKey:@"theme_mode"];
-	colors = nil;
+	semanticColors = nil;
+	rawColors = nil;
 	background = nil;
 }
 
@@ -273,15 +279,19 @@ float getBackgroundAlpha() {
 
 // Get a color
 UIColor* getColor(NSString *name, NSString *kind) {
-	if (colors == nil) {
-		colors = getThemeMap(kind);
+	if ([kind isEqual:@"semantic"] && !semanticColors) {
+		semanticColors = getThemeMap(kind);
 	}
 
-	if (![colors objectForKey:name]) {
+	if ([kind isEqual:@"raw"] && !rawColors) {
+		semanticColors = getThemeMap(kind);
+	}
+
+	if (![([kind isEqual:@"semantic"] ? semanticColors : rawColors) objectForKey:name]) {
 		return NULL;
 	}
 
-	NSString *value = colors[name];
+	NSString *value = ([kind isEqual:@"semantic"] ? semanticColors : rawColors)[name];
 	UIColor *color;
 
 	if ([value containsString:@"rgba"]) {
