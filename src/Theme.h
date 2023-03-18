@@ -1,8 +1,8 @@
 #define THEMES_PATH [NSString stringWithFormat:@"%@/%@", NSHomeDirectory(), @"Documents/Themes"]
 
-#define HOOK_COLOR(clr) +(id)clr { \
+#define HOOK_COLOR(clr, kind) +(id)clr { \
 	id original = %orig; \
-	id color = getColor(@#clr); \
+	id color = getColor(@#clr, @#kind); \
 	if (color) { \
 		return color; \
 	} \
