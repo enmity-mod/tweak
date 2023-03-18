@@ -171,7 +171,6 @@ NSDictionary* getThemeMap(NSString *kind) {
 		NSDictionary *colorMap = theme[@"rawColors"] ? theme[@"rawColors"] : theme[@"colours"];
 		NSMutableDictionary *themeMap = [[NSMutableDictionary alloc] init];
 		for (NSString* colorName in colorMap) {
-			NSLog(@"Key: %@, Kind: %@", colorName, kind);
 			NSString *color = colorMap[colorName];
 			NSString *replacesPrimaryDark = [color stringByReplacingOccurrencesOfString:@"PRIMARY_DARK" withString:@"PRIMARY"];
 			NSString *replacesPrimaryLight = [replacesPrimaryDark stringByReplacingOccurrencesOfString:@"PRIMARY_LIGHT" withString:@"PRIMARY"];
@@ -279,28 +278,49 @@ float getBackgroundAlpha() {
 
 // Get a color
 UIColor* getColor(NSString *name, NSString *kind) {
-	if ([kind isEqual:@"semantic"] && !semanticColors) {
-		semanticColors = getThemeMap(kind);
+	if ([kind isEqual:@"semantic"]) {
+		if (!semanticColors) {
+			semanticColors = getThemeMap(kind);
+		}
+
+		if (![semanticColors objectForKey:name]) {
+			return NULL;
+		}
+
+		NSString *value = semanticColors[name];
+		UIColor *color;
+
+		if ([value containsString:@"rgba"]) {
+			color = colorFromRGBAString(value);
+		} else {
+			color = colorFromHexString(value);
+		}
+
+		return color;
 	}
 
-	if ([kind isEqual:@"raw"] && !rawColors) {
-		semanticColors = getThemeMap(kind);
+	if ([kind isEqual:@"raw"]) {
+		if (!rawColors) {
+			rawColors = getThemeMap(kind);
+		}
+
+		if (![rawColors objectForKey:name]) {
+			return NULL;
+		}
+
+		NSString *value = rawColors[name];
+		UIColor *color;
+
+		if ([value containsString:@"rgba"]) {
+			color = colorFromRGBAString(value);
+		} else {
+			color = colorFromHexString(value);
+		}
+
+		return color;
 	}
 
-	if (![([kind isEqual:@"semantic"] ? semanticColors : rawColors) objectForKey:name]) {
-		return NULL;
-	}
-
-	NSString *value = ([kind isEqual:@"semantic"] ? semanticColors : rawColors)[name];
-	UIColor *color;
-
-	if ([value containsString:@"rgba"]) {
-		color = colorFromRGBAString(value);
-	} else {
-		color = colorFromHexString(value);
-	}
-
-	return color;
+	return NULL;
 }
 
 
