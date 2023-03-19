@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <objc/runtime.h>
 #import "substrate.h"
 #import "Enmity.h"
 #import "Theme.h"
@@ -456,42 +457,52 @@ HOOK_TABLE_CELL(DCDLoadingTableViewCell)
 - (void)configureSubviewsWithContentAdjustment:(double)arg1 {
 	%orig;
 
-	id chatColor = getColor(@"BACKGROUND_PRIMARY", @"semantic");
+	id chatColor = getColor(@"CHAT_BACKGROUND", @"semantic");
+
+	if (!chatColor) {
+		chatColor = getColor(@"BACKGROUND_PRIMARY", @"semantic");
+	}
+
 	if (chatColor) {
 		[self setBackgroundColor:chatColor];
 	}
 
-	UIView *subview = [self.subviews firstObject];
-	if ([subview isKindOfClass:[UIImageView class]]) {
-		return;
-	}
+	for (UIView *subview in self.subviews) {
+		if ([subview isKindOfClass:[UIImageView class]]) {
+			NSLog(@"Failed check for ensuring suview isnt a UIImageView! Element is a UIImageView: %d (1=true,0=false)", (int)[subview isKindOfClass:[UIImageView class]])
+			continue;
+		}
 
-	if (background == nil) {
-		background = getBackgroundMap();
-	}
+		if (background == nil) {
+			background = getBackgroundMap();
+		}
 
-	if (background == nil) {
-		return;
-	}
+		if (background == nil) {
+			NSLog(@"Background is still nil! Background: %@", background)
+			return;
+		}
 
-	NSString *url = getBackgroundURL();
+		NSString *url = getBackgroundURL();
 
-	if (url) {
-		int blur = getBackgroundBlur();
-		[subview setBackgroundColor:[UIColor clearColor]];
-		UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:url]]];
+		if (url) {
+			int blur = getBackgroundBlur();
+			[subview setBackgroundColor:[UIColor clearColor]];
+			UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:url]]];
 
-		CIImage *ciImage = [CIImage imageWithCGImage:image.CGImage];
-		CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
-		[filter setValue:ciImage forKey:kCIInputImageKey];
-		[filter setValue:[NSNumber numberWithFloat: blur] forKey:@"inputRadius"];
-		CIImage *result = [filter valueForKey:kCIOutputImageKey];
-		CIImage *croppedImage = [result imageByCroppingToRect:ciImage.extent];
+			CIImage *ciImage = [CIImage imageWithCGImage:image.CGImage];
+			CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
+			[filter setValue:ciImage forKey:kCIInputImageKey];
+			[filter setValue:[NSNumber numberWithFloat: blur] forKey:@"inputRadius"];
+			CIImage *result = [filter valueForKey:kCIOutputImageKey];
+			CIImage *croppedImage = [result imageByCroppingToRect:ciImage.extent];
 
-		UIImageView *imageView = [[UIImageView alloc] initWithImage:[[UIImage alloc] initWithCIImage:croppedImage]];
-		imageView.frame = subview.frame;
-		imageView.alpha = getBackgroundAlpha();
-		[self insertSubview:imageView atIndex:0];
+			UIImageView *imageView = [[UIImageView alloc] initWithImage:[[UIImage alloc] initWithCIImage:croppedImage]];
+			imageView.frame = subview.frame;
+			imageView.alpha = getBackgroundAlpha();
+			[self insertSubview:imageView atIndex:0];
+
+			break;
+		}
 	}
 }
 %end
@@ -504,319 +515,31 @@ HOOK_TABLE_CELL(DCDLoadingTableViewCell)
 	%init(KEYBOARD);
 }
 
-/**
- * ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
- *
- * UIColor Hooking
- *
- * ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
- */
-%hook UIColor
+void SwizzleFromDict(NSString *kind, Class class) {   
+    NSDictionary *dict = getThemeMap(kind);
 
-HOOK_COLOR(YELLOW_100, raw)
-HOOK_COLOR(YELLOW_130, raw)
-HOOK_COLOR(YELLOW_160, raw)
-HOOK_COLOR(YELLOW_200, raw)
-HOOK_COLOR(YELLOW_230, raw)
-HOOK_COLOR(YELLOW_260, raw)
-HOOK_COLOR(YELLOW_300, raw)
-HOOK_COLOR(YELLOW_345, raw)
-HOOK_COLOR(YELLOW_330, raw)
-HOOK_COLOR(YELLOW_360, raw)
-HOOK_COLOR(YELLOW_400, raw)
-HOOK_COLOR(YELLOW_430, raw)
-HOOK_COLOR(YELLOW_460, raw)
-HOOK_COLOR(YELLOW_500, raw)
-HOOK_COLOR(YELLOW_530, raw)
-HOOK_COLOR(YELLOW_560, raw)
-HOOK_COLOR(YELLOW_600, raw)
-HOOK_COLOR(YELLOW_630, raw)
-HOOK_COLOR(YELLOW_660, raw)
-HOOK_COLOR(YELLOW_700, raw)
-HOOK_COLOR(YELLOW_730, raw)
-HOOK_COLOR(YELLOW_800, raw)
-HOOK_COLOR(YELLOW_830, raw)
-HOOK_COLOR(YELLOW_860, raw)
-HOOK_COLOR(YELLOW_900, raw)
-HOOK_COLOR(RED_100, raw)
-HOOK_COLOR(RED_130, raw)
-HOOK_COLOR(RED_160, raw)
-HOOK_COLOR(RED_200, raw)
-HOOK_COLOR(RED_230, raw)
-HOOK_COLOR(RED_260, raw)
-HOOK_COLOR(RED_300, raw)
-HOOK_COLOR(RED_345, raw)
-HOOK_COLOR(RED_330, raw)
-HOOK_COLOR(RED_360, raw)
-HOOK_COLOR(RED_400, raw)
-HOOK_COLOR(RED_430, raw)
-HOOK_COLOR(RED_460, raw)
-HOOK_COLOR(RED_500, raw)
-HOOK_COLOR(RED_530, raw)
-HOOK_COLOR(RED_560, raw)
-HOOK_COLOR(RED_600, raw)
-HOOK_COLOR(RED_630, raw)
-HOOK_COLOR(RED_660, raw)
-HOOK_COLOR(RED_700, raw)
-HOOK_COLOR(RED_730, raw)
-HOOK_COLOR(RED_800, raw)
-HOOK_COLOR(RED_830, raw)
-HOOK_COLOR(RED_860, raw)
-HOOK_COLOR(RED_900, raw)
-HOOK_COLOR(ORANGE_100, raw)
-HOOK_COLOR(ORANGE_130, raw)
-HOOK_COLOR(ORANGE_160, raw)
-HOOK_COLOR(ORANGE_200, raw)
-HOOK_COLOR(ORANGE_230, raw)
-HOOK_COLOR(ORANGE_260, raw)
-HOOK_COLOR(ORANGE_300, raw)
-HOOK_COLOR(ORANGE_345, raw)
-HOOK_COLOR(ORANGE_330, raw)
-HOOK_COLOR(ORANGE_360, raw)
-HOOK_COLOR(ORANGE_400, raw)
-HOOK_COLOR(ORANGE_430, raw)
-HOOK_COLOR(ORANGE_460, raw)
-HOOK_COLOR(ORANGE_500, raw)
-HOOK_COLOR(ORANGE_530, raw)
-HOOK_COLOR(ORANGE_560, raw)
-HOOK_COLOR(ORANGE_600, raw)
-HOOK_COLOR(ORANGE_630, raw)
-HOOK_COLOR(ORANGE_660, raw)
-HOOK_COLOR(ORANGE_700, raw)
-HOOK_COLOR(ORANGE_730, raw)
-HOOK_COLOR(ORANGE_800, raw)
-HOOK_COLOR(ORANGE_830, raw)
-HOOK_COLOR(ORANGE_860, raw)
-HOOK_COLOR(ORANGE_900, raw)
-HOOK_COLOR(GREEN_100, raw)
-HOOK_COLOR(GREEN_130, raw)
-HOOK_COLOR(GREEN_160, raw)
-HOOK_COLOR(GREEN_200, raw)
-HOOK_COLOR(GREEN_230, raw)
-HOOK_COLOR(GREEN_260, raw)
-HOOK_COLOR(GREEN_300, raw)
-HOOK_COLOR(GREEN_345, raw)
-HOOK_COLOR(GREEN_330, raw)
-HOOK_COLOR(GREEN_360, raw)
-HOOK_COLOR(GREEN_400, raw)
-HOOK_COLOR(GREEN_430, raw)
-HOOK_COLOR(GREEN_460, raw)
-HOOK_COLOR(GREEN_500, raw)
-HOOK_COLOR(GREEN_530, raw)
-HOOK_COLOR(GREEN_560, raw)
-HOOK_COLOR(GREEN_600, raw)
-HOOK_COLOR(GREEN_630, raw)
-HOOK_COLOR(GREEN_660, raw)
-HOOK_COLOR(GREEN_700, raw)
-HOOK_COLOR(GREEN_730, raw)
-HOOK_COLOR(GREEN_800, raw)
-HOOK_COLOR(GREEN_830, raw)
-HOOK_COLOR(GREEN_860, raw)
-HOOK_COLOR(GREEN_900, raw)
-HOOK_COLOR(BLUE_100, raw)
-HOOK_COLOR(BLUE_130, raw)
-HOOK_COLOR(BLUE_160, raw)
-HOOK_COLOR(BLUE_200, raw)
-HOOK_COLOR(BLUE_230, raw)
-HOOK_COLOR(BLUE_730, raw)
-HOOK_COLOR(BLUE_260, raw)
-HOOK_COLOR(BLUE_300, raw)
-HOOK_COLOR(BLUE_345, raw)
-HOOK_COLOR(BLUE_330, raw)
-HOOK_COLOR(BLUE_360, raw)
-HOOK_COLOR(BLUE_400, raw)
-HOOK_COLOR(BLUE_430, raw)
-HOOK_COLOR(BLUE_460, raw)
-HOOK_COLOR(BLUE_500, raw)
-HOOK_COLOR(BLUE_530, raw)
-HOOK_COLOR(BLUE_560, raw)
-HOOK_COLOR(BLUE_600, raw)
-HOOK_COLOR(BLUE_630, raw)
-HOOK_COLOR(BLUE_660, raw)
-HOOK_COLOR(BLUE_700, raw)
-HOOK_COLOR(BLUE_800, raw)
-HOOK_COLOR(BLUE_830, raw)
-HOOK_COLOR(BLUE_860, raw)
-HOOK_COLOR(BLUE_900, raw)
-HOOK_COLOR(BRAND_100, raw)
-HOOK_COLOR(BRAND_130, raw)
-HOOK_COLOR(BRAND_160, raw)
-HOOK_COLOR(BRAND_200, raw)
-HOOK_COLOR(BRAND_230, raw)
-HOOK_COLOR(BRAND_260, raw)
-HOOK_COLOR(BRAND_300, raw)
-HOOK_COLOR(BRAND_330, raw)
-HOOK_COLOR(BRAND_345, raw)
-HOOK_COLOR(BRAND_360, raw)
-HOOK_COLOR(BRAND_400, raw)
-HOOK_COLOR(BRAND_430, raw)
-HOOK_COLOR(BRAND_460, raw)
-HOOK_COLOR(BRAND_500, raw)
-HOOK_COLOR(BRAND_530, raw)
-HOOK_COLOR(BRAND_560, raw)
-HOOK_COLOR(BRAND_600, raw)
-HOOK_COLOR(BRAND_630, raw)
-HOOK_COLOR(BRAND_660, raw)
-HOOK_COLOR(BRAND_700, raw)
-HOOK_COLOR(BRAND_730, raw)
-HOOK_COLOR(BRAND_800, raw)
-HOOK_COLOR(BRAND_830, raw)
-HOOK_COLOR(BRAND_860, raw)
-HOOK_COLOR(BRAND_900, raw)
-HOOK_COLOR(BRAND, raw)
+    for (NSString *colorName in dict) {
+        NSString *originalMethodName = colorName;
+        SEL originalSelector = NSSelectorFromString(originalMethodName);
+        IMP originalImplementation = method_getImplementation(class_getClassMethod(class, originalSelector));
 
-%end
+        // cast the IMP to return an id
+        id (*getOriginalColor)(Class, SEL) = (id (*)(Class, SEL))originalImplementation;
 
-/**
- * ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
- *
- * DCDThemeColor Hooking
- *
- * ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
- */
-%hook DCDThemeColor
+        MSHookMessageEx(class, originalSelector, (IMP)imp_implementationWithBlock(^UIColor *(id self) {
+            id color = getColor(colorName, kind);
 
-HOOK_COLOR(HEADER_PRIMARY, semantic)
-HOOK_COLOR(HEADER_SECONDARY, semantic)
-HOOK_COLOR(TEXT_NORMAL, semantic)
-HOOK_COLOR(TEXT_MUTED, semantic)
-HOOK_COLOR(TEXT_LINK, semantic)
-HOOK_COLOR(TEXT_LINK_LOW_SATURATION, semantic)
-HOOK_COLOR(TEXT_POSITIVE, semantic)
-HOOK_COLOR(TEXT_WARNING, semantic)
-HOOK_COLOR(TEXT_DANGER, semantic)
-HOOK_COLOR(TEXT_BRAND, semantic)
-HOOK_COLOR(INTERACTIVE_NORMAL, semantic)
-HOOK_COLOR(INTERACTIVE_HOVER, semantic)
-HOOK_COLOR(INTERACTIVE_ACTIVE, semantic)
-HOOK_COLOR(INTERACTIVE_MUTED, semantic)
-HOOK_COLOR(BACKGROUND_PRIMARY, semantic)
-HOOK_COLOR(BACKGROUND_SECONDARY, semantic)
-HOOK_COLOR(BACKGROUND_SECONDARY_ALT, semantic)
-HOOK_COLOR(BACKGROUND_TERTIARY, semantic)
-HOOK_COLOR(BACKGROUND_ACCENT, semantic)
-HOOK_COLOR(BACKGROUND_FLOATING, semantic)
-HOOK_COLOR(BACKGROUND_NESTED_FLOATING, semantic)
-HOOK_COLOR(BACKGROUND_MOBILE_PRIMARY, semantic)
-HOOK_COLOR(BACKGROUND_MOBILE_SECONDARY, semantic)
-HOOK_COLOR(CHAT_BACKGROUND, semantic)
-HOOK_COLOR(CHAT_BORDER, semantic)
-HOOK_COLOR(CHAT_INPUT_CONTAINER_BACKGROUND, semantic)
-HOOK_COLOR(BACKGROUND_MODIFIER_HOVER, semantic)
-HOOK_COLOR(BACKGROUND_MODIFIER_ACTIVE, semantic)
-HOOK_COLOR(BACKGROUND_MODIFIER_SELECTED, semantic)
-HOOK_COLOR(BACKGROUND_MODIFIER_ACCENT, semantic)
-HOOK_COLOR(INFO_POSITIVE_BACKGROUND, semantic)
-HOOK_COLOR(INFO_POSITIVE_FOREGROUND, semantic)
-HOOK_COLOR(INFO_POSITIVE_TEXT, semantic)
-HOOK_COLOR(INFO_WARNING_BACKGROUND, semantic)
-HOOK_COLOR(INFO_WARNING_FOREGROUND, semantic)
-HOOK_COLOR(INFO_WARNING_TEXT, semantic)
-HOOK_COLOR(INFO_DANGER_BACKGROUND, semantic)
-HOOK_COLOR(INFO_DANGER_FOREGROUND, semantic)
-HOOK_COLOR(INFO_DANGER_TEXT, semantic)
-HOOK_COLOR(INFO_HELP_BACKGROUND, semantic)
-HOOK_COLOR(INFO_HELP_FOREGROUND, semantic)
-HOOK_COLOR(INFO_HELP_TEXT, semantic)
-HOOK_COLOR(STATUS_POSITIVE_BACKGROUND, semantic)
-HOOK_COLOR(STATUS_POSITIVE_TEXT, semantic)
-HOOK_COLOR(STATUS_WARNING_BACKGROUND, semantic)
-HOOK_COLOR(STATUS_WARNING_TEXT, semantic)
-HOOK_COLOR(STATUS_DANGER_BACKGROUND, semantic)
-HOOK_COLOR(STATUS_DANGER_TEXT, semantic)
-HOOK_COLOR(STATUS_DANGER, semantic)
-HOOK_COLOR(STATUS_POSITIVE, semantic)
-HOOK_COLOR(STATUS_WARNING, semantic)
-HOOK_COLOR(BUTTON_DANGER_BACKGROUND, semantic)
-HOOK_COLOR(BUTTON_DANGER_BACKGROUND_HOVER, semantic)
-HOOK_COLOR(BUTTON_DANGER_BACKGROUND_ACTIVE, semantic)
-HOOK_COLOR(BUTTON_DANGER_BACKGROUND_DISABLED, semantic)
-HOOK_COLOR(BUTTON_POSITIVE_BACKGROUND, semantic)
-HOOK_COLOR(BUTTON_POSITIVE_BACKGROUND_HOVER, semantic)
-HOOK_COLOR(BUTTON_POSITIVE_BACKGROUND_ACTIVE, semantic)
-HOOK_COLOR(BUTTON_POSITIVE_BACKGROUND_DISABLED, semantic)
-HOOK_COLOR(BUTTON_SECONDARY_BACKGROUND, semantic)
-HOOK_COLOR(BUTTON_SECONDARY_BACKGROUND_HOVER, semantic)
-HOOK_COLOR(BUTTON_SECONDARY_BACKGROUND_ACTIVE, semantic)
-HOOK_COLOR(BUTTON_SECONDARY_BACKGROUND_DISABLED, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_DANGER_TEXT, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_DANGER_BORDER, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_DANGER_BACKGROUND, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_DANGER_BACKGROUND_HOVER, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_DANGER_TEXT_HOVER, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_DANGER_BORDER_HOVER, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_DANGER_BACKGROUND_ACTIVE, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_DANGER_TEXT_ACTIVE, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_DANGER_BORDER_ACTIVE, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_TEXT, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_BORDER, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_BACKGROUND, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_BACKGROUND_HOVER, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_TEXT_HOVER, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_BORDER_HOVER, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_BACKGROUND_ACTIVE, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_TEXT_ACTIVE, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_POSITIVE_BORDER_ACTIVE, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_BRAND_TEXT, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_BRAND_BORDER, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_BRAND_BACKGROUND, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_BRAND_BACKGROUND_HOVER, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_BRAND_TEXT_HOVER, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_BRAND_BORDER_HOVER, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_BRAND_BACKGROUND_ACTIVE, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_BRAND_TEXT_ACTIVE, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_BRAND_BORDER_ACTIVE, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_TEXT, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_BORDER, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_BACKGROUND, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_BACKGROUND_HOVER, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_TEXT_HOVER, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_BORDER_HOVER, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_BACKGROUND_ACTIVE, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_TEXT_ACTIVE, semantic)
-HOOK_COLOR(BUTTON_OUTLINE_PRIMARY_BORDER_ACTIVE, semantic)
-HOOK_COLOR(MODAL_BACKGROUND, semantic)
-HOOK_COLOR(MODAL_FOOTER_BACKGROUND, semantic)
-HOOK_COLOR(SCROLLBAR_THIN_THUMB, semantic)
-HOOK_COLOR(SCROLLBAR_THIN_TRACK, semantic)
-HOOK_COLOR(SCROLLBAR_AUTO_THUMB, semantic)
-HOOK_COLOR(SCROLLBAR_AUTO_TRACK, semantic)
-HOOK_COLOR(SCROLLBAR_AUTO_SCROLLBAR_COLOR_THUMB, semantic)
-HOOK_COLOR(SCROLLBAR_AUTO_SCROLLBAR_COLOR_TRACK, semantic)
-HOOK_COLOR(INPUT_BACKGROUND, semantic)
-HOOK_COLOR(INPUT_PLACEHOLDER_TEXT, semantic)
-HOOK_COLOR(ELEVATION_STROKE, semantic)
-HOOK_COLOR(ELEVATION_LOW, semantic)
-HOOK_COLOR(ELEVATION_MEDIUM, semantic)
-HOOK_COLOR(ELEVATION_HIGH, semantic)
-HOOK_COLOR(LOGO_PRIMARY, semantic)
-HOOK_COLOR(FOCUS_PRIMARY, semantic)
-HOOK_COLOR(CONTROL_BRAND_FOREGROUND, semantic)
-HOOK_COLOR(CONTROL_BRAND_FOREGROUND_NEW, semantic)
-HOOK_COLOR(BACKGROUND_MENTIONED, semantic)
-HOOK_COLOR(BACKGROUND_MENTIONED_HOVER, semantic)
-HOOK_COLOR(BACKGROUND_MESSAGE_HOVER, semantic)
-HOOK_COLOR(BACKGROUND_MESSAGE_AUTOMOD, semantic)
-HOOK_COLOR(BACKGROUND_MESSAGE_AUTOMOD_HOVER, semantic)
-HOOK_COLOR(CHANNELS_DEFAULT, semantic)
-HOOK_COLOR(CHANNEL_ICON, semantic)
-HOOK_COLOR(CHANNEL_TEXT_AREA_PLACEHOLDER, semantic)
-HOOK_COLOR(GUILD_HEADER_TEXT_SHADOW, semantic)
-HOOK_COLOR(CHANNELTEXTAREA_BACKGROUND, semantic)
-HOOK_COLOR(ACTIVITY_CARD_BACKGROUND, semantic)
-HOOK_COLOR(TEXTBOX_MARKDOWN_SYNTAX, semantic)
-HOOK_COLOR(SPOILER_REVEALED_BACKGROUND, semantic)
-HOOK_COLOR(SPOILER_HIDDEN_BACKGROUND, semantic)
-HOOK_COLOR(ANDROID_NAVIGATION_BAR_BACKGROUND, semantic)
-HOOK_COLOR(DEPRECATED_CARD_BG, semantic)
-HOOK_COLOR(DEPRECATED_CARD_EDITABLE_BG, semantic)
-HOOK_COLOR(DEPRECATED_STORE_BG, semantic)
-HOOK_COLOR(DEPRECATED_QUICKSWITCHER_INPUT_BACKGROUND, semantic)
-HOOK_COLOR(DEPRECATED_QUICKSWITCHER_INPUT_PLACEHOLDER, semantic)
-HOOK_COLOR(DEPRECATED_TEXT_INPUT_BG, semantic)
-HOOK_COLOR(DEPRECATED_TEXT_INPUT_BORDER, semantic)
-HOOK_COLOR(DEPRECATED_TEXT_INPUT_BORDER_HOVER, semantic)
-HOOK_COLOR(DEPRECATED_TEXT_INPUT_BORDER_DISABLED, semantic)
-HOOK_COLOR(DEPRECATED_TEXT_INPUT_PREFIX, semantic)
+            if (color) {
+                return color;
+            }
 
-%end
+            return getOriginalColor(class, originalSelector);
+        }), NULL);
+    }
+}
+
+%ctor {
+	// https://github.com/vendetta-mod/VendettaTweak/blob/rewrite/Sources/VendettaTweak/Themes.x.swift#L61
+    SwizzleFromDict(@"semantic", object_getClass(NSClassFromString(@"DCDThemeColor")));
+    SwizzleFromDict(@"raw", object_getClass(NSClassFromString(@"UIColor")));
+}

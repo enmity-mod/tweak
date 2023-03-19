@@ -7,7 +7,7 @@
 - (void)executeApplicationScript:(NSData *)script url:(NSURL *)url async:(BOOL)async {
   NSString *bundlePath = getBundlePath();
 
-  // Apply React DevTools patch if its enabled
+  // Apply React DevTools patch
   @try {
     NSString *devtoolsBundle = getFileFromBundle(bundlePath, @"devtools");
     NSData *devtools = [devtoolsBundle dataUsingEncoding:NSUTF8StringEncoding];
@@ -60,12 +60,13 @@
   }
 
   // Global values
-  NSString *debugState = [NSString stringWithFormat:@"window.enmity_debug = %s;", "true"];
-  %orig([debugState dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
+  %orig([@"window.enmity_debug = true;" dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
 
   // Initialize addon states
-  NSString *addonInit = @"window.plugins = { enabled: [], disabled: [] };";
-  %orig([addonInit dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
+  %orig([@"window.plugins = { enabled: [], disabled: [] };" dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
+
+  // Add versioning
+  %orig([@"window.tweak = { version: \"2.1.6\" };" dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
 
   // Inject themes
   NSArray *themesList = getThemes();
