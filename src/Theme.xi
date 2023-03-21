@@ -467,22 +467,26 @@ HOOK_TABLE_CELL(DCDLoadingTableViewCell)
 		[self setBackgroundColor:chatColor];
 	}
 
+	// these operations are so expensive lmao
+	// getBackgroundMap gets the themeMap on every call and gets the themeJSON on every call
+	// getBackgroundURL calls getBackgroundMap
+	// therefore i think calling this method on every iteration of self.subviews is a horrible idea :sob:
+	if (background == nil) {
+		background = getBackgroundMap();
+	}
+
+	if (background == nil) {
+		NSLog(@"Background is still nil! Background: %@", background)
+		return;
+	}
+
+	NSString *url = getBackgroundURL();
+
 	for (UIView *subview in self.subviews) {
 		if ([subview isKindOfClass:[UIImageView class]]) {
-			NSLog(@"Failed check for ensuring suview isnt a UIImageView! Element is a UIImageView: %d (1=true,0=false)", (int)[subview isKindOfClass:[UIImageView class]])
+			// NSLog(@"Image is a UIImageView!: %@", (id)[NSNumber numberWithBool:[subview isKindOfClass:[UIImageView class]] ])
 			continue;
 		}
-
-		if (background == nil) {
-			background = getBackgroundMap();
-		}
-
-		if (background == nil) {
-			NSLog(@"Background is still nil! Background: %@", background)
-			return;
-		}
-
-		NSString *url = getBackgroundURL();
 
 		if (url) {
 			int blur = getBackgroundBlur();
