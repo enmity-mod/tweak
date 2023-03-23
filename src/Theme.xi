@@ -467,10 +467,6 @@ HOOK_TABLE_CELL(DCDLoadingTableViewCell)
 		[self setBackgroundColor:chatColor];
 	}
 
-	// these operations are so expensive lmao
-	// getBackgroundMap gets the themeMap on every call and gets the themeJSON on every call
-	// getBackgroundURL calls getBackgroundMap
-	// therefore i think calling this method on every iteration of self.subviews is a horrible idea :sob:
 	if (background == nil) {
 		background = getBackgroundMap();
 	}
@@ -482,31 +478,40 @@ HOOK_TABLE_CELL(DCDLoadingTableViewCell)
 
 	NSString *url = getBackgroundURL();
 
-	for (UIView *subview in self.subviews) {
-		if ([subview isKindOfClass:[UIImageView class]]) {
-			// NSLog(@"Image is a UIImageView!: %@", (id)[NSNumber numberWithBool:[subview isKindOfClass:[UIImageView class]] ])
-			continue;
-		}
+	// ! THIS PATCH IS TEMPORARY !
+	// for the time being this is done in the native side because it is extremely buggy on the js side
+	// for documentation purposes, the following issues are occuring with the current way that i am doing it on the js side (patch the common component that loads a linear gradient behind the chat area)
+	// 1. background is not transparent when using regular dark/light and not client themes
+	// 2. background does not apply on tabsv2
+	// 3. chat area is not interactive at all (unscrollable and chatinput is dead)
+	// 4. toggling between chat area and member view triggers fast flashing of the image
+	// 5. image is not positioned properly some of the time
+	// 
+	// once i figure out how to properly do this on the js side (preferrably not patching View.render too) i will remove this implementation and do the proper js implementation.
+	UIView *subview = [self.subviews count] >= 3 
+		? self.subviews[2]
+		: self.subviews[0];
 
-		if (url) {
-			int blur = getBackgroundBlur();
-			[subview setBackgroundColor:[UIColor clearColor]];
-			UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:url]]];
+	if (subview && [subview isKindOfClass:[UIImageView class]]) {
+		return NSLog(@"Image is a UIImageView!: %@", (id)[NSNumber numberWithBool:[subview isKindOfClass:[UIImageView class]] ]);
+	}
 
-			CIImage *ciImage = [CIImage imageWithCGImage:image.CGImage];
-			CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
-			[filter setValue:ciImage forKey:kCIInputImageKey];
-			[filter setValue:[NSNumber numberWithFloat: blur] forKey:@"inputRadius"];
-			CIImage *result = [filter valueForKey:kCIOutputImageKey];
-			CIImage *croppedImage = [result imageByCroppingToRect:ciImage.extent];
+	if (subview && url) {
+		int blur = getBackgroundBlur();
+		[subview setBackgroundColor:[UIColor clearColor]];
+		UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:url]]];
 
-			UIImageView *imageView = [[UIImageView alloc] initWithImage:[[UIImage alloc] initWithCIImage:croppedImage]];
-			imageView.frame = subview.frame;
-			imageView.alpha = getBackgroundAlpha();
-			[self insertSubview:imageView atIndex:0];
+		CIImage *ciImage = [CIImage imageWithCGImage:image.CGImage];
+		CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
+		[filter setValue:ciImage forKey:kCIInputImageKey];
+		[filter setValue:[NSNumber numberWithFloat: blur] forKey:@"inputRadius"];
+		CIImage *result = [filter valueForKey:kCIOutputImageKey];
+		CIImage *croppedImage = [result imageByCroppingToRect:ciImage.extent];
 
-			break;
-		}
+		UIImageView *imageView = [[UIImageView alloc] initWithImage:[[UIImage alloc] initWithCIImage:croppedImage]];
+		imageView.frame = subview.frame;
+		imageView.alpha = getBackgroundAlpha();
+		[self insertSubview:imageView atIndex:0];
 	}
 }
 %end

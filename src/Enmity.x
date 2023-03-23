@@ -66,7 +66,8 @@
   %orig([@"window.plugins = { enabled: [], disabled: [] };" dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
 
   // Add versioning
-  %orig([@"window.tweak = { version: \"2.1.6\" };" dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
+  NSString *formattedVersion = [NSString stringWithFormat:@"window.tweak = { version: \"%@\" };", VERSION];
+  %orig([formattedVersion dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
 
   // Inject themes
   NSArray *themesList = getThemes();

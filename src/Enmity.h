@@ -8,6 +8,7 @@
 
 #define ENMITY_PATH [NSString stringWithFormat:@"%@/%@", NSHomeDirectory(), @"Documents/Enmity.js"]
 #define ENMITY_SOURCE [NSURL URLWithString:@"enmity"]
+#define VERSION @"2.1.8"
 
 // Disable logs in release mode
 # define NSLog(fmt, ... ) NSLog((@"[Enmity] " fmt), ##__VA_ARGS__);
