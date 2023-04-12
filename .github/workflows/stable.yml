@@ -33,7 +33,7 @@ jobs:
         run : |
           git clone https://github.com/Al4ise/Azule ${{ github.workspace }}/Azule
           cd Azule
-          git checkout 27c02b415cff15b1c131a0e95bcc2438023f86da
+          git checkout 36c0f12a2d765c4e765ce9424116268a9b9fff63
 
       - name: Prepare Enmity Patcher
         run : |
