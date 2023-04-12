@@ -52,7 +52,7 @@ jobs:
           rm -f packages/*
           gmake clean package FINALPACKAGE=1
           mv $(find packages -name "*.deb" -print -quit) out/Enmity.deb
-      
+
       - name: Retrieve version
         id: version
         run: echo "::set-output name=EM_VERSION::$(cat control | grep -E 'Version:(.*)' | awk '{ print $2 }')"   
@@ -69,7 +69,7 @@ jobs:
           echo $"$(sed 's/Package\:.*/Package\: app.enmity.dev/' control)" > control
           gmake clean package FINALPACKAGE=1 DEVTOOLS=1
           mv $(find packages -name "*.deb" -print -quit) out/Enmity.Development.deb
-        
+
       - name: Build regular rootless deb
         run: |
           rm -f packages/*
@@ -78,7 +78,7 @@ jobs:
           gmake clean package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
           mv $(find packages -name "*.deb" -print -quit) out/Enmity.Rootless.deb
 
-       - name: Build dev rootless deb
+      - name: Build dev rootless deb
         run: |
           rm -f packages/*
           echo $"$(sed 's/Name\:.*/Name\: Enmity (Rootless)/' control)" > control
