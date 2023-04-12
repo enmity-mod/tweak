@@ -42,6 +42,10 @@ jobs:
           curl -L https://github.com/enmity-mod/patcher/releases/latest/download/patcher.mac-amd64 -o ${{ github.workspace }}/patcher
           chmod +x patcher
 
+      - name: Prepare coreutils
+
+        run: brew install coreutils
+
       - name: Patch Discord
         run : |
           ${{ github.workspace }}/patcher
