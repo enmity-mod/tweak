@@ -82,5 +82,5 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           automatic_release_tag: v${{ steps.version.outputs.EM_VERSION }}
-          title: "Enmity v${{ steps.version.outputs.DISCORD_VERSION }}"
+          title: "Enmity v${{ steps.version.outputs.EM_VERSION }}"
           files: out/*
