@@ -1,14 +1,5 @@
 #define THEMES_PATH [NSString stringWithFormat:@"%@/%@", NSHomeDirectory(), @"Documents/Themes"]
 
-#define HOOK_COLOR(clr, kind) +(id)clr { \
-	id original = %orig; \
-	id color = getColor(@#clr, @#kind); \
-	if (color) { \
-		return color; \
-	} \
-	return original; \
-}
-
 #define HOOK_TABLE_CELL(name) %hook name \
     - (void)setBackgroundColor:(UIColor*)arg1 { \
         NSString *url = getBackgroundURL(); \
