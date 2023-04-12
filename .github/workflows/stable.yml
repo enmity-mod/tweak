@@ -72,8 +72,10 @@ jobs:
           mv out/Enmity+Enmity.Development.deb.ipa out/Enmity.Development.ipa
 
       - name: Create release
-        uses: softprops/action-gh-release@v1
+        uses: marvinpinto/action-automatic-releases@latest
         with:
-          tag_name: v${{ github.ref_name }}
-          files:  |
-            out/*
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          automatic_release_tag: v${{ github.ref_name }}
+          title: "Enmity v${{ github.ref_name }}"
+          files: out/*
