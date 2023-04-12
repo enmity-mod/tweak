@@ -73,7 +73,7 @@ jobs:
 
       - name: Create Enmity.ipa
         run : |
-          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f out/Enmity.deb
+          ${{ github.workspace }}/Azule/azule -U -i Enmity.ipa -o out -f out/Enmity.deb
           mv out/Enmity+Enmity.deb.ipa out/Enmity.ipa
 
       - name: Build dev deb
@@ -86,7 +86,7 @@ jobs:
 
       - name: Create Enmity.Dev.ipa
         run : |
-          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f out/Enmity.Development.deb
+          ${{ github.workspace }}/Azule/azule -U -i Enmity.ipa -o out -f out/Enmity.Development.deb
           mv out/Enmity+Enmity.Development.deb.ipa out/Enmity.Development.ipa
 
       - name: Create release
