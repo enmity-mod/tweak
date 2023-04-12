@@ -69,6 +69,22 @@ jobs:
           echo $"$(sed 's/Package\:.*/Package\: app.enmity.dev/' control)" > control
           gmake clean package FINALPACKAGE=1 DEVTOOLS=1
           mv $(find packages -name "*.deb" -print -quit) out/Enmity.Development.deb
+        
+      - name: Build regular rootless deb
+        run: |
+          rm -f packages/*
+          echo $"$(sed 's/Name\:.*/Name\: Enmity (Rootless)/' control)" > control
+          echo $"$(sed 's/Package\:.*/Package\: app.enmity.rootless/' control)" > control
+          gmake clean package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
+          mv $(find packages -name "*.deb" -print -quit) out/Enmity.Rootless.deb
+
+       - name: Build dev rootless deb
+        run: |
+          rm -f packages/*
+          echo $"$(sed 's/Name\:.*/Name\: Enmity (Rootless)/' control)" > control
+          echo $"$(sed 's/Package\:.*/Package\: app.enmity.rootless/' control)" > control
+          gmake clean package FINALPACKAGE=1 DEVTOOLS=1 THEOS_PACKAGE_SCHEME=rootless
+          mv $(find packages -name "*.deb" -print -quit) out/Enmity.Rootless.Development.deb
 
       - name: Create Enmity.Dev.ipa
         run : |

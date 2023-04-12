@@ -11,7 +11,7 @@ Enmity_CFLAGS = -DDEBUG_IP=@\"$(DEBUG_IP)\" -DDEVTOOLS=$(DEVTOOLS) -fobjc-arc
 Enmity_FRAMEWORKS = UIKit Foundation CoreGraphics CoreImage
 
 BUNDLE_NAME = EnmityFiles
-EnmityFiles_INSTALL_PATH = "/Library/Application\ Support/Enmity"
+EnmityFiles_INSTALL_PATH = "$(THEOS_PACKAGE_INSTALL_PREFIX)/Library/Application\ Support/Enmity"
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 include $(THEOS_MAKE_PATH)/bundle.mk
