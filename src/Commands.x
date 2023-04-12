@@ -110,24 +110,37 @@ void handleCommand(NSDictionary *command) {
     }
 
     NSString *pluginName = getPluginName(url);
-    BOOL exists = checkPlugin(pluginName);
-    BOOL success = installPlugin(url);
-    if (success) {
-      if ([uuid isEqualToString:@"-1"]) {
-        alert([NSString stringWithFormat:@"%@ has been installed.", pluginName]);
+    NSString *title = [[NSString alloc] init];
+    NSString *message = [[NSString alloc] init];
+    if (checkPlugin(pluginName)) {
+      title = @"Plugin already exists";
+      message = [NSString stringWithFormat:@"Are you sure you want to overwrite %@?", pluginName];
+    } else {
+      title = @"Install plugin";
+      message = [NSString stringWithFormat:@"Are you sure you want to install %@?", pluginName];
+    }
+
+    confirm(title, message, ^() {
+      BOOL exists = checkPlugin(pluginName);
+
+      BOOL success = installPlugin(url);
+      if (success) {
+        if ([uuid isEqualToString:@"-1"]) {
+          alert([NSString stringWithFormat:@"%@ has been installed.", pluginName]);
+          return;
+        }
+
+        sendResponse(createResponse(uuid, exists ? @"overridden_plugin" : @"installed_plugin"));
         return;
       }
 
-      sendResponse(createResponse(uuid, exists ? @"overridden_plugin" : @"installed_plugin"));
-      return;
-    }
+      if ([uuid isEqualToString:@"-1"]) {
+        alert([NSString stringWithFormat:@"An error happened while installing %@.", pluginName]);
+        return;
+      }
 
-    if ([uuid isEqualToString:@"-1"]) {
-      alert([NSString stringWithFormat:@"An error happened while installing %@.", pluginName]);
-      return;
-    }
-
-    sendResponse(createResponse(uuid, @"fucky_wucky"));
+      sendResponse(createResponse(uuid, @"fucky_wucky"));
+    });
 
     return;
   }
@@ -141,13 +154,15 @@ void handleCommand(NSDictionary *command) {
       return;
     }
 
-    BOOL success = deletePlugin(pluginName);
-    if (success) {
-      sendResponse(createResponse(uuid, [NSString stringWithFormat:@"**%@** has been removed.", pluginName]));
-      return;
-    }
+    confirm(@"Uninstall plugin", [NSString stringWithFormat:@"Are you sure you want to uninstall %@?", pluginName], ^() {
+      BOOL success = deletePlugin(pluginName);
+      if (success) {
+        sendResponse(createResponse(uuid, [NSString stringWithFormat:@"**%@** has been removed.", pluginName]));
+        return;
+      }
 
-    sendResponse(createResponse(uuid, [NSString stringWithFormat:@"An error happened while removing *%@*.", pluginName]));
+      sendResponse(createResponse(uuid, [NSString stringWithFormat:@"An error happened while removed *%@*.", pluginName]));
+    });
   }
 
   if ([name isEqualToString:@"install-theme"]) {
@@ -158,7 +173,16 @@ void handleCommand(NSDictionary *command) {
 
     NSString *themeName = getThemeName(url);
     BOOL exists = checkTheme(themeName);
-    handleThemeInstall(uuid, url, exists, themeName);
+
+    if (exists) {
+      id title = @"Theme already exists";
+      id description = [NSString stringWithFormat:@"Are you sure you want to overwrite %@?", themeName];
+      confirm(title, description, ^() {
+        handleThemeInstall(uuid, url, exists, themeName);
+      });
+    } else {
+      handleThemeInstall(uuid, url, exists, themeName);
+    }
   }
 
   if ([name isEqualToString:@"uninstall-theme"]) {
@@ -170,13 +194,15 @@ void handleCommand(NSDictionary *command) {
       return;
     }
 
-    BOOL success = uninstallTheme(params[0]);
-    if (success) {
-      sendResponse(createResponse(uuid, @"Theme has been uninstalled."));
-      return;
-    }
+    confirm(@"Uninstall theme", [NSString stringWithFormat:@"Are you sure you want to uninstall %@?", themeName], ^() {
+      BOOL success = uninstallTheme(params[0]);
+      if (success) {
+        sendResponse(createResponse(uuid, @"Theme has been uninstalled."));
+        return;
+      }
 
-    sendResponse(createResponse(uuid, @"An error happened while uninstalling the theme."));
+      sendResponse(createResponse(uuid, @"An error happened while uninstalling the theme."));
+    });
   }
 
   if ([name isEqualToString:@"apply-theme"]) {
