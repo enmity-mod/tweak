@@ -1,11 +1,7 @@
 name: Create a stable release
 on:
   push:
-    tags:
-       - '*'
   pull_request:
-    tags:
-      - '*'
   workflow_dispatch:
 
 jobs:
@@ -42,6 +38,10 @@ jobs:
           curl -L https://github.com/enmity-mod/patcher/releases/latest/download/patcher.mac-amd64 -o ${{ github.workspace }}/patcher
           chmod +x patcher
 
+      - name: Prepare coreutils
+
+        run: brew install coreutils
+
       - name: Patch Discord
         run : |
           ${{ github.workspace }}/patcher
@@ -53,10 +53,14 @@ jobs:
           gmake clean package FINALPACKAGE=1
           mv $(find packages -name "*.deb" -print -quit) out/Enmity.deb
 
+      - name: Retrieve version
+        id: version
+        run: echo "::set-output name=EM_VERSION::$(cat control | grep -E 'Version:(.*)' | awk '{ print $2 }')"   
+
       - name: Create Enmity.ipa
         run : |
-          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f out/enmity.deb
-          mv out/Enmity+enmity.deb.ipa out/Enmity.ipa
+          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f $PWD/out/Enmity.deb
+          mv out/Enmity+Enmity.deb.ipa out/Enmity.ipa
 
       - name: Build dev deb
         run: |
@@ -66,14 +70,32 @@ jobs:
           gmake clean package FINALPACKAGE=1 DEVTOOLS=1
           mv $(find packages -name "*.deb" -print -quit) out/Enmity.Development.deb
 
+      - name: Build regular rootless deb
+        run: |
+          rm -f packages/*
+          echo $"$(sed 's/Name\:.*/Name\: Enmity (Rootless)/' control)" > control
+          echo $"$(sed 's/Package\:.*/Package\: app.enmity.rootless/' control)" > control
+          gmake clean package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
+          mv $(find packages -name "*.deb" -print -quit) out/Enmity.Rootless.deb
+
+      - name: Build dev rootless deb
+        run: |
+          rm -f packages/*
+          echo $"$(sed 's/Name\:.*/Name\: Enmity (Rootless)/' control)" > control
+          echo $"$(sed 's/Package\:.*/Package\: app.enmity.rootless/' control)" > control
+          gmake clean package FINALPACKAGE=1 DEVTOOLS=1 THEOS_PACKAGE_SCHEME=rootless
+          mv $(find packages -name "*.deb" -print -quit) out/Enmity.Rootless.Development.deb
+
       - name: Create Enmity.Dev.ipa
         run : |
-          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f out/Enmity.Development.deb
+          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f $PWD/out/Enmity.Development.deb
           mv out/Enmity+Enmity.Development.deb.ipa out/Enmity.Development.ipa
 
       - name: Create release
-        uses: softprops/action-gh-release@v1
+        uses: marvinpinto/action-automatic-releases@latest
         with:
-          tag_name: v${{ github.ref_name }}
-          files:  |
-            out/*
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          automatic_release_tag: v${{ steps.version.outputs.EM_VERSION }}
+          title: "Enmity v${{ steps.version.outputs.EM_VERSION }}"
+          files: out/*

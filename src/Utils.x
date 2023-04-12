@@ -17,7 +17,7 @@ BOOL checkForUpdate() {
   }
 
   NSMutableURLRequest *enmityRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://api.github.com/repos/enmity-mod/enmity/commits?path=dist%2FEnmity.js&page=1&per_page=1"]];
-  enmityRequest.timeoutInterval = 5.0;
+  enmityRequest.timeoutInterval = 3.0;
   enmityRequest.cachePolicy = NSURLRequestReloadIgnoringCacheData;
   NSHTTPURLResponse *response;
   NSError *err;
