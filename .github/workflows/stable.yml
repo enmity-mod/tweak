@@ -52,6 +52,11 @@ jobs:
           rm -f packages/*
           gmake clean package FINALPACKAGE=1
           mv $(find packages -name "*.deb" -print -quit) out/Enmity.deb
+      
+      - name: Retrieve version
+        run: |
+          brew install dpkg
+          echo "::set-output name=EM_VERSION::$(dpkg --info ./packages/Enmity.deb | grep -E 'Version:(.*)' | awk '{ print $2 }')"   
 
       - name: Create Enmity.ipa
         run : |
@@ -76,6 +81,6 @@ jobs:
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
-          automatic_release_tag: v${{ github.ref_name }}
-          title: "Enmity v${{ github.ref_name }}"
+          automatic_release_tag: v${{ steps.version.outputs.EM_VERSION }}
+          title: "Enmity v${{ steps.version.outputs.DISCORD_VERSION }}"
           files: out/*
