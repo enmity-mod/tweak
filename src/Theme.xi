@@ -472,7 +472,7 @@ HOOK_TABLE_CELL(DCDLoadingTableViewCell)
 	}
 
 	if (background == nil) {
-		NSLog(@"Background is still nil! Background: %@", background)
+		NSLog(@"Background is still nil! Background: %@", background);
 		return;
 	}
 

@@ -12,4 +12,10 @@
 #define TYPE @"Regular"
 
 // Disable logs in release mode
-# define NSLog(fmt, ... ) NSLog((@"[Enmity] " fmt), ##__VA_ARGS__);
+#ifdef DEBUG
+#   define IS_DEBUG true
+#   define NSLog(fmt, ... ) NSLog((@"[Enmity] " fmt), ##__VA_ARGS__);
+#else
+#   define IS_DEBUG false
+#   define NSLog(...) (void)0
+#endif

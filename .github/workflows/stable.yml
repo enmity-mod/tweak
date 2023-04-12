@@ -1,6 +1,8 @@
-name: Create test tweak
+name: Create a stable release
 on:
   push:
+    tags:
+       - '*'
   pull_request:
     tags:
       - '*'
@@ -8,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Build and publish Enmity tweak and force debug mode + fork
+    name: Build and publish Enmity for iOS
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
@@ -31,14 +33,47 @@ jobs:
       - name: Prepare Theos
         uses: Randomblock1/theos-action@v1
 
-      - name: Build dev deb with github link
-        run: npm run build
+      - name: Prepare Azule
+        run : |
+          git clone https://github.com/Al4ise/Azule ${{ github.workspace }}/Azule
+
+      - name: Prepare Enmity Patcher
+        run : |
+          curl -L https://github.com/enmity-mod/patcher/releases/latest/download/patcher.mac-amd64 -o ${{ github.workspace }}/patcher
+          chmod +x patcher
+
+      - name: Patch Discord
+        run : |
+          ${{ github.workspace }}/patcher
+          mkdir out
+
+      - name: Build package
+        run: |
+          rm -f packages/*
+          gmake clean package FINALPACKAGE=1
+          mv $(find packages -name "*.deb" -print -quit) out/Enmity.deb
+
+      - name: Create Enmity.ipa
+        run : |
+          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f out/enmity.deb
+          mv out/Enmity+enmity.deb.ipa out/Enmity.ipa
+
+      - name: Build dev deb
+        run: |
+          rm -f packages/*
+          echo $"$(sed 's/Name\:.*/Name\: Enmity (Dev)/' control)" > control
+          echo $"$(sed 's/Package\:.*/Package\: app.enmity.dev/' control)" > control
+          gmake clean package FINALPACKAGE=1 DEVTOOLS=1
+          mv $(find packages -name "*.deb" -print -quit) out/Enmity.Development.deb
+
+      - name: Create Enmity.Dev.ipa
+        run : |
+          ${{ github.workspace }}/Azule/azule -i Enmity.ipa -o out -f out/Enmity.Development.deb
+          mv out/Enmity+Enmity.Development.deb.ipa out/Enmity.Development.ipa
 
       - name: Create release
-        uses: marvinpinto/action-automatic-releases@latest
+        uses: softprops/action-gh-release@v1
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
-          automatic_release_tag: test_tweak
-          title: Testing Enmity Tweak
-          files: packages/*.deb
+          tag_name: v${{ github.ref_name }}
+          files:  |
+            out/*

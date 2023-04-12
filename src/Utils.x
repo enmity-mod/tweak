@@ -3,13 +3,16 @@
 
 // Get the download url for Enmity.js
 NSString* getDownloadURL() {
-  return @"https://raw.githubusercontent.com/acquitelol/enmity/themer-rewrite/dist/Enmity.js";
-  // return @"http://rosies-macbook-air.local:1112/Enmity.js";
+  if (!IS_DEBUG) {
+    return @"https://raw.githubusercontent.com/enmity-mod/enmity/main/dist/Enmity.js";
+  }
+
+  return [NSString stringWithFormat:@"http://%@:8080/Enmity.js", DEBUG_IP];
 }
 
 // Check for update
 BOOL checkForUpdate() {
-  if (!checkFileExists(ENMITY_PATH)) {
+  if (IS_DEBUG || !checkFileExists(ENMITY_PATH)) {
     return true;
   }
 
