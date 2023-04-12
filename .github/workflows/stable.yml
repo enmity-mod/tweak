@@ -54,9 +54,7 @@ jobs:
           mv $(find packages -name "*.deb" -print -quit) out/Enmity.deb
       
       - name: Retrieve version
-        run: |
-          brew install dpkg
-          echo "::set-output name=EM_VERSION::$(dpkg --info out/Enmity.deb | grep -E 'Version:(.*)' | awk '{ print $2 }')"   
+        run: echo "::set-output name=EM_VERSION::$(cat control | grep -E 'Version:(.*)' | awk '{ print $2 }')"   
 
       - name: Create Enmity.ipa
         run : |
