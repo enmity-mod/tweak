@@ -54,6 +54,7 @@ jobs:
           mv $(find packages -name "*.deb" -print -quit) out/Enmity.deb
       
       - name: Retrieve version
+        id: version
         run: echo "::set-output name=EM_VERSION::$(cat control | grep -E 'Version:(.*)' | awk '{ print $2 }')"   
 
       - name: Create Enmity.ipa
