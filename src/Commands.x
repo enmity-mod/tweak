@@ -75,21 +75,22 @@ NSDictionary* parseCommand(NSString *json) {
   return [command copy];
 }
 
-void handleThemeInstall(NSString *uuid, NSURL *url, BOOL exists, NSString *themeName) {
+BOOL handleThemeInstall(NSString *uuid, NSURL *url, BOOL exists, NSString *themeName) {
   BOOL success = installTheme(url);
   if (success) {
-    if ([uuid isEqualToString:@"-1"]) return;
+    if ([uuid isEqualToString:@"-1"]) return true;
 
     sendResponse(createResponse(uuid, exists ? @"overridden_theme" : @"installed_theme"));
-    return;
+    return true;
   }
 
   if ([uuid isEqualToString:@"-1"]) {
     alert([NSString stringWithFormat:@"An error happened while installing %@.", themeName]);
-    return;
+    return false;
   }
 
   sendResponse(createResponse(uuid, @"fucky_wucky"));
+  return false;
 }
 
 // Handle the command
@@ -106,12 +107,14 @@ void handleCommand(NSDictionary *command) {
   if ([name isEqualToString:@"install-plugin"]) {
     NSURL *url = [NSURL URLWithString:params[0]];
     if (!url || ![[url pathExtension] isEqualToString:@"js"]) {
+      sendResponse(createResponse(uuid, @"invalid_plugin"));
       return;
     }
 
     NSString *pluginName = getPluginName(url);
     NSString *title = [[NSString alloc] init];
     NSString *message = [[NSString alloc] init];
+
     if (checkPlugin(pluginName)) {
       title = @"Plugin already exists";
       message = [NSString stringWithFormat:@"Are you sure you want to overwrite %@?", pluginName];
@@ -150,39 +153,76 @@ void handleCommand(NSDictionary *command) {
 
     BOOL exists = checkPlugin(pluginName);
     if (!exists) {
-      sendResponse(createResponse(uuid, [NSString stringWithFormat:@"**%@** isn't currently installed.", pluginName]));
+      if ([uuid isEqualToString:@"-1"]) {
+        alert([NSString stringWithFormat:@"**%@** isn't currently installed.", pluginName]);
+        return;
+      }
+
+      sendResponse(createResponse(uuid, @"fucky_wucky"));
       return;
     }
 
     confirm(@"Uninstall plugin", [NSString stringWithFormat:@"Are you sure you want to uninstall %@?", pluginName], ^() {
       BOOL success = deletePlugin(pluginName);
       if (success) {
-        sendResponse(createResponse(uuid, [NSString stringWithFormat:@"**%@** has been removed.", pluginName]));
+        if ([uuid isEqualToString:@"-1"]) {
+          alert([NSString stringWithFormat:@"**%@** has been removed.", pluginName]);
+          return;
+        }
+
+        sendResponse(createResponse(uuid, @"uninstalled_plugin"));
         return;
       }
 
-      sendResponse(createResponse(uuid, [NSString stringWithFormat:@"An error happened while removed *%@*.", pluginName]));
+      if ([uuid isEqualToString:@"-1"]) {
+        alert([NSString stringWithFormat:@"An error happened while removing *%@*.", pluginName]);
+        return;
+      }
+
+      sendResponse(createResponse(uuid, @"fucky_wucky"));
     });
   }
 
   if ([name isEqualToString:@"install-theme"]) {
     NSURL *url = [NSURL URLWithString:params[0]];
     if (!url || ![[url pathExtension] isEqualToString:@"json"]) {
+      sendResponse(createResponse(uuid, @"invalid_theme"));
       return;
     }
 
     NSString *themeName = getThemeName(url);
     BOOL exists = checkTheme(themeName);
 
-    if (exists) {
-      id title = @"Theme already exists";
-      id description = [NSString stringWithFormat:@"Are you sure you want to overwrite %@?", themeName];
-      confirm(title, description, ^() {
-        handleThemeInstall(uuid, url, exists, themeName);
-      });
-    } else {
-      handleThemeInstall(uuid, url, exists, themeName);
-    }
+    confirm(@"Install theme", [NSString stringWithFormat:@"Are you sure you want to install %@?", themeName], ^() {
+      __block BOOL success;
+
+      if (exists) {
+        id title = @"Theme already exists";
+        id description = [NSString stringWithFormat:@"Are you sure you want to overwrite %@?", themeName];
+        confirm(title, description, ^() {
+          success = handleThemeInstall(uuid, url, exists, themeName);
+        });
+      } else {
+        success = handleThemeInstall(uuid, url, exists, themeName);
+      }
+
+      if (success) {
+        if ([uuid isEqualToString:@"-1"]) {
+          alert([NSString stringWithFormat:@"%@ has been installed.", themeName]);
+          return;
+        }
+
+        sendResponse(createResponse(uuid, exists ? @"overridden_theme" : @"installed_theme"));
+        return;
+      }
+
+      if ([uuid isEqualToString:@"-1"]) {
+        alert([NSString stringWithFormat:@"An error happened while installing *%@*.", themeName]);
+        return;
+      }
+
+      sendResponse(createResponse(uuid, @"fucky_wucky"));
+    });
   }
 
   if ([name isEqualToString:@"uninstall-theme"]) {
@@ -190,18 +230,33 @@ void handleCommand(NSDictionary *command) {
 
     BOOL exists = checkTheme(themeName);
     if (!exists) {
-      sendResponse(createResponse(uuid, [NSString stringWithFormat:@"**%@** isn't currently installed.", themeName]));
+      if ([uuid isEqualToString:@"-1"]) {
+        alert([NSString stringWithFormat:@"*%@* isn't currently installed.", themeName]);
+        return;
+      }
+
+      sendResponse(createResponse(uuid, @"fucky_wucky"));
       return;
     }
 
     confirm(@"Uninstall theme", [NSString stringWithFormat:@"Are you sure you want to uninstall %@?", themeName], ^() {
-      BOOL success = uninstallTheme(params[0]);
+      BOOL success = uninstallTheme(themeName);
       if (success) {
-        sendResponse(createResponse(uuid, @"Theme has been uninstalled."));
+        if ([uuid isEqualToString:@"-1"]) {
+          alert([NSString stringWithFormat:@"*%@* has been uninstalled.", themeName]);
+          return;
+        }
+
+        sendResponse(createResponse(uuid, @"uninstalled_theme"));
         return;
       }
 
-      sendResponse(createResponse(uuid, @"An error happened while uninstalling the theme."));
+      if ([uuid isEqualToString:@"-1"]) {
+        alert([NSString stringWithFormat:@"An error happened while uninstalling *%@*.", themeName]);
+        return;
+      }
+
+      sendResponse(createResponse(uuid, @"fucky_wucky"));
     });
   }
 
