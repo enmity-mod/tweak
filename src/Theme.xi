@@ -478,17 +478,7 @@ HOOK_TABLE_CELL(DCDLoadingTableViewCell)
 
 	NSString *url = getBackgroundURL();
 
-	// ! THIS PATCH IS TEMPORARY !
-	// for the time being this is done in the native side because it is extremely buggy on the js side
-	// for documentation purposes, the following issues are occuring with the current way that i am doing it on the js side (patch the common component that loads a linear gradient behind the chat area)
-	// 1. background is not transparent when using regular dark/light and not client themes
-	// 2. background does not apply on tabsv2
-	// 3. chat area is not interactive at all (unscrollable and chatinput is dead)
-	// 4. toggling between chat area and member view triggers fast flashing of the image
-	// 5. image is not positioned properly some of the time
-	// 
-	// once i figure out how to properly do this on the js side (preferrably not patching View.render too) i will remove this implementation and do the proper js implementation.
-	UIView *subview = self.subviews[[self.subviews count] - 3];
+	UIView *subview = self.subviews[[self.subviews count] >= 3 ? [self.subviews count] - 3 : 0];
 
 	if (subview && [subview isKindOfClass:[UIImageView class]]) {
 		return NSLog(@"Image is a UIImageView!: %@", (id)[NSNumber numberWithBool:[subview isKindOfClass:[UIImageView class]] ]);
