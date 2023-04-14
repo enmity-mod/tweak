@@ -47,7 +47,7 @@ jobs:
 
       - name: Retrieve version
         id: version
-        run: echo "::set-output name=EM_VERSION::$(cat control | grep -E 'Version:(.*)' | awk '{ print $2 }')"   
+        run: echo "::set-output name=__ENMITY_VERSION::$(cat control | grep -E 'Version:(.*)' | awk '{ print $2 }')"   
 
       - name: Build deb
         run: |
@@ -94,6 +94,6 @@ jobs:
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
-          automatic_release_tag: v${{ steps.version.outputs.EM_VERSION }}
-          title: "Enmity v${{ steps.version.outputs.EM_VERSION }}"
+          automatic_release_tag: v${{ steps.version.outputs.__ENMITY_VERSION }}
+          title: "Enmity v${{ steps.version.outputs.__ENMITY_VERSION }}"
           files: out/*
