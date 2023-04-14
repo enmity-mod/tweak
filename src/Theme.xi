@@ -488,7 +488,7 @@ HOOK_TABLE_CELL(DCDLoadingTableViewCell)
 	// 5. image is not positioned properly some of the time
 	// 
 	// once i figure out how to properly do this on the js side (preferrably not patching View.render too) i will remove this implementation and do the proper js implementation.
-	UIView *subview = self.subviews[[self.subviews count] - 2];
+	UIView *subview = self.subviews[[self.subviews count] - 3];
 
 	if (subview && [subview isKindOfClass:[UIImageView class]]) {
 		return NSLog(@"Image is a UIImageView!: %@", (id)[NSNumber numberWithBool:[subview isKindOfClass:[UIImageView class]] ]);
