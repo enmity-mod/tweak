@@ -33,7 +33,7 @@ jobs:
         run : |
           git clone https://github.com/Al4ise/Azule ${{ github.workspace }}/Azule
           cd Azule
-          git checkout 36c0f12a2d765c4e765ce9424116268a9b9fff63
+          git checkout 27c02b415cff15b1c131a0e95bcc2438023f86da
 
       - name: Prepare Enmity Patcher
         run : |
@@ -45,17 +45,25 @@ jobs:
           ${{ github.workspace }}/patcher
           mkdir out
 
-      - name: Build package
+      - name: Retrieve version
+        id: version
+        run: echo "::set-output name=EM_VERSION::$(cat control | grep -E 'Version:(.*)' | awk '{ print $2 }')"   
+
+      - name: Build deb
         run: |
           rm -f packages/*
           gmake clean package FINALPACKAGE=1
           mv $(find packages -name "*.deb" -print -quit) out/Enmity.deb
 
-      - name: Retrieve version
-        id: version
-        run: echo "::set-output name=EM_VERSION::$(cat control | grep -E 'Version:(.*)' | awk '{ print $2 }')"   
+      - name: Build dev deb
+        run: |
+          rm -f packages/*
+          echo $"$(sed 's/Name\:.*/Name\: Enmity (Dev)/' control)" > control
+          echo $"$(sed 's/Package\:.*/Package\: app.enmity.dev/' control)" > control
+          gmake clean package FINALPACKAGE=1 DEVTOOLS=1
+          mv $(find packages -name "*.deb" -print -quit) out/Enmity.Development.deb
 
-      - name: Build regular rootless deb
+      - name: Build rootless deb
         run: |
           rm -f packages/*
           echo $"$(sed 's/Name\:.*/Name\: Enmity (Rootless)/' control)" > control
@@ -75,14 +83,6 @@ jobs:
         run : |
           ${{ github.workspace }}/Azule/azule -U -i Enmity.ipa -o out -f out/Enmity.deb
           mv out/Enmity+Enmity.deb.ipa out/Enmity.ipa
-
-      - name: Build dev deb
-        run: |
-          rm -f packages/*
-          echo $"$(sed 's/Name\:.*/Name\: Enmity (Dev)/' control)" > control
-          echo $"$(sed 's/Package\:.*/Package\: app.enmity.dev/' control)" > control
-          gmake clean package FINALPACKAGE=1 DEVTOOLS=1
-          mv $(find packages -name "*.deb" -print -quit) out/Enmity.Development.deb
 
       - name: Create Enmity.Dev.ipa
         run : |
