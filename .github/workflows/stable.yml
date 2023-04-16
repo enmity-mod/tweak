@@ -74,8 +74,8 @@ jobs:
       - name: Build dev rootless deb
         run: |
           rm -f packages/*
-          echo $"$(sed 's/Name\:.*/Name\: Enmity (Rootless)/' control)" > control
-          echo $"$(sed 's/Package\:.*/Package\: app.enmity.rootless/' control)" > control
+          echo $"$(sed 's/Name\:.*/Name\: Enmity (Dev Rootless)/' control)" > control
+          echo $"$(sed 's/Package\:.*/Package\: app.enmity.dev.rootless/' control)" > control
           gmake clean package FINALPACKAGE=1 DEVTOOLS=1 THEOS_PACKAGE_SCHEME=rootless
           mv $(find packages -name "*.deb" -print -quit) out/Enmity.Rootless.Development.deb
 

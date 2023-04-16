@@ -478,7 +478,8 @@ HOOK_TABLE_CELL(DCDLoadingTableViewCell)
 
 	NSString *url = getBackgroundURL();
 
-	UIView *subview = self.subviews[[self.subviews count] >= 3 ? [self.subviews count] - 3 : 0];
+	int count = [self.subviews count];
+	UIView *subview = self.subviews[(count >= 3 && count <= 5) ? 2 : 0];
 
 	if (subview && [subview isKindOfClass:[UIImageView class]]) {
 		return NSLog(@"Image is a UIImageView!: %@", (id)[NSNumber numberWithBool:[subview isKindOfClass:[UIImageView class]] ]);

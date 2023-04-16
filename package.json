@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"scripts": {
-		"build": "rm -f packages/* && gmake clean package FINALPACKAGE=1 && mv $(find packages -name \"*.deb\") packages/Enmity.Debug.deb"
+		"build": "rm -f packages/* && gmake clean package FINALPACKAGE=1 DEVTOOLS=1 && mv $(find packages -name \"*.deb\") packages/Enmity.Debug.deb"
 	},
 	"dependencies": {
 		"@rollup/plugin-commonjs": "^22.0.1",
