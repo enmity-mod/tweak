@@ -17,7 +17,7 @@ jobs:
       - name: Check cache
         id: verify-cache
         run: |
-          echo "::set-output name=heads::`git ls-remote https://github.com/theos/theos | head -n 1 | cut -f 1`-`git ls-remote https://github.com/theos/sdks | head -n 1 | cut -f 1`"
+          echo "heads=`git ls-remote https://github.com/theos/theos | head -n 1 | cut -f 1`-`git ls-remote https://github.com/theos/sdks | head -n 1 | cut -f 1`" >> $GITHUB_OUTPUT
 
       - name: Use cache
         uses: actions/cache@v2
@@ -47,7 +47,7 @@ jobs:
 
       - name: Retrieve version
         id: version
-        run: echo "::set-output name=__ENMITY_VERSION::$(cat control | grep -E 'Version:(.*)' | awk '{ print $2 }')"   
+        run: echo "__ENMITY_VERSION=$(cat control | grep -E 'Version:(.*)' | awk '{ print $2 }')" >> $GITHUB_OUTPUT   
 
       - name: Build deb
         run: |
