@@ -1,0 +1,7 @@
+{
+  "ignore": [
+    "packages"
+  ],
+  "exec": "yarn build",
+  "ext": "*.*"
+}

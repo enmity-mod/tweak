@@ -13,4 +13,4 @@ BOOL disablePlugin(NSString *name);
 BOOL enablePlugin(NSString *name);
 BOOL isEnabled(NSString *name);
 
-NSString* wrapPlugin(NSString *code, int pluginID, NSString *name);
+NSString* wrapPlugin(NSString *code, NSString *name);

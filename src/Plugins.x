@@ -127,17 +127,16 @@ BOOL isEnabled(NSString *name) {
 }
 
 // Wrap a plugin
-NSString* wrapPlugin(NSString *code, int pluginID, NSString *name) {
+NSString* wrapPlugin(NSString *code, NSString *name) {
   NSString* plugin = [NSString stringWithFormat:@""\
-    "__d(function(...args) {"\
+    "(() => {"\
       "try {"\
         "%@"\
       "} catch(err) {"\
         "const error = new Error(`Fatal error with %@: ${err}`);"\
         "console.error(error.stack);"\
       "}"\
-    "}, %d, []);"\
-    "__r(%d);", code, name, pluginID, pluginID
+    "})();", code, name
   ];
 
   return plugin;

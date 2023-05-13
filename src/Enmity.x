@@ -46,7 +46,7 @@
   }
 
   NSLog(@"Injecting discord's bundle");
-  %orig(script, url, false);
+  %orig(script, url, async);
 
   // Check for updates
   if (checkForUpdate()) {
@@ -111,10 +111,10 @@
     }
 
     NSString *code = [[NSString alloc] initWithData:enmity encoding:NSUTF8StringEncoding];
-    code = wrapPlugin(code, 9000, @"Enmity.js");
+    code = wrapPlugin(code, @"Enmity.js");
 
     NSLog(@"Injecting enmity's bundle");
-    %orig([code dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
+    %orig([code dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, async);
   } @catch(NSException *e) {
     NSLog(@"Failed to load enmity bundle, enmity will not work. %@", e);
     return;
@@ -124,8 +124,6 @@
   NSLog(@"Injecting Plugins");
   NSArray* plugins = getPlugins();
 
-  int moduleID = 9001;
-
   for (NSString *plugin in plugins) {
     NSString *path = getPluginPath(plugin);
     NSString *name = getPluginName([NSURL URLWithString:plugin]);
@@ -134,7 +132,7 @@
       char *enabled = isEnabled(path) ? "enabled" : "disabled";
       NSString *code = [NSString stringWithFormat:@"window.plugins.%s.push('%@')", enabled, name];
 
-      %orig([code dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
+      %orig([code dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, async);
     } @catch(NSException *e) {
       NSLog(@"Failed to push plugin %@. %@", name, e);
       continue;
@@ -151,8 +149,7 @@
 
     @try {
       NSLog(@"Injecting %@", plugin);
-      %orig([wrapPlugin(bundle, moduleID, plugin) dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, false);
-      moduleID += 1;
+      %orig([wrapPlugin(bundle, plugin) dataUsingEncoding:NSUTF8StringEncoding], ENMITY_SOURCE, async);
     } @catch(NSException *e) {
       NSLog(@"Failed to inject %@. %@", plugin, e);
     }
