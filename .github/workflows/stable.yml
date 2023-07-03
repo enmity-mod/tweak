@@ -47,7 +47,7 @@ jobs:
 
       - name: Retrieve version
         id: version
-        run: echo "__ENMITY_VERSION=$(cat control | grep -E 'Version:(.*)' | awk '{ print $2 }')" >> $GITHUB_OUTPUT   
+        run: echo "__ENMITY_VERSION=$(cat control | grep -E 'Version:(.*)' | awk '{ print $2 }')" >> $GITHUB_OUTPUT
 
       - name: Build deb
         run: |
@@ -62,6 +62,20 @@ jobs:
           echo $"$(sed 's/Package\:.*/Package\: app.enmity.dev/' control)" > control
           gmake clean package FINALPACKAGE=1 DEVTOOLS=1
           mv $(find packages -name "*.deb" -print -quit) out/Enmity.Development.deb
+
+      - name: Build deb with the sideload fix
+        run: |
+          rm -f packages/*
+          gmake clean package FINALPACKAGE=1 SIDELOAD=1
+          mv $(find packages -name "*.deb" -print -quit) out/Enmity.Sideload.deb
+
+      - name: Build dev deb with the sideload fix
+        run: |
+          rm -f packages/*
+          echo $"$(sed 's/Name\:.*/Name\: Enmity (Dev)/' control)" > control
+          echo $"$(sed 's/Package\:.*/Package\: app.enmity.dev/' control)" > control
+          gmake clean package FINALPACKAGE=1 DEVTOOLS=1 SIDELOAD=1
+          mv $(find packages -name "*.deb" -print -quit) out/Enmity.Sideload.Development.deb
 
       - name: Build rootless deb
         run: |
@@ -79,13 +93,13 @@ jobs:
 
       - name: Create Enmity.ipa
         run : |
-          ${{ github.workspace }}/Azule/azule -U -i Enmity.ipa -o out -f out/Enmity.deb
-          mv out/Enmity+Enmity.deb.ipa out/Enmity.ipa
+          ${{ github.workspace }}/Azule/azule -U -i Enmity.ipa -o out -f out/Enmity.Sideload.deb
+          mv out/Enmity+Enmity.Sideload.deb.ipa out/Enmity.ipa
 
       - name: Create Enmity.Dev.ipa
         run : |
-          ${{ github.workspace }}/Azule/azule -U -i Enmity.ipa -o out -f out/Enmity.Development.deb
-          mv out/Enmity+Enmity.Development.deb.ipa out/Enmity.Development.ipa
+          ${{ github.workspace }}/Azule/azule -U -i Enmity.ipa -o out -f out/Enmity.Sideload.Development.deb
+          mv out/Enmity+Enmity.Sideload.Development.deb.ipa out/Enmity.Development.ipa
 
       - name: Create release
         uses: marvinpinto/action-automatic-releases@latest
