@@ -1,7 +1,5 @@
 name: Create a stable release
 on:
-  push:
-  pull_request:
   workflow_dispatch:
     inputs:
       discord_ipa_url:
