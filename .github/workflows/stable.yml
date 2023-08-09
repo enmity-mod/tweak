@@ -1,8 +1,12 @@
 name: Create a stable release
 on:
-  push:
-  pull_request:
   workflow_dispatch:
+    inputs:
+      discord_ipa_url:
+        description: "Discord IPA URL"
+        default: ""
+        required: true
+        type: string
 
 jobs:
   build:
@@ -39,6 +43,10 @@ jobs:
         run : |
           curl -L https://github.com/enmity-mod/patcher/releases/latest/download/patcher.mac-amd64 -o ${{ github.workspace }}/patcher
           chmod +x patcher
+      
+      - name: Download Discord IPA
+        run: |
+          curl -L ${{ inputs.discord_ipa_url }} -o ${{ github.workspace }}/Discord.ipa
 
       - name: Patch Discord
         run : |
