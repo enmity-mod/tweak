@@ -50,7 +50,7 @@ jobs:
 
       - name: Patch Discord
         run : |
-          ${{ github.workspace }}/patcher -d ${{ github.workspace }}/Discord.ipa
+          ${{ github.workspace }}/patcher ${{ github.workspace }}/Discord.ipa
           mkdir out
 
       - name: Retrieve version
