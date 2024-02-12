@@ -1,4 +1,4 @@
-#import "Enmity.h"
+#import "../Headers/Enmity.h"
 
 // Create a response to a command
 NSDictionary* createResponse(NSString *uuid, NSString *data) {

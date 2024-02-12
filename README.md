@@ -9,7 +9,7 @@
 
    A [theos](https://github.com/theos/theos)-based tweak for Discord.
    Used to manage addons and inject code in Discord.
-   The main file `Enmity.js` is downloaded over the network at startup from [here](https://files.enmity.app/Enmity.js).
+   The main file `enmity.bundle` is downloaded over the network at startup from [here](https://files.enmity.app/enmity.bundle).
 </div>
 
 ---

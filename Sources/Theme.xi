@@ -2,8 +2,9 @@
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 #import "substrate.h"
-#import "Enmity.h"
-#import "Theme.h"
+
+#import "../Headers/Enmity.h"
+#import "../Headers/Theme.h"
 
 NSDictionary *semanticColors = nil;
 NSDictionary *rawColors = nil;
@@ -167,7 +168,7 @@ NSDictionary* getThemeMap(NSString *kind) {
 
 		return [themeMap copy];
 	}
-	
+
 	if ([kind isEqual:@"raw"]) {
 		NSDictionary *colorMap = theme[@"rawColors"] ? theme[@"rawColors"] : theme[@"colours"];
 		NSMutableDictionary *themeMap = [[NSMutableDictionary alloc] init];
@@ -513,7 +514,7 @@ HOOK_TABLE_CELL(DCDLoadingTableViewCell)
 	%init(KEYBOARD);
 }
 
-void SwizzleFromDict(NSString *kind, Class class) {   
+void SwizzleFromDict(NSString *kind, Class class) {
     NSDictionary *dict = getThemeMap(kind);
 
     for (NSString *colorName in dict) {

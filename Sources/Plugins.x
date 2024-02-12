@@ -1,16 +1,19 @@
-#import "Enmity.h"
+#import "../Headers/Enmity.h"
 
 // Get the path of a plugin via it's name
 NSString* getPluginPath(NSString *name) {
   NSArray* plugins = getPlugins();
 
-  for (NSString *plugin in plugins) {
-    if ([plugin containsString:name]) {
-      return [NSString stringWithFormat:@"%@/%@", PLUGINS_PATH, plugin];
-    }
-  }
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"filename == %@", name];
+	NSArray *results = [plugins filteredArrayUsingPredicate:predicate];
 
-  return @"";
+	NSLog(@"%@", results);
+
+  if ([results count] != 0) {
+		return results[0];
+	}
+
+	return @"";
 }
 
 // Get the name of a plugin via it's url
@@ -23,12 +26,30 @@ NSString* getPluginName(NSURL *url) {
 NSArray* getPlugins() {
   NSArray *files = readFolder(PLUGINS_PATH);
   NSMutableArray *plugins = [[NSMutableArray alloc] init];
-  for (NSString *plugin in files) {
-    if (![plugin containsString:@".js"]) {
-      continue;
-    }
 
-    [plugins addObject:plugin];
+	for (NSString *plugin in files) {
+    @try {
+			if (![plugin containsString:@".js"]) {
+				continue;
+			}
+
+			NSError *error;
+
+			NSString *path = [NSString pathWithComponents:@[PLUGINS_PATH, plugin]];
+			NSString *bundle = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
+
+			if (error != nil) {
+				@throw error;
+			}
+
+			[plugins addObject:@{
+				@"path": path,
+				@"filename": plugin,
+				@"bundle": bundle
+			}];
+		} @catch (NSException *e) {
+			NSLog(@"Failed to initialize plugin %@: %@", plugin, e);
+		}
   }
 
   return [plugins copy];
@@ -48,14 +69,18 @@ BOOL checkPlugin(NSString *name) {
 
 // Install a plugin from an URL
 BOOL installPlugin(NSURL *url) {
-  NSString *pluginName = getPluginName(url);
-  NSString *dest = getPluginPath(pluginName);
+  NSString *name = getPluginName(url);
+  NSString *dest = getPluginPath(name);
 
+	NSLog(@"destination: %@", dest);
   if ([dest isEqualToString:@""]) {
-    dest = [NSString stringWithFormat:@"%@/%@.js", PLUGINS_PATH, pluginName];
+    dest = [NSString stringWithFormat:@"%@/%@.js", PLUGINS_PATH, name];
+		NSLog(@"new destination: %@", dest);
   }
 
+	NSLog(@"Started downloading...");
   BOOL success = downloadFile(url.absoluteString, dest);
+	NSLog(@"Downloaded.");
 
   return success;
 }

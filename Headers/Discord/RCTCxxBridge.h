@@ -1,4 +1,4 @@
-@class NSMutableArray, NSMutableDictionary, NSString, NSThread, NSObject;
+@import Foundation;
 
 @interface RCTCxxBridge: NSObject {}
 
