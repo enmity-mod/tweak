@@ -1,5 +1,5 @@
 <div align='center'>
-   <img src='https://repo.enmity.app/banner.png' />
+   <img src='https://enmity-mod.github.io/repo/banner.png' />
 </div>
 
 ---
@@ -9,7 +9,7 @@
 
    A [theos](https://github.com/theos/theos)-based tweak for Discord.
    Used to manage addons and inject code in Discord.
-   The main file `Enmity.js` is downloaded over the network at startup from [here](https://files.enmity.app/Enmity.js).
+   The main file `Enmity.js` is downloaded over the network at startup from [here](https://github.com/enmity-mod/enmity/blob/main/dist/Enmity.js).
 </div>
 
 ---
