@@ -20,7 +20,7 @@ NSArray* getThemes();
 NSString* getTheme();
 int getMode();
 BOOL checkTheme(NSString *name);
-NSDictionary* getThemeMap();
+NSDictionary* getThemeMap(NSString *kind);
 NSString* getThemeJSON(NSString *name);
 void setTheme(NSString *name, NSString *theme);
 BOOL deleteTheme();
